@@ -22,7 +22,7 @@
     </dependencies>
 
     <build>
-        <finalName>cisco-web</finalName>
+        <finalName>web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
