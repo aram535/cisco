@@ -21,6 +21,7 @@ import java.util.Collection;
 @VariableResolver(DelegatingVariableResolver.class)
 public class OrdersController extends SelectorComposer<Component> {
 
+
     @Wire
     private Listbox ordersListBox;
 
@@ -30,6 +31,7 @@ public class OrdersController extends SelectorComposer<Component> {
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
         Collection<Order> orders = orderService.getOrders();
         ListModel<Order> ordersListModel = new ListModelList<Order>(orders);
         ordersListBox.setModel(ordersListModel);

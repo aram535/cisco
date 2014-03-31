@@ -12,7 +12,7 @@ import java.util.Collection;
  * Date: 28.03.14
  * Time: 21:17
  */
-@Service
+@Service("orderService")
 public class DummyOrderService implements OrderService {
 
     @Override

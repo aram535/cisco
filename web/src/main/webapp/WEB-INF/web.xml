@@ -16,7 +16,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <context-param>
         <param-name>contextClass</param-name>
-        <param-value>org.springframework.config.java.context.JavaConfigWebApplicationContext</param-value>
+        <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
     </context-param>
 
     <context-param>
@@ -27,8 +27,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <servlet>
         <description>ZK loader for evaluating ZK pages</description>
         <servlet-name>zkLoader</servlet-name>
-        <servlet-class>
-            org.zkoss.zk.ui.http.DHtmlLayoutServlet
+        <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet
         </servlet-class>
         <init-param>
             <param-name>update-uri</param-name>
@@ -57,7 +56,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>index.zul</welcome-file>
+        <welcome-file>/zul/index.zul</welcome-file>
     </welcome-file-list>
 
 </web-app>
