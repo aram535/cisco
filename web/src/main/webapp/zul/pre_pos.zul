@@ -1,23 +1,18 @@
 <zk>
     <!--     <style src="/widgets/grid/inline_editing/style.css" /> -->
     <div apply="org.zkoss.bind.BindComposer"
-         viewModel="@id('vmPrePos') @init('com.cisco.viewmodel.PrePosViewModel')">
-        <grid hflex="min" model="@load(vmPrePos.allPrePos)">
+         viewModel="@id('vmPrePos') @init('com.cisco.prepos.viewmodel.PreposViewModel')">
+        <grid hflex="min" model="@load(vmPrePos.allPrepos)">
             <columns height="22px">
-                <column width="330px" label="TYPE" />
-                <column width="120px" label="STA" align="center" />
-                <column width="150px" label="PARTNER_NAME" align="center"/>
-                <column width="100px" label="INV_DATE" align="center" />
+                <column width="330px" label="Type" />
+                <column width="150px" label="Partner name" align="center"/>
+                <column width="150px" label="Shipping date" align="center" />
             </columns>
             <template name="model">
                 <row>
-                    <textbox inplace="true" value="@bind(each.TYPE)" width="99%"/>
-                    <textbox inplace="true" value="@bind(each.STA)" width="99%"/>
-                    <!--<div class='text-center'>
-                        <spinner inplace="true" value="@bind(each.STA)" width="98%"/>
-                    </div>-->
-                    <textbox inplace="true" value="@bind(each.PARTNER_NAME)" width="99%"/>
-                    <datebox inplace="true" value="@bind(each.INV_DATE)" width="99%"/>
+                    <textbox inplace="true" value="@bind(each.type)" width="99%"/>
+                    <textbox inplace="true" value="@bind(each.partnerName)" width="99%"/>
+                    <datebox inplace="true" value="@bind(each.shippedDate)" width="99%"/>
                 </row>
             </template>
         </grid>

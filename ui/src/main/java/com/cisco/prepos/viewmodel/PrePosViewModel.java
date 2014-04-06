@@ -1,7 +1,7 @@
-package com.cisco.viewmodel;
+package com.cisco.prepos.viewmodel;
 
-import com.cisco.model.PrePosModel;
-import com.cisco.services.CiscoController;
+import com.cisco.prepos.dto.Prepos;
+import com.cisco.prepos.services.PreposService;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -15,16 +15,16 @@ import java.util.List;
  */
 
 @VariableResolver(DelegatingVariableResolver.class)
-public class PrePosViewModel {
+public class PreposViewModel {
 
-    private List<PrePosModel> prePosModelList;
+    private List<Prepos> preposes;
 
     @WireVariable
-    private CiscoController ciscoController;
+    private PreposService preposService;
 
-    public List<PrePosModel> getAllPrePos() {
-        prePosModelList = ciscoController.getAllPrePosData();
-        return prePosModelList;
+    public List<Prepos> getAllPrepos() {
+        preposes = preposService.getAllData();
+        return preposes;
     }
 
     @Command("add")
@@ -35,7 +35,7 @@ public class PrePosViewModel {
 
     @Command("update")
     public void update() {
-        ciscoController.updatePrePos(prePosModelList);
+        preposService.update(preposes);
     }
 
 }

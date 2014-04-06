@@ -21,7 +21,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>com.cisco.services.order.config.ServiceConfig</param-value>
+        <param-value>com.cisco.config.AppConfig</param-value>
     </context-param>
 
     <servlet>
