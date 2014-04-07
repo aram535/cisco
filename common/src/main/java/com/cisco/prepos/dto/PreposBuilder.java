@@ -7,6 +7,7 @@ package com.cisco.prepos.dto;
  */
 public class PreposBuilder {
 
+    private long id;
     private String type;
     private String partnerName;
     private String partNumber;
@@ -34,6 +35,12 @@ public class PreposBuilder {
 
     public static PreposBuilder builder() {
         return new PreposBuilder();
+    }
+
+
+    public PreposBuilder id(long id) {
+        this.id = id;
+        return this;
     }
 
     public PreposBuilder type(String type) {
@@ -106,7 +113,7 @@ public class PreposBuilder {
         return this;
     }
 
-    public PreposBuilder clientnNumber(String clientNumber) {
+    public PreposBuilder clientNumber(String clientNumber) {
         this.clientNumber = clientNumber;
         return this;
     }
@@ -142,7 +149,7 @@ public class PreposBuilder {
     }
 
     public Prepos build() {
-        Prepos prepos = new Prepos(type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, sales, comment, serials, zip);
+        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, sales, comment, serials, zip);
         return prepos;
     }
 }

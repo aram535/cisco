@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class Prepos {
 
+    private long id;
     private String type;
     private String partnerName;
     private String partNumber;
@@ -31,7 +32,8 @@ public class Prepos {
     private String serials;
     private int zip;
 
-    Prepos(String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, int buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, long shippedDate, String shippedBillNumber, String sales, String comment, String serials, int zip) {
+    Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, int buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, long shippedDate, String shippedBillNumber, String sales, String comment, String serials, int zip) {
+        this.id = id;
         this.type = type;
         this.partnerName = partnerName;
         this.partNumber = partNumber;
@@ -53,6 +55,10 @@ public class Prepos {
         this.comment = comment;
         this.serials = serials;
         this.zip = zip;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setType(String type) {
@@ -137,6 +143,10 @@ public class Prepos {
 
     public void setZip(int zip) {
         this.zip = zip;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getType() {
@@ -237,6 +247,7 @@ public class Prepos {
         }
         Prepos rhs = (Prepos) obj;
         return new EqualsBuilder()
+                .append(this.id, rhs.id)
                 .append(this.type, rhs.type)
                 .append(this.partnerName, rhs.partnerName)
                 .append(this.partNumber, rhs.partNumber)
@@ -264,6 +275,7 @@ public class Prepos {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
+                .append(id)
                 .append(type)
                 .append(partnerName)
                 .append(partNumber)
