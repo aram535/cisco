@@ -20,6 +20,7 @@
         <project.version>1.0-SNAPSHOT</project.version>
         <zk.version>6.5.2</zk.version>
         <spring.version>4.0.2.RELEASE</spring.version>
+        <hibernate.version>4.2.7.Final</hibernate.version>
     </properties>
 
     <dependencyManagement>
