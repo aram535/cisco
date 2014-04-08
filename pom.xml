@@ -21,6 +21,7 @@
         <zk.version>6.5.2</zk.version>
         <spring.version>4.0.2.RELEASE</spring.version>
         <hibernate.version>4.2.7.Final</hibernate.version>
+        <unitils.version>3.3</unitils.version>
     </properties>
 
     <dependencyManagement>
@@ -34,6 +35,24 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>16.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.unitils</groupId>
+                <artifactId>unitils-dbunit</artifactId>
+                <version>${unitils.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.unitils</groupId>
+                <artifactId>unitils-dbmaintainer</artifactId>
+                <version>${unitils.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.unitils</groupId>
+                <artifactId>unitils-spring</artifactId>
+                <version>${unitils.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -53,6 +72,11 @@
             <groupId>org.springframework.javaconfig</groupId>
             <artifactId>spring-javaconfig</artifactId>
             <version>1.0.0.m3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

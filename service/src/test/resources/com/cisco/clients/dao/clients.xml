@@ -1,0 +1,4 @@
+<!DOCTYPE dataset SYSTEM "../../../../../db-schema/database.dtd">
+<dataset>
+    <CLIENT ID="1" CLIENT_NUMBER="1" NAME="client" CITY="Kiev" ADDRESS="Bazhana av. 36 - 267"/>
+</dataset>

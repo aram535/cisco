@@ -4,6 +4,7 @@ package com.cisco.config;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -21,6 +22,7 @@ import java.util.Properties;
  * Time: 22:36
  */
 @Configuration
+@ComponentScan(basePackages = {"com.cisco.clients"})
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
 public class PersistenceConfig {
@@ -31,7 +33,7 @@ public class PersistenceConfig {
     private String url;
     @Value("${jdbc.user}")
     private String user;
-    @Value("${jdbc.password}")
+    @Value("${jdbc.pass}")
     private String password;
     @Value("${hibernate.dialect}")
     private String hibernateDialect;
@@ -55,7 +57,7 @@ public class PersistenceConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(new String[]{"com.example.persistence.domain"});
+        sessionFactory.setPackagesToScan(new String[]{"com.cisco.clients"});
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }
@@ -75,9 +77,10 @@ public class PersistenceConfig {
     Properties hibernateProperties() {
         return new Properties() {
             {
-                setProperty("hibernate.hbm2ddl.auto", "create-drop");
                 setProperty("hibernate.dialect", hibernateDialect);
-                setProperty("hibernate.globally_quoted_identifiers", "true");
+                setProperty("hibernate.cache.use_second_level_cache", "false");
+                setProperty("hibernate.cache.use_query_cache", "false");
+                setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
             }
         };
     }
