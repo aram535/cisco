@@ -1,4 +1,4 @@
-package com.cisco.prepos.viewmodel;
+package com.cisco.ui.prepos;
 
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.PreposService;
@@ -28,14 +28,18 @@ public class PreposViewModel {
     }
 
     @Command("add")
-    @NotifyChange("events")
+    @NotifyChange("allPrepos")
     public void add() {
 
     }
 
     @Command("update")
+    @NotifyChange("allPrepos")
     public void update() {
         preposService.update(preposes);
     }
 
+    public void setPreposService(PreposService preposService) {
+        this.preposService = preposService;
+    }
 }

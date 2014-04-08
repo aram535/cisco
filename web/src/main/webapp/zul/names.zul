@@ -1,0 +1,46 @@
+<window id="win" title="Names" width="640px" border="normal"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.cisco.ui.names.NamesViewModel')"
+        validationMessages="@id('vmsgs')">
+    <listbox id="box" multiple="true" rows="5" model="@bind(vm.allNames)" selectedItem="@bind(vm.selectedNamesModel)">
+        <listhead sizable="true">
+            <listheader label="Id" sort="auto(clientNumber)" />
+            <listheader label="Client number" sort="auto(clientNumber)" />
+            <listheader label="Name"  sort="auto(name)" />
+            <listheader label="City" sort="auto(city)" />
+            <listheader label="Address"  sort="auto(address)" />
+        </listhead>
+        <template name="model" var="names">
+            <listitem value="@load(names)">
+                <listcell label="@bind(names.id)" />
+                <listcell label="@bind(names.clientNumber)" />
+                <listcell label="@bind(names.name)" />
+                <listcell label="@bind(names.city)" />
+                <listcell label="@bind(names.address)" />
+            </listitem>
+        </template>
+    </listbox>
+    <groupbox id="mygrp" form="@id('names') @load(vm.selectedNamesModel) @save(vm.selectedNamesModel, before='update') @save(vm.newNamesModel, before='add') @validator('com.cisco.validation.names.NamesValidator')">
+        <caption label="Client`s info" />
+        Client number:
+        <textbox id="txtClientNumber" value="@bind(names.clientNumber)" />
+        Name:
+        <textbox id="txtName" value="@bind(names.name)" />
+        City:
+        <textbox id="txtCity" value="@bind(names.city)" />
+        Address:
+        <textbox id="txtAddress" value="@bind(names.address)" />
+        <button id="add" label="Add" onClick="@command('add')" />
+        <button id="update" label="Update" onClick="@command('update')"
+                disabled="@load(empty vm.selectedNamesModel)" />
+        <button id="delete" label="Delete" onClick="@command('delete')"
+                disabled="@load(empty vm.selectedNamesModel)" />
+
+        <hlayout>
+            <label style="color:red" value="@load(vmsgs['clientNumber'])" />
+            <label style="color:red" value="@load(vmsgs['name'])" />
+            <label style="color:red" value="@load(vmsgs['city'])" />
+            <label style="color:red" value="@load(vmsgs['address'])" />
+        </hlayout>
+    </groupbox>
+</window>

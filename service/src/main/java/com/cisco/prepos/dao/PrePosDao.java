@@ -14,4 +14,5 @@ public interface PreposDao {
     public boolean insert(Prepos prePos);
 
     public boolean update(Prepos prePos);
+
 }
