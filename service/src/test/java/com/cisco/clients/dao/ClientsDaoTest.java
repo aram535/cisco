@@ -2,6 +2,7 @@ package com.cisco.clients.dao;
 
 import com.cisco.clients.dto.Client;
 import com.cisco.hibernate.BasicDb;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -15,7 +16,8 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * Date: 08.04.2014
  * Time: 22:00
  */
-public class HibernateClientsDaoTest extends BasicDb {
+@Ignore
+public class ClientsDaoTest extends BasicDb {
 
     @SpringBeanByType
     private ClientsDao clientsDao;

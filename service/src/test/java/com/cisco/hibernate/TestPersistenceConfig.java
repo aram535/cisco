@@ -29,13 +29,13 @@ public class TestPersistenceConfig {
         return new Properties() {
             {
                 setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-                setProperty("hibernate.default_schema", "PUBLIC");
 
                 setProperty("hibernate.show_sql", "true");
                 setProperty("hibernate.format_sql", "false");
                 setProperty("hibernate.cache.use_second_level_cache", "false");
                 setProperty("hibernate.cache.use_query_cache", "false");
                 setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+
             }
         };
     }
