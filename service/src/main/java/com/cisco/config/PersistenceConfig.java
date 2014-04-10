@@ -1,7 +1,7 @@
 package com.cisco.config;
 
-
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
-import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -54,18 +54,17 @@ public class PersistenceConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(new String[]{"com.cisco.clients"});
-        sessionFactory.setHibernateProperties(hibernateProperties());
-        return sessionFactory;
+    public SessionFactory sessionFactory() {
+        LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource());
+        builder.scanPackages("com.cisco.clients");
+        builder.addProperties(hibernateProperties());
+        return builder.buildSessionFactory();
     }
 
     @Bean
     public HibernateTransactionManager transactionManager() {
         HibernateTransactionManager txManager = new HibernateTransactionManager();
-        txManager.setSessionFactory(sessionFactory().getObject());
+        txManager.setSessionFactory(sessionFactory());
         return txManager;
     }
 
@@ -81,6 +80,7 @@ public class PersistenceConfig {
                 setProperty("hibernate.cache.use_second_level_cache", "false");
                 setProperty("hibernate.cache.use_query_cache", "false");
                 setProperty("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+
             }
         };
     }

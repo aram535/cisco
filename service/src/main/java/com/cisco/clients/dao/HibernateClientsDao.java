@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,9 +20,10 @@ public class HibernateClientsDao implements ClientsDao {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Transactional
     @Override
     public List<Client> getClients() {
-        Session currentSession = sessionFactory.openSession();
+        Session currentSession = sessionFactory.getCurrentSession();
         return currentSession.createCriteria(Client.class).list();
     }
 }
