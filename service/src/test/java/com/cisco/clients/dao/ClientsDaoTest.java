@@ -16,7 +16,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * Date: 08.04.2014
  * Time: 22:00
  */
-@Ignore
+
 public class ClientsDaoTest extends BasicDb {
 
     @SpringBeanByType
