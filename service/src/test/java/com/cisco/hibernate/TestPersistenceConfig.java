@@ -1,6 +1,6 @@
 package com.cisco.hibernate;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

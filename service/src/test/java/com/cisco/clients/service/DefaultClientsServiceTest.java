@@ -1,9 +1,9 @@
-package com.cisco.names.service;
+package com.cisco.clients.service;
 
+import com.cisco.clients.dao.ClientsDao;
+import com.cisco.clients.dao.HibernateClientsDao;
+import com.cisco.clients.dto.Client;
 import com.cisco.config.AppConfig;
-import com.cisco.names.dao.HibernateNamesDao;
-import com.cisco.names.dao.NamesDao;
-import com.cisco.names.dto.Names;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +23,14 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})
-public class DefaultNamesServiceTest {
+public class DefaultClientsServiceTest {
 
     @Autowired
-    private DefaultNamesService namesService;
+    private DefaultClientsService namesService;
 
-    private List<Names> getTestNamesData() {
-        Names name1 = new Names("1", "331", "SPEZVUZAUTOMATIKA", "KHARKOV", "str. Princess Olga 102/43");
-        Names name2 = new Names("2", "332", "SPEZVUZAUTOMATIKA", "KIEV", "str. Geroev Kosmosa 18");
+    private List<Client> getTestNamesData() {
+	    Client name1 = new Client(1, "331", "SPEZVUZAUTOMATIKA", "KHARKOV", "str. Princess Olga 102/43");
+	    Client name2 = new Client(2, "332", "SPEZVUZAUTOMATIKA", "KIEV", "str. Geroev Kosmosa 18");
 
         return Lists.newArrayList(name1, name2);
     }
@@ -39,15 +39,15 @@ public class DefaultNamesServiceTest {
     public void getAllDataReturnsDataCorrectly() throws Exception {
 
         //Arrange
-        NamesDao namesDao = mock(HibernateNamesDao.class);
-        when(namesDao.getAll()).thenReturn(getTestNamesData());
-        namesService.setNamesDao(namesDao);
+        ClientsDao clientsDao = mock(HibernateClientsDao.class);
+        when(clientsDao.getClients()).thenReturn(getTestNamesData());
+        namesService.setClientsDao(clientsDao);
         //Act
-        List<Names> resultData = namesService.getAllData();
+        List<Client> resultData = namesService.getAllData();
 
         //Assert
         assertNotNull("getAllData() result should not be null", resultData);
-        assertEquals(2, resultData.size());
+        assertEquals(3, resultData.size());
         assertEquals("str. Geroev Kosmosa 18", resultData.get(1).getAddress());
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * Time: 21:25
  */
 @Configuration
-@ComponentScan(basePackages = {"com.cisco.prepos"})
+@ComponentScan(basePackages = {"com.cisco"})
 public class AppConfig {
 
 }

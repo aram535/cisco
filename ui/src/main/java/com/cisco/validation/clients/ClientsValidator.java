@@ -1,4 +1,4 @@
-package com.cisco.validation.names;
+package com.cisco.validation.clients;
 
 import org.zkoss.bind.ValidationContext;
 import org.zkoss.bind.validator.AbstractValidator;
@@ -7,7 +7,7 @@ import org.zkoss.bind.validator.AbstractValidator;
  * Created by Alf on 08.04.14.
  */
 
-public class NamesValidator extends AbstractValidator {
+public class ClientsValidator extends AbstractValidator {
 
 	public void validate(ValidationContext ctx) {
 

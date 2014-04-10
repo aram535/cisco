@@ -1,4 +1,4 @@
-package com.cisco.ui.prepos;
+package com.cisco.prepos;
 
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.PreposService;
