@@ -1,0 +1,46 @@
+<window id="win" title="Names" width="640px" border="normal"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.cisco.clients.ClientsViewModel')"
+        validationMessages="@id('vmsgs')">
+    <listbox id="box" multiple="true" rows="5" model="@bind(vm.allClients)" selectedItem="@bind(vm.selectedClientModel)">
+        <listhead sizable="true">
+            <listheader label="Id" sort="auto(clientNumber)" />
+            <listheader label="Client number" sort="auto(clientNumber)" />
+            <listheader label="Name"  sort="auto(name)" />
+            <listheader label="City" sort="auto(city)" />
+            <listheader label="Address"  sort="auto(address)" />
+        </listhead>
+        <template name="model" var="clients">
+            <listitem value="@load(clients)">
+                <listcell label="@bind(clients.id)" />
+                <listcell label="@bind(clients.clientNumber)" />
+                <listcell label="@bind(clients.name)" />
+                <listcell label="@bind(clients.city)" />
+                <listcell label="@bind(clients.address)" />
+            </listitem>
+        </template>
+    </listbox>
+    <groupbox id="mygrp" form="@id('clients') @load(vm.selectedClientModel) @save(vm.selectedClientModel, before='update') @save(vm.newClientModel, before='add') @validator('com.cisco.validation.clients.ClientsValidator')">
+        <caption label="Client`s info" />
+        Client number:
+        <textbox id="txtClientNumber" value="@bind(clients.clientNumber)" />
+        Name:
+        <textbox id="txtName" value="@bind(clients.name)" />
+        City:
+        <textbox id="txtCity" value="@bind(clients.city)" />
+        Address:
+        <textbox id="txtAddress" value="@bind(clients.address)" />
+        <button id="add" label="Add" onClick="@command('add')" />
+        <button id="update" label="Update" onClick="@command('update')"
+                disabled="@load(empty vm.selectedClientModel)" />
+        <button id="delete" label="Delete" onClick="@command('delete')"
+                disabled="@load(empty vm.selectedClientModel)" />
+
+        <hlayout>
+            <label style="color:red" value="@load(vmsgs['clientNumber'])" />
+            <label style="color:red" value="@load(vmsgs['name'])" />
+            <label style="color:red" value="@load(vmsgs['city'])" />
+            <label style="color:red" value="@load(vmsgs['address'])" />
+        </hlayout>
+    </groupbox>
+</window>

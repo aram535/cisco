@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
  * Created by Alf on 05.04.14.
  */
 @Repository
-public class HibernatePrePosDao implements PreposDao {
+public class HibernatePreposDao implements PreposDao {
 
 
     @Override

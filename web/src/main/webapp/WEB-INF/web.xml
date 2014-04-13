@@ -56,7 +56,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/zul/pre_pos.zul</welcome-file>
+        <welcome-file>/zul/index.zul</welcome-file>
     </welcome-file-list>
 
 </web-app>

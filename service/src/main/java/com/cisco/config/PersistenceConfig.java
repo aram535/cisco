@@ -22,7 +22,7 @@ import java.util.Properties;
  * Time: 22:36
  */
 @Configuration
-@ComponentScan(basePackages = {"com.cisco.clients"})
+@ComponentScan(basePackages = {"com.cisco"})
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
 public class PersistenceConfig {

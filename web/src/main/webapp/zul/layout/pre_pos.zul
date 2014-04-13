@@ -1,9 +1,9 @@
 <zk>
     <!--     <style src="/widgets/grid/inline_editing/style.css" /> -->
     <div apply="org.zkoss.bind.BindComposer"
-         viewModel="@id('vmPrePos') @init('com.cisco.prepos.viewmodel.PreposViewModel')">
+         viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')">
         <grid hflex="min" model="@load(vmPrePos.allPrepos)">
-            <columns height="22px">
+            <columns height="22px" sizable="true">
                 <column width="330px" label="Type" />
                 <column width="150px" label="Partner name" align="center"/>
                 <column width="150px" label="Shipping date" align="center" />
