@@ -56,7 +56,7 @@ public class PersistenceConfig {
     @Bean
     public SessionFactory sessionFactory() {
         LocalSessionFactoryBuilder builder = new LocalSessionFactoryBuilder(dataSource());
-        builder.scanPackages("com.cisco.clients");
+        builder.scanPackages("com.cisco");
         builder.addProperties(hibernateProperties());
         return builder.buildSessionFactory();
     }
