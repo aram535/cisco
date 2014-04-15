@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.clients.ClientsViewModel')"
         validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="5" model="@bind(vm.allClients)" selectedItem="@bind(vm.selectedClientModel)">
+    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allClients)" selectedItem="@bind(vm.selectedClientModel)">
         <listhead sizable="true">
             <listheader label="Id" sort="auto(clientNumber)" />
             <listheader label="Client number" sort="auto(clientNumber)" />
@@ -20,7 +20,7 @@
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" form="@id('clients') @load(vm.selectedClientModel) @save(vm.selectedClientModel, before='update') @save(vm.newClientModel, before='add') @validator('com.cisco.validation.clients.ClientsValidator')">
+    <groupbox id="mygrp" form="@id('clients') @load(vm.selectedClientModel) @save(vm.selectedClientModel, before='update') @save(vm.newClientModel, before='add') @validator('com.cisco.clients.ClientsValidator')">
         <caption label="Client`s info" />
         Client number:
         <textbox id="txtClientNumber" value="@bind(clients.clientNumber)" />

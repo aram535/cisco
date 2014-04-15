@@ -11,7 +11,7 @@ import javax.persistence.*;
  * Date: 08.04.2014
  * Time: 21:45
  */
-@Entity
+@Entity(name = "client")
 public class Client {
 
     private long id;

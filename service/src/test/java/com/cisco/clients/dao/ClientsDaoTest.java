@@ -29,16 +29,6 @@ public class ClientsDaoTest extends BasicDb {
         assertThat(clients).containsExactly(createExpectedClient());
     }
 
-	@Test
-	@DataSet("clients.xml")
-	public void thatSaveAddsDataToDb() {
-		Client client = createExpectedClient();
-		clientsDao.save(client);
-
-		List<Client> clients = clientsDao.getClients();
-		assertThat(clients).contains(client);
-	}
-
     private Client createExpectedClient() {
         Client client = new Client();
         client.setId(1L);

@@ -1,4 +1,4 @@
 <vbox vflex="1" hflex="1" align="center" pack="center" spacing="20px" >
 	<image src="/imgs/Ukraine.jpg" />
-	<label value="Путин хуйло лалалала лалала (с)" sclass="head1"/>
+	<label value="Путин хуйло! Ла-ла-ла-ла ла-ла-ла! (с)" sclass="head1"/>
 </vbox>

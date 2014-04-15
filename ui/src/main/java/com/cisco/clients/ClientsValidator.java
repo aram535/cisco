@@ -1,4 +1,4 @@
-package com.cisco.validation.clients;
+package com.cisco.clients;
 
 import org.zkoss.bind.ValidationContext;
 import org.zkoss.bind.validator.AbstractValidator;

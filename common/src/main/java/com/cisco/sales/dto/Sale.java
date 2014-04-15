@@ -12,7 +12,7 @@ import java.util.Date;
  * Date: 14.04.2014
  * Time: 23:28
  */
-@Entity
+@Entity(name = "sale")
 public class Sale {
 
     private long id;

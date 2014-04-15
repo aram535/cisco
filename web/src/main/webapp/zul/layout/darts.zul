@@ -1,0 +1,109 @@
+<window id="win" title="Names" border="normal"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.cisco.darts.DartsViewModel')"
+        validationMessages="@id('vmsgs')">
+    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)">
+        <listhead sizable="true" >
+            <listheader hflex="min" label="Id" sort="auto(id)" />
+            <listheader hflex="min" label="Authorization number" sort="auto(authorizationNumber)"/>
+            <listheader hflex="min" label="Version"  sort="auto(version)" />
+            <listheader hflex="min" label="DistributorInfo" sort="auto(distributorInfo)" />
+            <listheader hflex="min" label="StartDate"  sort="auto(startDate)" />
+            <listheader hflex="min" label="EndDate"  sort="auto(endDate)" />
+            <listheader hflex="min" label="DistiDiscount"  sort="auto(distiDiscount)" />
+            <listheader hflex="min" label="ResellerName"  sort="auto(resellerName)" />
+            <listheader hflex="min" label="ResellerCountry"  sort="auto(resellerCountry)" />
+            <listheader hflex="min" label="ResellerAcct"  sort="auto(resellerAcct)" />
+            <listheader hflex="min" label="EndUserName"  sort="auto(endUserName)" />
+            <listheader hflex="min" label="EndUserCountry"  sort="auto(endUserCountry)" />
+            <listheader hflex="min" label="Quantity"  sort="auto(quantity)" />
+            <listheader hflex="min" label="CiscoSku"  sort="auto(ciscoSku)" />
+            <listheader hflex="min" label="DistiSku"  sort="auto(distiSku)" />
+            <listheader hflex="min" label="ListPrice"  sort="auto(listPrice)" />
+            <listheader hflex="min" label="ClaimUnit"  sort="auto(claimUnit)" />
+            <listheader hflex="min" label="ExtCreditAmt"  sort="auto(extCreditAmt)" />
+            <listheader hflex="min" label="FastTrackPie"  sort="auto(fastTrackPie)" />
+            <listheader hflex="min" label="IpNgnPartnerPricingEm"  sort="auto(ipNgnPartnerPricingEm)" />
+            <listheader hflex="min" label="MdmFulfillment"  sort="auto(mdmFulfillment)" />
+        </listhead>
+        <template name="model" var="darts">
+            <listitem value="@load(darts)">
+                <listcell label="@bind(darts.id)" />
+                <listcell label="@bind(darts.authorizationNumber)" />
+                <listcell label="@bind(darts.version)" />
+                <listcell label="@bind(darts.distributorInfo)" />
+                <listcell label="@bind(darts.startDate)" />
+                <listcell label="@bind(darts.endDate)" />
+                <listcell label="@bind(darts.distiDiscount)" />
+                <listcell label="@bind(darts.resellerName)" />
+                <listcell label="@bind(darts.resellerCountry)" />
+                <listcell label="@bind(darts.resellerAcct)" />
+                <listcell label="@bind(darts.endUserName)" />
+                <listcell label="@bind(darts.endUserCountry)" />
+                <listcell label="@bind(darts.quantity)" />
+                <listcell label="@bind(darts.ciscoSku)" />
+                <listcell label="@bind(darts.distiSku)" />
+                <listcell label="@bind(darts.listPrice)" />
+                <listcell label="@bind(darts.claimUnit)" />
+                <listcell label="@bind(darts.extCreditAmt)" />
+                <listcell label="@bind(darts.fastTrackPie)" />
+                <listcell label="@bind(darts.ipNgnPartnerPricingEm)" />
+                <listcell label="@bind(darts.mdmFulfillment)" />
+            </listitem>
+        </template>
+    </listbox>
+    <groupbox id="mygrp" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
+        <caption label="DART`s info" />
+        AuthorizationNumber:
+        <textbox value="@bind(darts.authorizationNumber)" />
+        Version:
+        <intbox value="@bind(darts.version)" />
+        DistributorInfo:
+        <textbox value="@bind(darts.distributorInfo)" />
+        StartDate:
+        <datebox value="@bind(darts.startDate)" />
+        EndDate:
+        <datebox value="@bind(darts.endDate)" />
+        EesellerName:
+        <textbox value="@bind(darts.resellerName)" />
+        ResellerCountry:
+        <textbox value="@bind(darts.resellerCountry)" />
+        ResellerAcct
+        <intbox value="@bind(darts.resellerAcct)" />
+        EndUserName:
+        <textbox value="@bind(darts.endUserName)" />
+        EndUserCountry:
+        <textbox value="@bind(darts.endUserCountry)" />
+        Quantity
+        <intbox value="@bind(darts.quantity)" />
+        CiscoSku:
+        <textbox value="@bind(darts.ciscoSku)" />
+        DistiSku:
+        <textbox value="@bind(darts.distiSku)" />
+        ListPrice:
+        <textbox value="@bind(darts.listPrice)" />
+        ClaimUnit:
+        <textbox value="@bind(darts.claimUnit)" />
+        ExtCreditAmt:
+        <textbox value="@bind(darts.extCreditAmt)" />
+        FastTrackPie:
+        <textbox value="@bind(darts.fastTrackPie)" />
+        IpNgnPartnerPricingEm:
+        <textbox value="@bind(darts.ipNgnPartnerPricingEm)" />
+        MdmFulfillment:
+        <textbox value="@bind(darts.mdmFulfillment)" />
+
+        <button id="add" label="Add" onClick="@command('add')" />
+        <button id="update" label="Update" onClick="@command('update')"
+                disabled="@load(empty vm.selectedDartModel)" />
+        <button id="delete" label="Delete" onClick="@command('delete')"
+                disabled="@load(empty vm.selectedDartModel)" />
+
+        <hlayout>
+            <label style="color:red" value="@load(vmsgs['authorizationNumber'])" />
+            <label style="color:red" value="@load(vmsgs['version'])" />
+            <label style="color:red" value="@load(vmsgs['distributorInfo'])" />
+            <label style="color:red" value="@load(vmsgs['startDate'])" />
+        </hlayout>
+    </groupbox>
+</window>

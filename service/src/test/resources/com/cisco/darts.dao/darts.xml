@@ -1,0 +1,24 @@
+<!DOCTYPE dataset SYSTEM "../../../../../db-schema/database.dtd">
+<dataset>
+    <DART ID="1"
+    AUTHORIZATION_NUMBER="MDMF-4526117-1403"
+    VERSION="1"
+    DISTRIBUTOR_INFO="ERC"
+    START_DATE="2014-04-14"
+    END_DATE="2014-04-14"
+    DISTI_DISCOUNT="20.20"
+    RESELLER_NAME="ResName"
+    RESELLER_COUNTRY="Ukraine"
+    RESELLER_ACCT="123"
+    END_USER_NAME="EndUserName"
+    END_USER_COUNTRY="Country"
+    QUANTITY="10"
+    CISCO_SKU="CiscoSku"
+    DISTI_SKU="DistiSku"
+    LIST_PRICE="LPrice"
+    CLAIM_UNIT="Unit"
+    EXT_CREDIT_AMT="Amt"
+    FAST_TRACK_PIE="FTpie"
+    IP_NGN_PARTNER_PRICING_EM="INPPE"
+    MDM_FULFILLMENT="Fullfillment" />
+</dataset>
