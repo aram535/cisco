@@ -53,7 +53,7 @@ public class ClientsViewModel {
 	@Command("add")
 	@NotifyChange("allClients")
 	public void add() {
-		//newClientModel.setId(UUID.randomUUID().toString());
+
 		clientsService.save(newClientModel);
 		this.newClientModel = new Client();
 	}

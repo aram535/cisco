@@ -2,7 +2,7 @@
 	id="fnList" 
 	apply="com.cisco.main.SidebarAjaxbasedController">
 	<columns>
-		<column width="36px"/>
+		<column width="66px"/>
 		<column/>
 	</columns>
 	<rows/>

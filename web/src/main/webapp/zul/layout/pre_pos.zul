@@ -5,13 +5,13 @@
         <grid hflex="min" model="@load(vmPrePos.allPrepos)">
             <columns height="22px" sizable="true">
                 <column width="330px" label="Type" />
-                <column width="150px" label="Partner name" align="center"/>
+                <column width="150px" label="Partner name" align="center" />
                 <column width="150px" label="Shipping date" align="center" />
             </columns>
             <template name="model">
                 <row>
                     <textbox inplace="true" value="@bind(each.type)" width="99%"/>
-                    <textbox inplace="true" value="@bind(each.partnerName)" width="99%"/>
+                    <textbox inplace="true" value="@bind(each.partnerName)" width="99%" disabled="true"/>
                     <datebox inplace="true" value="@bind(each.shippedDate)" width="99%"/>
                 </row>
             </template>

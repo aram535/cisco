@@ -21,24 +21,23 @@ public class DefaultClientsService implements ClientsService {
 
     @Override
     public List<Client> getAllData() {
-        //return clientsDao.getAll();
-
-	    return serviceData;
+        return clientsDao.getClients();
+	    //return serviceData;
     }
 
     @Override
-    public void save(Client name) {
-	    serviceData.add(name);
+    public void save(Client client) {
+	    clientsDao.save(client);
     }
 
     @Override
-    public void update(Client nameList) {
-
+    public void update(Client client) {
+	    clientsDao.update(client);
     }
 
 	@Override
-	public void delete(Client selectedClientModel) {
-
+	public void delete(Client client) {
+		clientsDao.delete(client);
 	}
 
 

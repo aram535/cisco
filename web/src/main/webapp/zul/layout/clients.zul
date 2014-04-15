@@ -1,4 +1,4 @@
-<window id="win" title="Names" width="640px" border="normal"
+<window id="win" title="Names" width="840px" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.clients.ClientsViewModel')"
         validationMessages="@id('vmsgs')">

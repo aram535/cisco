@@ -21,8 +21,8 @@ public class SidebarPageConfigAjaxBasedImpl implements SidebarPageConfig {
 	HashMap<String,SidebarPage> pageMap = new LinkedHashMap<String,SidebarPage>();
 	public SidebarPageConfigAjaxBasedImpl(){		
 
-		pageMap.put("fn1",new SidebarPage("fn1","Clients","/imgs/fn.png","/zul/layout/clients.zul"));
-		pageMap.put("fn2",new SidebarPage("fn2","Prepos","/imgs/fn.png","/zul/layout/pre_pos.zul"));
+		pageMap.put("fn1",new SidebarPage("fn1","Clients","/imgs/table.png","/zul/layout/clients.zul"));
+		pageMap.put("fn2",new SidebarPage("fn2","Prepos","/imgs/table.png","/zul/layout/pre_pos.zul"));
 
 	}
 	

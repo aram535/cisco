@@ -11,4 +11,9 @@ import java.util.List;
  */
 public interface ClientsDao {
     List<Client> getClients();
+	void save(Client client);
+	void update(Client client);
+
+	void delete(Client client);
+
 }
