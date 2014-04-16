@@ -1,7 +1,5 @@
 <zk>
 	<borderlayout hflex="1" vflex="1" apply="com.cisco.main.BookmarkChangeController">
-		<north height="100px" border="none" >
-		</north>
 		<west width="200px" border="none" collapsible="true" splittable="true" minsize="150">
 			<include src="/zul/ajaxbased/sidebar/sidebar.zul"/>
 		</west>

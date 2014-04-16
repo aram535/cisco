@@ -47,7 +47,7 @@ public class DefaultClientsServiceTest {
 
         //Assert
         assertNotNull("getAllData() result should not be null", resultData);
-        assertEquals(3, resultData.size());
+        assertEquals(23, resultData.size());
         assertEquals("str. Geroev Kosmosa 18", resultData.get(1).getAddress());
     }
 }

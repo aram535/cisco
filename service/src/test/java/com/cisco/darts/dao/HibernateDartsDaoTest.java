@@ -26,7 +26,7 @@ public class HibernateDartsDaoTest extends BasicDb {
 	public void thatGetDartsReturnsAllFromDb() throws Exception {
 		List<Dart> darts = dartsDao.getDarts();
 		assertThat(darts).isNotEmpty();
-		assertThat(darts).containsExactly(createExpectedDart());
+		assertThat(darts).contains(createExpectedDart());
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class HibernateDartsDaoTest extends BasicDb {
 		dartsDao.update(dart);
 
 		List<Dart> darts = dartsDao.getDarts();
-		assertThat(darts).containsExactly(dart);
+		assertThat(darts).contains(dart);
 
 	}
 

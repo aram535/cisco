@@ -14,7 +14,7 @@ import java.util.Date;
 public class Dart {
 
 	private long id;
-	private String authorizationNumber;
+	private String authorizationNumber ;
 	private int version;
 	private String distributorInfo;
 	private Date startDate;
