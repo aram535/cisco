@@ -12,11 +12,11 @@ import org.unitils.spring.annotation.SpringApplicationContext;
  * Date: 08.04.2014
  * Time: 20:33
  */
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 public class BasicDb {
 
     @SpringApplicationContext
     public ConfigurableApplicationContext createApplicationContext() {
         return new AnnotationConfigApplicationContext(PersistenceConfig.class, TestPersistenceConfig.class);
     }
+
 }

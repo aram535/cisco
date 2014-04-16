@@ -1,14 +1,14 @@
 package com.cisco.darts.dto;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class DartBuilder {
 	private long id;
 	private String authorizationNumber;
 	private int version;
 	private String distributorInfo;
-	private Date startDate;
-	private Date endDate;
+	private Timestamp startDate;
+	private Timestamp endDate;
 	private double distiDiscount;
 	private String resellerName;
 	private String resellerCountry;
@@ -49,12 +49,12 @@ public class DartBuilder {
 		return this;
 	}
 
-	public DartBuilder setStartDate(Date startDate) {
+	public DartBuilder setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
 		return this;
 	}
 
-	public DartBuilder setEndDate(Date endDate) {
+	public DartBuilder setEndDate(Timestamp endDate) {
 		this.endDate = endDate;
 		return this;
 	}

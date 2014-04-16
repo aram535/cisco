@@ -1,5 +1,6 @@
 package com.cisco.sales.dto;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ import java.util.Date;
 public class SaleBuilder {
 
     private long id;
-    private Date shippedDate;
+    private Timestamp shippedDate;
     private String shippedBillNumber;
     private String clientName;
     private String clientNumber;
@@ -35,7 +36,7 @@ public class SaleBuilder {
         return this;
     }
 
-    public SaleBuilder shippedDate(Date shippedDate) {
+    public SaleBuilder shippedDate(Timestamp shippedDate) {
         this.shippedDate = shippedDate;
         return this;
     }

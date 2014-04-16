@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Date;
 public class Sale {
 
     private long id;
-    private Date shippedDate;
+    private Timestamp shippedDate;
     private String shippedBillNumber;
     private String clientName;
     private String clientNumber;
@@ -33,7 +34,7 @@ public class Sale {
 
     }
 
-    public Sale(long id, Date shippedDate, String shippedBillNumber, String clientName, String clientNumber, String clientZip, String partNumber, int quantity, String serials, double price, String ciscoType, String comment, Status status) {
+    public Sale(long id, Timestamp shippedDate, String shippedBillNumber, String clientName, String clientNumber, String clientZip, String partNumber, int quantity, String serials, double price, String ciscoType, String comment, Status status) {
         this.id = id;
         this.shippedDate = shippedDate;
         this.shippedBillNumber = shippedBillNumber;
@@ -120,7 +121,7 @@ public class Sale {
         this.id = id;
     }
 
-    public void setShippedDate(Date shippedDate) {
+    public void setShippedDate(Timestamp shippedDate) {
         this.shippedDate = shippedDate;
     }
 

@@ -4,7 +4,7 @@
         validationMessages="@id('vmsgs')">
     <listbox id="box" multiple="true" rows="10" model="@bind(vm.allClients)" selectedItem="@bind(vm.selectedClientModel)">
         <listhead sizable="true">
-            <listheader label="Id" sort="auto(clientNumber)" />
+            <listheader label="Id" sort="auto(id)" />
             <listheader label="Client number" sort="auto(clientNumber)" />
             <listheader label="Name"  sort="auto(name)" />
             <listheader label="City" sort="auto(city)" />

@@ -17,22 +17,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class SidebarPageConfigAjaxBasedImpl implements SidebarPageConfig {
-	
-	HashMap<String,SidebarPage> pageMap = new LinkedHashMap<String,SidebarPage>();
-	public SidebarPageConfigAjaxBasedImpl(){		
 
-		pageMap.put("fn1",new SidebarPage("fn1","Clients","/imgs/table.png","/zul/layout/clients.zul"));
-		pageMap.put("fn2",new SidebarPage("fn2","DARTs","/imgs/table.png","/zul/layout/darts.zul"));
-		pageMap.put("fn3",new SidebarPage("fn3","Prepos","/imgs/table.png","/zul/layout/pre_pos.zul"));
+    HashMap<String, SidebarPage> pageMap = new LinkedHashMap<String, SidebarPage>();
 
-	}
-	
-	public List<SidebarPage> getPages(){
-		return new ArrayList<SidebarPage>(pageMap.values());
-	}
-	
-	public SidebarPage getPage(String name){
-		return pageMap.get(name);
-	}
-	
+    public SidebarPageConfigAjaxBasedImpl() {
+
+        pageMap.put("fn1", new SidebarPage("fn1", "Clients", "/imgs/table.png", "/zul/layout/clients.zul"));
+        pageMap.put("fn2", new SidebarPage("fn2", "DARTs", "/imgs/table.png", "/zul/layout/darts.zul"));
+        pageMap.put("fn3", new SidebarPage("fn3", "Prepos", "/imgs/table.png", "/zul/layout/pre_pos.zul"));
+        pageMap.put("fn4", new SidebarPage("fn4", "Sales", "/imgs/table.png", "/zul/layout/sales.zul"));
+
+    }
+
+    public List<SidebarPage> getPages() {
+        return new ArrayList<SidebarPage>(pageMap.values());
+    }
+
+    public SidebarPage getPage(String name) {
+        return pageMap.get(name);
+    }
+
 }

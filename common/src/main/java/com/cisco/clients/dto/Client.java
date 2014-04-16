@@ -20,19 +20,19 @@ public class Client {
     private String city;
     private String address;
 
-	public Client() {
-	}
+    public Client() {
+    }
 
-	public Client(long id, String clientNumber, String name, String city, String address) {
-		this.id = id;
-		this.clientNumber = clientNumber;
-		this.name = name;
-		this.city = city;
-		this.address = address;
-	}
+    public Client(long id, String clientNumber, String name, String city, String address) {
+        this.id = id;
+        this.clientNumber = clientNumber;
+        this.name = name;
+        this.city = city;
+        this.address = address;
+    }
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
