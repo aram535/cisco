@@ -1,5 +1,5 @@
 CREATE TABLE sale (
-  id         BIGINT NOT NULL PRIMARY KEY,
+  id         BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   shipped_date      DATE,
   shipped_bill_number       VARCHAR(1000),
   client_name       VARCHAR(1000),
