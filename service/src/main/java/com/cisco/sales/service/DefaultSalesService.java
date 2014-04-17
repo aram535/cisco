@@ -9,7 +9,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,15 +20,15 @@ import static com.cisco.sales.dto.Sale.Status;
  * Time: 23:59
  */
 @Service("salesService")
-public class CachingSalesService implements SalesService {
+public class DefaultSalesService implements SalesService {
 
     @Autowired
     private SalesDao salesDao;
 
-    private List<Sale> sales = Lists.newArrayList();
-
     @Override
     public List<Sale> getSales(final Status... statuses) {
+
+        List sales = salesDao.getAll();
 
         if (ArrayUtils.isEmpty(statuses)) {
             return Lists.newArrayList(sales);
@@ -43,10 +42,5 @@ public class CachingSalesService implements SalesService {
             }
         });
         return Lists.newArrayList(filteredSales);
-    }
-
-    @PostConstruct
-    public void fetchSales() {
-	    sales = salesDao.getAll();
     }
 }

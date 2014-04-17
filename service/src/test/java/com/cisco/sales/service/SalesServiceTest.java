@@ -36,7 +36,7 @@ public class SalesServiceTest {
     private Sale waitingSale;
 
     @InjectMocks
-    private SalesService salesService = new CachingSalesService();
+    private SalesService salesService = new DefaultSalesService();
 
     @Mock
     private SalesDao salesDao;
@@ -45,7 +45,6 @@ public class SalesServiceTest {
     public void init() {
         initExpectedSalesListInDb();
         when(salesDao.getAll()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale, waitingSale));
-        fetchSalesFromDao();
     }
 
     @Test
@@ -82,7 +81,6 @@ public class SalesServiceTest {
     @Test
     public void thatReturnsEmptyListIfNoOccurrencesWithInputArguments() {
         when(salesDao.getAll()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale));
-        fetchSalesFromDao();
         List<Sale> sales = salesService.getSales(WAITING);
         assertThat(sales).isNotNull().isEmpty();
     }
@@ -103,7 +101,4 @@ public class SalesServiceTest {
 
     }
 
-    private void fetchSalesFromDao() {
-        ((CachingSalesService) salesService).fetchSales();
-    }
 }
