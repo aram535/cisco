@@ -51,7 +51,7 @@ public class Sale {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     public long getId() {
         return id;
     }

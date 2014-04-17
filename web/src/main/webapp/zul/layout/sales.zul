@@ -1,33 +1,33 @@
-<window id="win" title="Sales" width="840px" border="normal"
+<window id="sales" title="Sales" width="1000px" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.sales.SalesViewModel')"
         validationMessages="@id('vmsgs')">
     <listbox id="box" multiple="true" rows="10" model="@load(vm.notProcessedSales)">
         <listhead sizable="true">
-            <listheader label="Shipped date" sort="auto(shippedDate)" />
-            <listheader label="Client name" sort="auto(clientName)" />
-            <listheader label="Client number"  sort="auto(clientNumber)" />
-            <listheader label="Client zip" sort="auto(clientZip)" />
-            <listheader label="PN"  sort="auto(partNumber)" />
-            <listheader label="Quantity"  sort="auto(quantity)" />
-            <listheader label="Serials"  sort="auto(serials)" />
-            <listheader label="Price"  sort="auto(price)" />
-            <listheader label="Cisco Type"  sort="auto(ciscoType)" />
-            <listheader label="Comment"  sort="auto(comment)" />
+            <listheader label="Shipped date" sort="auto(shippedDate)"/>
+            <listheader label="Client name" sort="auto(clientName)"/>
+            <listheader label="Client number" sort="auto(clientNumber)"/>
+            <listheader label="Client zip" sort="auto(clientZip)"/>
+            <listheader label="PN" sort="auto(partNumber)"/>
+            <listheader label="Quantity" sort="auto(quantity)"/>
+            <listheader label="Serials" sort="auto(serials)"/>
+            <listheader label="Price" sort="auto(price)"/>
+            <listheader label="Cisco Type" sort="auto(ciscoType)"/>
+            <listheader label="Comment" sort="auto(comment)"/>
         </listhead>
 
         <template name="model" var="sale">
             <listitem value="@load(sale)">
-                <listcell label="@load(sale.shippedDate)" />
-                <listcell label="@load(sale.clientName)" />
-                <listcell label="@load(sale.clientNumber)" />
-                <listcell label="@load(sale.clientZip)" />
-                <listcell label="@load(sale.partNumber)" />
-                <listcell label="@load(sale.quantity)" />
-                <listcell label="@load(sale.serials)" />
-                <listcell label="@load(sale.price)" />
-                <listcell label="@load(sale.ciscoType)" />
-                <listcell label="@load(sale.comment)" />
+                <listcell label="@load(sale.shippedDate)"/>
+                <listcell label="@load(sale.clientName)"/>
+                <listcell label="@load(sale.clientNumber)"/>
+                <listcell label="@load(sale.clientZip)"/>
+                <listcell label="@load(sale.partNumber)"/>
+                <listcell label="@load(sale.quantity)"/>
+                <listcell label="@load(sale.serials)"/>
+                <listcell label="@load(sale.price)"/>
+                <listcell label="@load(sale.ciscoType)"/>
+                <listcell label="@load(sale.comment)"/>
             </listitem>
         </template>
     </listbox>
