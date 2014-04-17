@@ -16,12 +16,16 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class SalesViewModel {
 
-    @WireVariable
+	@WireVariable
     private SalesService salesService;
 
     private List<Sale> notProcessedSales;
 
-    public List<Sale> getNotProcessedSales() {
+	public void setSalesService(SalesService salesService) {
+		this.salesService = salesService;
+	}
+
+	public List<Sale> getNotProcessedSales() {
         notProcessedSales = salesService.getSales();
         return notProcessedSales;
     }

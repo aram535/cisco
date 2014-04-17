@@ -20,7 +20,7 @@ import static com.cisco.sales.dto.Sale.Status;
  * Date: 15.04.2014
  * Time: 23:59
  */
-@Service
+@Service("salesService")
 public class CachingSalesService implements SalesService {
 
     @Autowired
@@ -47,6 +47,6 @@ public class CachingSalesService implements SalesService {
 
     @PostConstruct
     public void fetchSales() {
-        sales = salesDao.getAll();
+	    sales = salesDao.getAll();
     }
 }
