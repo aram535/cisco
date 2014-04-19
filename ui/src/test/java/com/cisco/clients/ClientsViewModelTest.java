@@ -1,6 +1,5 @@
-package com.cisco.names;
+package com.cisco.clients;
 
-import com.cisco.clients.ClientsViewModel;
 import com.cisco.clients.dto.Client;
 import com.cisco.clients.service.ClientsService;
 import com.cisco.clients.service.DefaultClientsService;
@@ -35,7 +34,7 @@ public class ClientsViewModelTest {
 
 		//Arrange
 		ClientsService mockService = mock(DefaultClientsService.class);
-		when(mockService.getAllData()).thenReturn(getTestNamesData());
+		when(mockService.getClients()).thenReturn(getTestNamesData());
 		clientsViewModel.setClientsService(mockService);
 		//Act
 		List<Client> resultData = clientsViewModel.getAllClients();

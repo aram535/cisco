@@ -46,7 +46,7 @@ public class DartsViewModel {
 	}
 
 	public List<Dart> getAllDarts() {
-		allDarts = dartsService.getAllDarts();
+		allDarts = dartsService.getDarts();
 		return allDarts;
 	}
 

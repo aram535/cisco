@@ -17,7 +17,7 @@ public class DefaultClientsService implements ClientsService {
     ClientsDao clientsDao;
 
     @Override
-    public List<Client> getAllData() {
+    public List<Client> getClients() {
         return clientsDao.getClients();
     }
 

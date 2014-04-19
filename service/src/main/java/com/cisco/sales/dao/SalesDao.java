@@ -10,5 +10,5 @@ import java.util.List;
  * Time: 23:26
  */
 public interface SalesDao {
-    List<Sale> getAll();
+    List<Sale> getSales();
 }

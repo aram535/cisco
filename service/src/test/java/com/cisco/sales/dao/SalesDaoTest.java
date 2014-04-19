@@ -8,12 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import java.sql.Timestamp;
-import java.util.List;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * User: Rost
@@ -28,9 +26,9 @@ public class SalesDaoTest extends BasicDb {
 
     @Test
     @DataSet("sales.xml")
+    @ExpectedDataSet("sales-getSales-result.xml")
     public void thatReturnsAllRecordsFromDb() {
-        List<Sale> sales = salesDao.getAll();
-        assertThat(sales).isNotEmpty().contains(createExpectedSales());
+        salesDao.getSales();
     }
 
     private Sale[] createExpectedSales() {

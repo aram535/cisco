@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class DefaultClientsServiceTest {
 
     //@Autowired
-    private DefaultClientsService namesService = new DefaultClientsService();
+    private DefaultClientsService clientsService = new DefaultClientsService();
 
     private List<Client> getTestNamesData() {
 	    Client name1 = new Client(1, "331", "SPEZVUZAUTOMATIKA", "KHARKOV", "str. Princess Olga 102/43");
@@ -36,12 +36,12 @@ public class DefaultClientsServiceTest {
         //Arrange
         ClientsDao clientsDao = mock(HibernateClientsDao.class);
         when(clientsDao.getClients()).thenReturn(getTestNamesData());
-        namesService.setClientsDao(clientsDao);
+	    clientsService.setClientsDao(clientsDao);
         //Act
-        List<Client> resultData = namesService.getAllData();
+        List<Client> resultData = clientsService.getClients();
 
         //Assert
-        assertNotNull("getAllData() result should not be null", resultData);
+        assertNotNull("getClients() result should not be null", resultData);
         assertEquals(2, resultData.size());
         assertEquals("str. Geroev Kosmosa 18", resultData.get(1).getAddress());
     }

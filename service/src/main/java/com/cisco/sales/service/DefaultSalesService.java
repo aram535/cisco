@@ -28,7 +28,7 @@ public class DefaultSalesService implements SalesService {
     @Override
     public List<Sale> getSales(final Status... statuses) {
 
-        List sales = salesDao.getAll();
+        List sales = salesDao.getSales();
 
         if (ArrayUtils.isEmpty(statuses)) {
             return Lists.newArrayList(sales);

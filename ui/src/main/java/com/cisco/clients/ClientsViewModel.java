@@ -46,7 +46,7 @@ public class ClientsViewModel {
 	}
 
 	public List<Client> getAllClients() {
-		allClients = clientsService.getAllData();
+		allClients = clientsService.getClients();
 		return allClients;
 	}
 

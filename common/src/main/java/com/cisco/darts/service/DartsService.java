@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface DartsService {
 
-	List<Dart> getAllDarts();
+	List<Dart> getDarts();
 
 	void save(Dart dart);
 

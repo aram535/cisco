@@ -22,7 +22,7 @@ public class HibernateSalesDao implements SalesDao {
 
     @Transactional
     @Override
-    public List<Sale> getAll() {
+    public List<Sale> getSales() {
         Session currentSession = sessionFactory.getCurrentSession();
         return currentSession.createCriteria(Sale.class).list();
     }

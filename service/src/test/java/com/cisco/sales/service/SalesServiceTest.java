@@ -44,7 +44,7 @@ public class SalesServiceTest {
     @Before
     public void init() {
         initExpectedSalesListInDb();
-        when(salesDao.getAll()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale, waitingSale));
+        when(salesDao.getSales()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale, waitingSale));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class SalesServiceTest {
 
     @Test
     public void thatReturnsEmptyListIfNoOccurrencesWithInputArguments() {
-        when(salesDao.getAll()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale));
+        when(salesDao.getSales()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale));
         List<Sale> sales = salesService.getSales(WAITING);
         assertThat(sales).isNotNull().isEmpty();
     }

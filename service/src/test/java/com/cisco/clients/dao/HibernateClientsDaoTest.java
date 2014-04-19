@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import java.util.List;
@@ -25,29 +26,26 @@ public class HibernateClientsDaoTest extends BasicDb {
     @DataSet("clients.xml")
     public void thatGetClientsReturnsAllFromDb() {
         List<Client> clients = clientsDao.getClients();
-        assertThat(clients).isNotEmpty();
-        assertThat(clients).containsExactly(createExpectedClient());
+
+	    assertThat(clients).isNotEmpty();
+	    assertThat(clients.size()).isEqualTo(3);
     }
 
     @Test
     @DataSet("clients.xml")
+    @ExpectedDataSet("clients-save-result.xml")
     public void thatSaveAddsDataToDb() {
         Client client = createNewClient();
         clientsDao.save(client);
-
-        List<Client> clients = clientsDao.getClients();
-        assertThat(clients).contains(client);
     }
 
     @Test
     @DataSet("clients.xml")
+    @ExpectedDataSet("clients-update-result.xml")
     public void thatUpdateAmmendsDataInDb() throws Exception {
         Client client = createExpectedClient();
         client.setCity("Kharkov");
         clientsDao.update(client);
-
-        List<Client> clients = clientsDao.getClients();
-        assertThat(clients).containsExactly(client);
     }
 
     @Test
@@ -56,16 +54,14 @@ public class HibernateClientsDaoTest extends BasicDb {
         Client client = createExpectedClient();
         clientsDao.delete(client);
 
-        List<Client> clients = clientsDao.getClients();
-        assertThat(clients).isEmpty();
-
+	    assertThat(clientsDao.getClients().size()).isEqualTo(2);
     }
 
     private Client createExpectedClient() {
         Client client = new Client();
         client.setId(1L);
         client.setClientNumber("1");
-        client.setName("client");
+        client.setName("A");
         client.setCity("Kiev");
         client.setAddress("Bazhana av. 36 - 267");
         return client;
@@ -73,9 +69,8 @@ public class HibernateClientsDaoTest extends BasicDb {
 
     private Client createNewClient() {
         Client client = new Client();
-        client.setId(2L);
-        client.setClientNumber("2");
-        client.setName("client");
+        client.setClientNumber("21");
+        client.setName("D");
         client.setCity("Odessa");
         client.setAddress("str.Street 6b");
         return client;

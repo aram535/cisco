@@ -3,4 +3,5 @@
     <CLIENT ID="1" CLIENT_NUMBER="1" NAME="A" CITY="Kiev" ADDRESS="Bazhana av. 36 - 267"/>
     <CLIENT ID="2" CLIENT_NUMBER="10" NAME="B" CITY="Kiev" ADDRESS="Bazhana av. 36 - 267"/>
     <CLIENT ID="3" CLIENT_NUMBER="21" NAME="C" CITY="Kiev" ADDRESS="Bazhana av. 36 - 267"/>
+    <CLIENT CLIENT_NUMBER="21" NAME="D" CITY="Odessa" ADDRESS="str.Street 6b"/>
 </dataset>

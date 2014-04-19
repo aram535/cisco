@@ -17,7 +17,7 @@ public class DefaultDartsService implements DartsService {
 	DartsDao dartsDao;
 
 	@Override
-	public List<Dart> getAllDarts() {
+	public List<Dart> getDarts() {
 		return dartsDao.getDarts();
 	}
 

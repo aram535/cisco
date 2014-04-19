@@ -1,0 +1,62 @@
+<window id="win" title="Names" width="840px" border="normal"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.cisco.promos.PromosViewModel')"
+        validationMessages="@id('vmsgs')">
+    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)">
+        <listhead sizable="true">
+            <listheader label="Id" sort="auto(id)" />
+            <listheader label="Part nubmer" sort="auto(partNumber)" />
+            <listheader label="Description"  sort="auto(description)" />
+            <listheader label="Discount" sort="auto(discount)" />
+            <listheader label="Name"  sort="auto(name)" />
+            <listheader label="Gpl"  sort="auto(gpl)" />
+            <listheader label="Code"  sort="auto(code)" />
+            <listheader label="Claim per unit"  sort="auto(claimPerUnit)" />
+            <listheader label="Version"  sort="auto(version)" />
+        </listhead>
+        <template name="model" var="promos">
+            <listitem value="@load(promos)">
+                <listcell label="@bind(promos.id)" />
+                <listcell label="@bind(promos.partNumber)" />
+                <listcell label="@bind(promos.description)" />
+                <listcell label="@bind(promos.discount)" />
+                <listcell label="@bind(promos.name)" />
+                <listcell label="@bind(promos.gpl)" />
+                <listcell label="@bind(promos.code)" />
+                <listcell label="@bind(promos.claimPerUnit)" />
+                <listcell label="@bind(promos.version)" />
+            </listitem>
+        </template>
+    </listbox>
+    <groupbox id="mygrp" form="@id('promos') @load(vm.selectedPromoModel) @save(vm.selectedPromoModel, before='update') @save(vm.newPromoModel, before='add')">
+        <caption label="Promo`s info" />
+        Part nubmer:
+        <textbox value="@bind(promos.partNumber)" />
+        Description:
+        <textbox value="@bind(promos.description)" />
+        Discount:
+        <doublebox value="@bind(promos.discount)" />
+        Name:
+        <textbox value="@bind(promos.name)" />
+        Gpl:
+        <intbox value="@bind(promos.gpl)" />
+        Code:
+        <textbox value="@bind(promos.code)" />
+        Claim per unit:
+        <doublebox value="@bind(promos.claimPerUnit)" />
+        Version:
+        <intbox id="txtAddress" value="@bind(promos.version)" />
+        <button id="add" label="Add" onClick="@command('add')" />
+        <button id="update" label="Update" onClick="@command('update')"
+                disabled="@load(empty vm.selectedPromoModel)" />
+        <button id="delete" label="Delete" onClick="@command('delete')"
+                disabled="@load(empty vm.selectedPromoModel)" />
+
+       <!-- <hlayout>
+            <label style="color:red" value="@load(vmsgs['promoNumber'])" />
+            <label style="color:red" value="@load(vmsgs['name'])" />
+            <label style="color:red" value="@load(vmsgs['city'])" />
+            <label style="color:red" value="@load(vmsgs['address'])" />
+        </hlayout>-->
+    </groupbox>
+</window>

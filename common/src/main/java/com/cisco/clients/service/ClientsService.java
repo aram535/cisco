@@ -10,11 +10,11 @@ import java.util.List;
  */
 public interface ClientsService {
 
-    public List<Client> getAllData();
+    public List<Client> getClients();
 
-    public void save(Client name);
+    public void save(Client client);
 
-    public void update(Client nameList);
+    public void update(Client client);
 
-	public void delete(Client selectedClientModel);
+	public void delete(Client client);
 }
