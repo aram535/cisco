@@ -1,9 +1,8 @@
-<grid hflex="1" vflex="1" sclass="sidebar" 
+<grid hflex="1" vflex="min" sclass="sidebar"
 	id="fnList" 
 	apply="com.cisco.main.SidebarAjaxbasedController">
 	<columns>
-		<column width="66px"/>
-		<column/>
+
 	</columns>
 	<rows/>
 </grid>

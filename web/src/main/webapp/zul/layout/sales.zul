@@ -1,4 +1,4 @@
-<window id="sales" title="Sales" width="1000px" border="normal"
+<window id="sales" title="Sales" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.sales.SalesViewModel')"
         validationMessages="@id('vmsgs')">

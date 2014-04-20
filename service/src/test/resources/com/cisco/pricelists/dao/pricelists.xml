@@ -1,0 +1,5 @@
+<!DOCTYPE dataset SYSTEM "../../../../../db-schema/database.dtd">
+<dataset>
+    <PRICELIST ID="1" PART_NUMBER="SPA112" DESCRIPTION="2 Port Phone Adapter" GPL="69" WPL="43.47" DISCOUNT="37"/>
+    <PRICELIST ID="2" PART_NUMBER="SPA113" DESCRIPTION="3 Port Phone Adapter" GPL="69" WPL="43.47" DISCOUNT="37"/>
+</dataset>

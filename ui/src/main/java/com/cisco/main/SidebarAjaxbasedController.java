@@ -35,27 +35,27 @@ public class SidebarAjaxbasedController extends SelectorComposer<Component> {
 		super.doAfterCompose(comp);
 		
 		//to initial view after view constructed.
-		Rows rows = fnList.getRows();
+		Columns columns = fnList.getColumns();
 		
 		for(SidebarPage page:pageConfig.getPages()){
-			Row row = constructSidebarRow(page.getName(),page.getLabel(),page.getIconUri(),page.getUri());
-			rows.appendChild(row);
+			Column column = constructSidebarColumn(page.getName(),page.getLabel(),page.getIconUri(),page.getUri());
+			columns.appendChild(column);
 		}		
 	}
 
-	private Row constructSidebarRow(final String name,String label, String imageSrc, final String locationUri) {
+	private Column constructSidebarColumn(final String name,String label, String imageSrc, final String locationUri) {
 		
 		//construct component and hierarchy
-		Row row = new Row();
+		Column column = new Column();
 		Image image = new Image(imageSrc);
 		Label lab = new Label(label);
 		
-		row.appendChild(image);
-		row.appendChild(lab);
+		column.appendChild(image);
+		column.appendChild(lab);
 		
 		//set style attribute
-		row.setSclass("sidebar-fn");
-		
+		column.setSclass("sidebar-fn");
+		column.setHeight(image.getHeight());
 		//new and register listener for events
 		EventListener<Event> onActionListener = new SerializableEventListener<Event>(){
 			private static final long serialVersionUID = 1L;
@@ -63,7 +63,7 @@ public class SidebarAjaxbasedController extends SelectorComposer<Component> {
 			public void onEvent(Event event) throws Exception {
 				//redirect current url to new location
 				if(locationUri.startsWith("http")){
-					//open a new browser tab
+					//open a new bcolumnser tab
 					Executions.getCurrent().sendRedirect(locationUri);
 				}else{
 					//use iterable to find the first include only
@@ -79,9 +79,9 @@ public class SidebarAjaxbasedController extends SelectorComposer<Component> {
 				}
 			}
 		};		
-		row.addEventListener(Events.ON_CLICK, onActionListener);
+		column.addEventListener(Events.ON_CLICK, onActionListener);
 
-		return row;
+		return column;
 	}
 	
 }

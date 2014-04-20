@@ -1,8 +1,8 @@
 <zk>
 	<borderlayout hflex="1" vflex="1" apply="com.cisco.main.BookmarkChangeController">
-		<west width="200px" border="none" collapsible="true" splittable="true" minsize="150">
+		<north border="none" collapsible="true" splittable="true" flex="true" height="100px" vflex="min">
 			<include src="/zul/ajaxbased/sidebar/sidebar.zul"/>
-		</west>
+		</north>
 		<center id="mainContent" autoscroll="true" border="none" self="@insert(content)">
 			<!-- the main content will be insert to here -->
 		</center>
