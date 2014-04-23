@@ -1,5 +1,7 @@
 package com.cisco.prepos.dto;
 
+import java.sql.Timestamp;
+
 /**
  * User: Rost
  * Date: 06.04.2014
@@ -23,9 +25,8 @@ public class PreposBuilder {
     private String secondPromo;
     private String endUser;
     private String clientNumber;
-    private long shippedDate;
+    private Timestamp shippedDate;
     private String shippedBillNumber;
-    private String sales;
     private String comment;
     private String serials;
     private int zip;
@@ -118,18 +119,13 @@ public class PreposBuilder {
         return this;
     }
 
-    public PreposBuilder shippedDate(long shippedDate) {
+    public PreposBuilder shippedDate(Timestamp shippedDate) {
         this.shippedDate = shippedDate;
         return this;
     }
 
     public PreposBuilder shippedBillNumber(String shippedBillNumber) {
         this.shippedBillNumber = shippedBillNumber;
-        return this;
-    }
-
-    public PreposBuilder sales(String sales) {
-        this.sales = sales;
         return this;
     }
 
@@ -149,7 +145,7 @@ public class PreposBuilder {
     }
 
     public Prepos build() {
-        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, sales, comment, serials, zip);
+        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip);
         return prepos;
     }
 }

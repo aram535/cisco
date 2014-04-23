@@ -56,6 +56,7 @@ public class DartsViewModel {
 
 		dartsService.save(newDartModel);
 		this.newDartModel = new Dart();
+
 	}
 
 	@Command("update")
@@ -74,4 +75,6 @@ public class DartsViewModel {
 			this.selectedDartModel = null;
 		}
 	}
+
+
 }

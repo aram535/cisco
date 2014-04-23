@@ -1,14 +1,15 @@
 package com.cisco.prepos.services;
 
-import com.cisco.prepos.dao.PreposDao;
+import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.dto.PreposBuilder;
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
 public class DefaultPreposService implements PreposService {
 
     @Autowired
-    private PreposDao preposDao;
+    private PreposesDao preposesDao;
 
     private List<Prepos> testPrePosData = Lists.newArrayList();
 
@@ -40,12 +41,15 @@ public class DefaultPreposService implements PreposService {
 
     @PostConstruct
     public void init() {
+	    long millisOfSomeDate = new DateTime(2014, 3, 14, 0, 0, 0, 0).getMillis();
+	    Timestamp someDate = new Timestamp(millisOfSomeDate);
+
         PreposBuilder builder = PreposBuilder.builder();
-        Prepos prepos = builder.type("Type").partnerName("Some partner").shippedDate(new Date().getTime()).build();
+        Prepos prepos = builder.type("Type").partnerName("Some partner").shippedDate(someDate).build();
         testPrePosData.add(prepos);
     }
 
-    public void setPreposDao(PreposDao preposDao) {
-        this.preposDao = preposDao;
+    public void setPreposesDao(PreposesDao preposesDao) {
+        this.preposesDao = preposesDao;
     }
 }

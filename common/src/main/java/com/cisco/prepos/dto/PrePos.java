@@ -4,9 +4,14 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.*;
+import java.sql.Timestamp;
+
 /**
  * Created by Alf on 05.04.14.
  */
+
+@Entity(name = "pre_pos")
 public class Prepos {
 
     private long id;
@@ -25,14 +30,16 @@ public class Prepos {
     private String secondPromo;
     private String endUser;
     private String clientNumber;
-    private long shippedDate;
+    private Timestamp shippedDate;
     private String shippedBillNumber;
-    private String sales;
     private String comment;
     private String serials;
     private int zip;
 
-    Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, int buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, long shippedDate, String shippedBillNumber, String sales, String comment, String serials, int zip) {
+	public Prepos() {
+	}
+
+	Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, int buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip) {
         this.id = id;
         this.type = type;
         this.partnerName = partnerName;
@@ -51,11 +58,116 @@ public class Prepos {
         this.clientNumber = clientNumber;
         this.shippedDate = shippedDate;
         this.shippedBillNumber = shippedBillNumber;
-        this.sales = sales;
         this.comment = comment;
         this.serials = serials;
         this.zip = zip;
     }
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public long getId() {
+		return id;
+	}
+
+	@Column(name = "type")
+	public String getType() {
+		return type;
+	}
+
+	@Column(name = "partner_name")
+	public String getPartnerName() {
+		return partnerName;
+	}
+
+	@Column(name = "part_number")
+	public String getPartNumber() {
+		return partNumber;
+	}
+
+	@Column(name = "pos_sum")
+	public double getPosSum() {
+		return posSum;
+	}
+
+	@Column(name = "quantity")
+	public int getQuantity() {
+		return quantity;
+	}
+
+	@Column(name = "ok")
+	public boolean getOk() {
+		return ok;
+	}
+
+	@Column(name = "delta")
+	public int getDelta() {
+		return delta;
+	}
+
+	@Column(name = "sale_discount")
+	public int getSaleDiscount() {
+		return saleDiscount;
+	}
+
+	@Column(name = "buy_discount")
+	public int getBuyDiscount() {
+		return buyDiscount;
+	}
+
+	@Column(name = "sale_price")
+	public double getSalePrice() {
+		return salePrice;
+	}
+
+	@Column(name = "buy_price")
+	public double getBuyPrice() {
+		return buyPrice;
+	}
+
+	@Column(name = "promo1")
+	public String getFirstPromo() {
+		return firstPromo;
+	}
+
+	@Column(name = "promo2")
+	public String getSecondPromo() {
+		return secondPromo;
+	}
+
+	@Column(name = "end_user")
+	public String getEndUser() {
+		return endUser;
+	}
+
+	@Column(name = "client_number")
+	public String getClientNumber() {
+		return clientNumber;
+	}
+
+	@Column(name = "shipped_Date")
+	public Timestamp getShippedDate() {
+		return shippedDate;
+	}
+
+	@Column(name = "shipped_bill_number")
+	public String getShippedBillNumber() {
+		return shippedBillNumber;
+	}
+
+	@Column(name = "comment")
+	public String getComment() {
+		return comment;
+	}
+
+	@Column(name = "serials")
+	public String getSerials() {
+		return serials;
+	}
+
+	@Column(name = "zip")
+	public int getZip() {
+		return zip;
+	}
 
     public void setId(long id) {
         this.id = id;
@@ -121,16 +233,12 @@ public class Prepos {
         this.clientNumber = clientNumber;
     }
 
-    public void setShippedDate(long shippedDate) {
+    public void setShippedDate(Timestamp shippedDate) {
         this.shippedDate = shippedDate;
     }
 
     public void setShippedBillNumber(String shippedBillNumber) {
         this.shippedBillNumber = shippedBillNumber;
-    }
-
-    public void setSales(String sales) {
-        this.sales = sales;
     }
 
     public void setComment(String comment) {
@@ -144,95 +252,6 @@ public class Prepos {
     public void setZip(int zip) {
         this.zip = zip;
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getPartnerName() {
-        return partnerName;
-    }
-
-    public String getPartNumber() {
-        return partNumber;
-    }
-
-    public double getPosSum() {
-        return posSum;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public boolean isOk() {
-        return ok;
-    }
-
-    public int getDelta() {
-        return delta;
-    }
-
-    public int getSaleDiscount() {
-        return saleDiscount;
-    }
-
-    public int getBuyDiscount() {
-        return buyDiscount;
-    }
-
-    public double getSalePrice() {
-        return salePrice;
-    }
-
-    public double getBuyPrice() {
-        return buyPrice;
-    }
-
-    public String getFirstPromo() {
-        return firstPromo;
-    }
-
-    public String getSecondPromo() {
-        return secondPromo;
-    }
-
-    public String getEndUser() {
-        return endUser;
-    }
-
-    public String getClientNumber() {
-        return clientNumber;
-    }
-
-    public long getShippedDate() {
-        return shippedDate;
-    }
-
-    public String getShippedBillNumber() {
-        return shippedBillNumber;
-    }
-
-    public String getSales() {
-        return sales;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public String getSerials() {
-        return serials;
-    }
-
-    public int getZip() {
-        return zip;
-    }
-
 
     @Override
     public boolean equals(Object obj) {
@@ -265,7 +284,6 @@ public class Prepos {
                 .append(this.clientNumber, rhs.clientNumber)
                 .append(this.shippedDate, rhs.shippedDate)
                 .append(this.shippedBillNumber, rhs.shippedBillNumber)
-                .append(this.sales, rhs.sales)
                 .append(this.comment, rhs.comment)
                 .append(this.serials, rhs.serials)
                 .append(this.zip, rhs.zip)
@@ -293,7 +311,6 @@ public class Prepos {
                 .append(clientNumber)
                 .append(shippedDate)
                 .append(shippedBillNumber)
-                .append(sales)
                 .append(comment)
                 .append(serials)
                 .append(zip)

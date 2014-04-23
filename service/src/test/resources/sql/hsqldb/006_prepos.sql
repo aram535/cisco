@@ -1,0 +1,23 @@
+CREATE TABLE PRE_POS (
+  id         BIGINT IDENTITY NOT NULL PRIMARY KEY,
+  type      VARCHAR(1000),
+  partner_name       VARCHAR(1000),
+  part_number       VARCHAR(1000),
+  pos_sum  DOUBLE,
+  quantity     INT,
+  ok     BOOLEAN,
+  delta        INT,
+  sale_discount INT,
+  buy_discount INT,
+  sale_price DOUBLE,
+  buy_price DOUBLE,
+  promo1 VARCHAR(1000),
+  promo2 VARCHAR(1000),
+  end_user VARCHAR(1000),
+  client_number VARCHAR(1000),
+  shipped_date DATE,
+  shipped_bill_number  VARCHAR(1000),
+  comment VARCHAR(1000),
+  serials VARCHAR(1000),
+  zip INT
+);

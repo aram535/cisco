@@ -4,10 +4,11 @@ import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.dto.PreposBuilder;
 import com.cisco.prepos.services.PreposService;
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -26,8 +27,12 @@ public class PreposViewModelTest {
 
     private List<Prepos> getTestPreposes() {
         PreposBuilder builder = PreposBuilder.builder();
-        Prepos prepos1 = builder.type("Type1").partnerName("Some partner1").shippedDate(new Date().getTime()).build();
-        Prepos prepos2 = builder.type("Type2").partnerName("Some partner2").shippedDate(new Date().getTime()).build();
+
+	    long millisOfSomeDate = new DateTime(2014, 3, 14, 0, 0, 0, 0).getMillis();
+	    Timestamp someDate = new Timestamp(millisOfSomeDate);
+
+        Prepos prepos1 = builder.type("Type1").partnerName("Some partner1").shippedDate(someDate).build();
+        Prepos prepos2 = builder.type("Type2").partnerName("Some partner2").shippedDate(someDate).build();
 
         return Lists.newArrayList(prepos1, prepos2);
     }
