@@ -22,6 +22,7 @@
         <spring.version>4.0.2.RELEASE</spring.version>
         <hibernate.version>4.3.5.Final</hibernate.version>
         <unitils.version>3.3</unitils.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
