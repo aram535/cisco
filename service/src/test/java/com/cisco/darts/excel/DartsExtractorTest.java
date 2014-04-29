@@ -31,7 +31,7 @@ public class DartsExtractorTest {
 
         List<Dart> extractedDarts = dartsExtractor.extract(dartsFile);
 
-        assertThat(extractedDarts).isNotNull().isNotEmpty();
+        assertThat(extractedDarts).isNotNull().isNotEmpty().hasSize(8);
         assertThat(extractedDarts).containsAll(createExpectedDarts());
     }
 
