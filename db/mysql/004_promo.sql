@@ -1,4 +1,4 @@
-CREATE TABLE sale (
+CREATE TABLE promo (
   id         BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
   part_number      VARCHAR(1000),
   description       VARCHAR(1000),

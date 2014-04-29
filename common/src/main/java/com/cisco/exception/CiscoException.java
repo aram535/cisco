@@ -7,7 +7,16 @@ package com.cisco.exception;
  */
 public class CiscoException extends RuntimeException {
 
+
     public CiscoException(String message) {
         super(message);
+    }
+
+    public CiscoException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public CiscoException(Throwable cause) {
+        super(cause);
     }
 }

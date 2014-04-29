@@ -28,18 +28,18 @@ public class Dart {
     private int quantity;
     private String ciscoSku;
     private String distiSku;
-    private String listPrice;
-    private String claimUnit;
-    private String extCreditAmt;
-    private String fastTrackPie;
-    private String ipNgnPartnerPricingEm;
-    private String mdmFulfillment;
+    private double listPrice;
+    private double claimUnit;
+    private double extCreditAmt;
+    private double fastTrackPie;
+    private double ipNgnPartnerPricingEm;
+    private double mdmFulfillment;
 
     public Dart(long id, String authorizationNumber, int version, String distributorInfo, Timestamp startDate, Timestamp endDate,
                 double distiDiscount, String resellerName, String resellerCountry, int resellerAcct, String endUserName,
-                String endUserCountry, int quantity, String ciscoSku, String distiSku, String listPrice,
-                String claimUnit, String extCreditAmt, String fastTrackPie, String ipNgnPartnerPricingEm,
-                String mdmFulfillment) {
+                String endUserCountry, int quantity, String ciscoSku, String distiSku, double listPrice,
+                double claimUnit, double extCreditAmt, double fastTrackPie, double ipNgnPartnerPricingEm,
+                double mdmFulfillment) {
         this.id = id;
         this.authorizationNumber = authorizationNumber;
         this.version = version;
@@ -144,32 +144,32 @@ public class Dart {
     }
 
     @Column(name = "list_price")
-    public String getListPrice() {
+    public double getListPrice() {
         return listPrice;
     }
 
     @Column(name = "claim_unit")
-    public String getClaimUnit() {
+    public double getClaimUnit() {
         return claimUnit;
     }
 
     @Column(name = "ext_credit_amt")
-    public String getExtCreditAmt() {
+    public double getExtCreditAmt() {
         return extCreditAmt;
     }
 
     @Column(name = "fast_track_pie")
-    public String getFastTrackPie() {
+    public double getFastTrackPie() {
         return fastTrackPie;
     }
 
     @Column(name = "ip_ngn_partner_pricing_em")
-    public String getIpNgnPartnerPricingEm() {
+    public double getIpNgnPartnerPricingEm() {
         return ipNgnPartnerPricingEm;
     }
 
     @Column(name = "mdm_fulfillment")
-    public String getMdmFulfillment() {
+    public double getMdmFulfillment() {
         return mdmFulfillment;
     }
 
@@ -233,27 +233,27 @@ public class Dart {
         this.distiSku = distiSku;
     }
 
-    public void setListPrice(String listPrice) {
+    public void setListPrice(double listPrice) {
         this.listPrice = listPrice;
     }
 
-    public void setClaimUnit(String claimUnit) {
+    public void setClaimUnit(double claimUnit) {
         this.claimUnit = claimUnit;
     }
 
-    public void setExtCreditAmt(String extCreditAmt) {
+    public void setExtCreditAmt(double extCreditAmt) {
         this.extCreditAmt = extCreditAmt;
     }
 
-    public void setFastTrackPie(String fastTrackPie) {
+    public void setFastTrackPie(double fastTrackPie) {
         this.fastTrackPie = fastTrackPie;
     }
 
-    public void setIpNgnPartnerPricingEm(String ipNgnPartnerPricingEm) {
+    public void setIpNgnPartnerPricingEm(double ipNgnPartnerPricingEm) {
         this.ipNgnPartnerPricingEm = ipNgnPartnerPricingEm;
     }
 
-    public void setMdmFulfillment(String mdmFulfillment) {
+    public void setMdmFulfillment(double mdmFulfillment) {
         this.mdmFulfillment = mdmFulfillment;
     }
 
