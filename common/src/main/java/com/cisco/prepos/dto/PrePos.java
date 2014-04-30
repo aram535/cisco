@@ -23,7 +23,7 @@ public class Prepos {
     private boolean ok;
     private int delta;
     private int saleDiscount;
-    private int buyDiscount;
+    private double buyDiscount;
     private double salePrice;
     private double buyPrice;
     private String firstPromo;
@@ -39,7 +39,7 @@ public class Prepos {
 	public Prepos() {
 	}
 
-	Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, int buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip) {
+	Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip) {
         this.id = id;
         this.type = type;
         this.partnerName = partnerName;
@@ -110,7 +110,7 @@ public class Prepos {
 	}
 
 	@Column(name = "buy_discount")
-	public int getBuyDiscount() {
+	public double getBuyDiscount() {
 		return buyDiscount;
 	}
 
@@ -169,7 +169,7 @@ public class Prepos {
 		return zip;
 	}
 
-    public void setId(long id) {
+	public void setId(long id) {
         this.id = id;
     }
 
@@ -205,7 +205,7 @@ public class Prepos {
         this.saleDiscount = saleDiscount;
     }
 
-    public void setBuyDiscount(int buyDiscount) {
+    public void setBuyDiscount(double buyDiscount) {
         this.buyDiscount = buyDiscount;
     }
 
@@ -253,7 +253,7 @@ public class Prepos {
         this.zip = zip;
     }
 
-    @Override
+	@Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;

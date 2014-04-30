@@ -13,4 +13,10 @@ import static com.cisco.sales.dto.Sale.Status;
  */
 public interface SalesService {
     List<Sale> getSales(Status... statuses);
+
+	void save(Sale sale);
+
+	void update(Sale sale);
+
+	void delete(Sale sale);
 }

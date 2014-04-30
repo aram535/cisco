@@ -1,6 +1,6 @@
 package com.cisco.prepos.services;
 
-import com.cisco.prepos.dto.Prepos;
+import com.cisco.prepos.model.PreposModel;
 
 import java.util.List;
 
@@ -10,5 +10,11 @@ import java.util.List;
  * Time: 22:37
  */
 public interface PreposConstructor {
-    List<Prepos> getPreposes();
+    List<PreposModel> getNewPreposModels();
+
+	List<PreposModel> getAllPreposModels();
+
+	void save(List<PreposModel> preposModels);
+
+	void recountPreposForNewPromo(PreposModel preposModel);
 }

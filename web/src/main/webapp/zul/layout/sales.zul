@@ -2,9 +2,10 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.sales.SalesViewModel')"
         validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="10" model="@load(vm.notProcessedSales)">
+    <listbox id="box" multiple="true" rows="10" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)">
         <listhead sizable="true">
             <listheader label="Shipped date" sort="auto(shippedDate)"/>
+            <listheader label="Shipped BN:" sort="auto(shippedBillNumber)"/>
             <listheader label="Client name" sort="auto(clientName)"/>
             <listheader label="Client number" sort="auto(clientNumber)"/>
             <listheader label="Client zip" sort="auto(clientZip)"/>
@@ -19,6 +20,7 @@
         <template name="model" var="sale">
             <listitem value="@load(sale)">
                 <listcell label="@load(sale.shippedDate)"/>
+                <listcell label="@load(sale.shippedBillNumber)"/>
                 <listcell label="@load(sale.clientName)"/>
                 <listcell label="@load(sale.clientNumber)"/>
                 <listcell label="@load(sale.clientZip)"/>
@@ -31,4 +33,37 @@
             </listitem>
         </template>
     </listbox>
+
+    <groupbox id="mygrp" form="@id('sales') @load(vm.selectedSaleModel) @save(vm.selectedSaleModel, before='update') @save(vm.newSaleModel, before='add') ">
+        <caption label="Sale`s info" />
+        Shipped date:
+        <datebox value="@bind(sales.shippedDate)" />
+        Shipped bill number:
+        <textbox value="@bind(sales.shippedBillNumber)" />
+        Client name:
+        <textbox  value="@bind(sales.clientName)" />
+        Client number:
+        <textbox  value="@bind(sales.clientNumber)" />
+        Client zip:
+        <intbox  value="@bind(sales.clientZip)" />
+        PN:
+        <textbox  value="@bind(sales.partNumber)" />
+        Quantity:
+        <doublebox  value="@bind(sales.quantity)" />
+        Serials:
+        <textbox value="@bind(sales.serials)" />
+        Price:
+        <textbox  value="@bind(sales.price)" />
+        Cisco Type:
+        <textbox  value="@bind(sales.ciscoType)" />
+        Comment:
+        <textbox  value="@bind(sales.comment)" />
+
+        <button id="add" label="Add" onClick="@command('add')" />
+        <button id="update" label="Update" onClick="@command('update')"
+                disabled="@load(empty vm.selectedSaleModel)" />
+        <button id="delete" label="Delete" onClick="@command('delete')"
+                disabled="@load(empty vm.selectedSaleModel)" />
+
+    </groupbox>
 </window>

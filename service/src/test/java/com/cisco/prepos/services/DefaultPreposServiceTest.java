@@ -1,10 +1,7 @@
 package com.cisco.prepos.services;
 
-import com.cisco.prepos.dto.Prepos;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  * Created by Alf on 07.04.14.
@@ -24,7 +21,7 @@ public class DefaultPreposServiceTest {
     @Test
     public void getAllDataReturnsSomeShit() throws Exception {
 
-        List<Prepos> preposes = preposService.getAllData();
+        //List<Prepos> preposes = preposService.getAllData();
 
         //assertNotNull(preposes);
         //assertTrue(preposes.size() > 0);

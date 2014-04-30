@@ -19,4 +19,6 @@ public interface PreposesDao {
 
     public void update(Prepos prePos);
 
+	public void save(List<Prepos> preposList);
+
 }

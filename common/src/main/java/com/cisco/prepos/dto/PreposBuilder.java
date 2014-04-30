@@ -18,7 +18,7 @@ public class PreposBuilder {
     private boolean ok;
     private int delta;
     private int saleDiscount;
-    private int buyDiscount;
+    private double buyDiscount;
     private double salePrice;
     private double buyPrice;
     private String firstPromo;
@@ -84,7 +84,7 @@ public class PreposBuilder {
         return this;
     }
 
-    public PreposBuilder buyDiscount(int buyDiscount) {
+    public PreposBuilder buyDiscount(double buyDiscount) {
         this.buyDiscount = buyDiscount;
         return this;
     }
@@ -144,7 +144,91 @@ public class PreposBuilder {
         return this;
     }
 
-    public Prepos build() {
+	public long getId() {
+		return id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getPartnerName() {
+		return partnerName;
+	}
+
+	public String getPartNumber() {
+		return partNumber;
+	}
+
+	public double getPosSum() {
+		return posSum;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public boolean isOk() {
+		return ok;
+	}
+
+	public int getDelta() {
+		return delta;
+	}
+
+	public int getSaleDiscount() {
+		return saleDiscount;
+	}
+
+	public double getBuyDiscount() {
+		return buyDiscount;
+	}
+
+	public double getSalePrice() {
+		return salePrice;
+	}
+
+	public double getBuyPrice() {
+		return buyPrice;
+	}
+
+	public String getFirstPromo() {
+		return firstPromo;
+	}
+
+	public String getSecondPromo() {
+		return secondPromo;
+	}
+
+	public String getEndUser() {
+		return endUser;
+	}
+
+	public String getClientNumber() {
+		return clientNumber;
+	}
+
+	public Timestamp getShippedDate() {
+		return shippedDate;
+	}
+
+	public String getShippedBillNumber() {
+		return shippedBillNumber;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public String getSerials() {
+		return serials;
+	}
+
+	public int getZip() {
+		return zip;
+	}
+
+	public Prepos build() {
         Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip);
         return prepos;
     }

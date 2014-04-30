@@ -37,11 +37,11 @@ public class SalesDaoTest extends BasicDb {
         Timestamp shippedDate = new Timestamp(millisOfShippedDate);
 
         Sale firstSale = SaleBuilder.builder().id(1).shippedDate(shippedDate).shippedBillNumber("1267894").
-                clientName("Spec").clientNumber("158").clientZip("61052").partNumber("SPA112").quantity(5).
+                clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA112").quantity(5).
                 serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(Sale.Status.NOT_PROCESSED).build();
 
         Sale secondSale = SaleBuilder.builder().id(2).shippedDate(shippedDate).shippedBillNumber("1267894").
-                clientName("Spec").clientNumber("158").clientZip("61052").partNumber("SPA114").quantity(3).
+                clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA114").quantity(3).
                 serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(Sale.Status.PROCESSED).build();
 
         Sale[] sales = new Sale[2];

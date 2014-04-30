@@ -26,4 +26,28 @@ public class HibernateSalesDao implements SalesDao {
         Session currentSession = sessionFactory.getCurrentSession();
         return currentSession.createCriteria(Sale.class).list();
     }
+
+	@Transactional
+	@Override
+	public void save(Sale sale) {
+		Session currentSession = sessionFactory.getCurrentSession();
+
+		currentSession.save(sale);
+	}
+
+	@Transactional
+	@Override
+	public void update(Sale sale) {
+		Session currentSession = sessionFactory.getCurrentSession();
+
+		currentSession.saveOrUpdate(sale);
+	}
+
+	@Transactional
+	@Override
+	public void delete(Sale sale) {
+		Session currentSession = sessionFactory.getCurrentSession();
+
+		currentSession.delete(sale);
+	}
 }

@@ -1,15 +1,12 @@
 package com.cisco.prepos.services;
 
-import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
-import com.cisco.prepos.dto.PreposBuilder;
+import com.cisco.prepos.model.PreposModel;
 import com.google.common.collect.Lists;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -18,17 +15,26 @@ import java.util.List;
 @Service("preposService")
 public class DefaultPreposService implements PreposService {
 
-    @Autowired
-    private PreposesDao preposesDao;
+	@Autowired
+	private PreposConstructor preposConstructor;
 
-    private List<Prepos> testPrePosData = Lists.newArrayList();
+    private List<PreposModel> preposModels = Lists.newArrayList();
 
     @Override
-    public List<Prepos> getAllData() {
+    public List<PreposModel> getAllData() {
 
-        return testPrePosData;
+	    List<PreposModel> newPreposModels = preposConstructor.getNewPreposModels();
+	    preposConstructor.save(newPreposModels);
+
+	    preposModels = preposConstructor.getAllPreposModels();
+        return preposModels;
     }
 
+	@Override
+	public void recountPrepos(PreposModel preposModel) {
+
+		preposConstructor.recountPreposForNewPromo(preposModel);
+	}
     @Override
     public void save(Prepos prePos) {
 
@@ -36,20 +42,12 @@ public class DefaultPreposService implements PreposService {
 
     @Override
     public void update(List<Prepos> prePosList) {
-        testPrePosData = prePosList;
+
     }
 
-    @PostConstruct
+	@PostConstruct
     public void init() {
-	    long millisOfSomeDate = new DateTime(2014, 3, 14, 0, 0, 0, 0).getMillis();
-	    Timestamp someDate = new Timestamp(millisOfSomeDate);
 
-        PreposBuilder builder = PreposBuilder.builder();
-        Prepos prepos = builder.type("Type").partnerName("Some partner").shippedDate(someDate).build();
-        testPrePosData.add(prepos);
     }
 
-    public void setPreposesDao(PreposesDao preposesDao) {
-        this.preposesDao = preposesDao;
-    }
 }

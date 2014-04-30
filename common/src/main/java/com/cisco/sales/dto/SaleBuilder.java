@@ -1,7 +1,6 @@
 package com.cisco.sales.dto;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * User: Rost
@@ -15,7 +14,7 @@ public class SaleBuilder {
     private String shippedBillNumber;
     private String clientName;
     private String clientNumber;
-    private String clientZip;
+    private int clientZip;
     private String partNumber;
     private int quantity;
     private String serials;
@@ -56,7 +55,7 @@ public class SaleBuilder {
         return this;
     }
 
-    public SaleBuilder clientZip(String clientZip) {
+    public SaleBuilder clientZip(int clientZip) {
         this.clientZip = clientZip;
         return this;
     }

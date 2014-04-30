@@ -8,7 +8,7 @@ CREATE TABLE PRE_POS (
   ok     BOOLEAN,
   delta        INT,
   sale_discount INT,
-  buy_discount INT,
+  buy_discount DOUBLE,
   sale_price DOUBLE,
   buy_price DOUBLE,
   promo1 VARCHAR(1000),

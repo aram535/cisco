@@ -2,6 +2,8 @@ package com.cisco.sales;
 
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
+import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
@@ -16,6 +18,8 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class SalesViewModel {
 
+	private Sale selectedSaleModel;
+	private Sale newSaleModel = new Sale();
 
 	@WireVariable
     private SalesService salesService;
@@ -30,4 +34,45 @@ public class SalesViewModel {
         notProcessedSales = salesService.getSales();
         return notProcessedSales;
     }
+
+	public Sale getSelectedSaleModel() {
+		return selectedSaleModel;
+	}
+
+	public Sale getNewSaleModel() {
+		return newSaleModel;
+	}
+
+	public void setNewSaleModel(Sale newSaleModel) {
+		this.newSaleModel = newSaleModel;
+	}
+
+	public void setSelectedSaleModel(Sale selectedSaleModel) {
+		this.selectedSaleModel = selectedSaleModel;
+	}
+
+	@Command("add")
+	@NotifyChange("notProcessedSales")
+	public void add() {
+
+		salesService.save(newSaleModel);
+		this.newSaleModel = new Sale();
+	}
+
+	@Command("update")
+	@NotifyChange("notProcessedSales")
+	public void update() {
+		salesService.update(selectedSaleModel);
+	}
+
+	@Command("delete")
+	@NotifyChange({"notProcessedSales", "selectedEvent"})
+	public void delete() {
+		//shouldn't be able to delete with selectedEvent being null anyway
+		//unless trying to hack the system, so just ignore the request
+		if(this.selectedSaleModel != null) {
+			salesService.delete(this.selectedSaleModel);
+			this.selectedSaleModel = null;
+		}
+	}
 }

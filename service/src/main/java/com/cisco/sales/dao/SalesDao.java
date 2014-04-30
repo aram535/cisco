@@ -11,4 +11,10 @@ import java.util.List;
  */
 public interface SalesDao {
     List<Sale> getSales();
+
+	void save(Sale sale);
+	void update(Sale sale);
+
+	void delete(Sale sale);
+
 }

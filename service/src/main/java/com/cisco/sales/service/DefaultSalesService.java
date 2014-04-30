@@ -43,4 +43,19 @@ public class DefaultSalesService implements SalesService {
         });
         return Lists.newArrayList(filteredSales);
     }
+
+	@Override
+	public void save(Sale sale) {
+		salesDao.save(sale);
+	}
+
+	@Override
+	public void update(Sale sale) {
+		salesDao.update(sale);
+	}
+
+	@Override
+	public void delete(Sale sale) {
+		salesDao.delete(sale);
+	}
 }

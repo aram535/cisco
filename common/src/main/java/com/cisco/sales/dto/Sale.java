@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * User: Rost
@@ -21,7 +20,7 @@ public class Sale {
     private String shippedBillNumber;
     private String clientName;
     private String clientNumber;
-    private String clientZip;
+    private int clientZip;
     private String partNumber;
     private int quantity;
     private String serials;
@@ -34,7 +33,7 @@ public class Sale {
 
     }
 
-    public Sale(long id, Timestamp shippedDate, String shippedBillNumber, String clientName, String clientNumber, String clientZip, String partNumber, int quantity, String serials, double price, String ciscoType, String comment, Status status) {
+    public Sale(long id, Timestamp shippedDate, String shippedBillNumber, String clientName, String clientNumber, int clientZip, String partNumber, int quantity, String serials, double price, String ciscoType, String comment, Status status) {
         this.id = id;
         this.shippedDate = shippedDate;
         this.shippedBillNumber = shippedBillNumber;
@@ -51,13 +50,13 @@ public class Sale {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
 
     @Column(name = "shipped_date")
-    public Date getShippedDate() {
+    public Timestamp getShippedDate() {
         return shippedDate;
     }
 
@@ -77,7 +76,7 @@ public class Sale {
     }
 
     @Column(name = "client_zip")
-    public String getClientZip() {
+    public int getClientZip() {
         return clientZip;
     }
 
@@ -137,7 +136,7 @@ public class Sale {
         this.clientNumber = clientNumber;
     }
 
-    public void setClientZip(String clientZip) {
+    public void setClientZip(int clientZip) {
         this.clientZip = clientZip;
     }
 

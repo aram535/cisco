@@ -2,17 +2,57 @@
     <!--     <style src="/widgets/grid/inline_editing/style.css" /> -->
     <div apply="org.zkoss.bind.BindComposer"
          viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')">
-        <grid hflex="min" model="@load(vmPrePos.allPrepos)">
+        <grid hflex="min" model="@load(vmPrePos.allPrepos)" mold="paging" pageSize="10">
             <columns height="22px" sizable="true">
-                <column width="330px" label="Type" />
-                <column width="150px" label="Partner name" align="center" />
-                <column width="150px" label="Shipping date" align="center" />
+                <column hflex="min" label="Type" />
+                <column hflex="min" label="Partner name" align="center" />
+                <column hflex="min" label="Part number" align="center" />
+                <column hflex="min" label="Pos sum" align="center" />
+                <column hflex="min" label="Quantity" align="center" />
+                <column hflex="min" label="Good" align="center" />
+                <column hflex="min" label="Delta" align="center" />
+                <column hflex="min" label="Sale discount" align="center" />
+                <column hflex="min" label="Buy discount" align="center" />
+                <column hflex="min" label="Sale price" align="center" />
+                <column hflex="min" label="Buy price" align="center" />
+                <column hflex="min" label="Promo 1" align="center" />
+                <column hflex="min" label="Promo 2" align="center" />
+                <column hflex="min" label="End user" align="center" />
+                <column hflex="min" label="Client number" align="center" />
+                <column hflex="min" label="Inv date" align="center" />
+                <column hflex="min" label="Inv number" align="center" />
+                <column hflex="min" label="Sales comment" align="center" />
+                <column hflex="min" label="Serials" align="center" />
+                <column hflex="min" label="Zip" align="center" />
             </columns>
             <template name="model">
                 <row>
-                    <textbox inplace="true" value="@bind(each.type)" width="99%"/>
-                    <textbox inplace="true" value="@bind(each.partnerName)" width="99%" disabled="true"/>
-                    <datebox inplace="true" value="@bind(each.shippedDate)" width="99%"/>
+                    <textbox inplace="true" value="@bind(each.prepos.type)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.partnerName)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.partNumber)" width="99%" disabled="true"/>
+                    <doublebox inplace="true" value="@bind(each.prepos.posSum)" width="99%" disabled="true"/>
+                    <intbox inplace="true" value="@bind(each.prepos.quantity)" width="99%" disabled="true"/>
+                    <textbox value="@bind(each.prepos.ok)" width="99%" disabled="true"/>
+                    <doublebox inplace="true" value="@bind(each.prepos.delta)" width="99%" disabled="true"/>
+                    <doublebox inplace="true" value="@bind(each.prepos.saleDiscount)" width="99%" disabled="true"/>
+                    <doublebox inplace="true" value="@bind(each.prepos.buyDiscount)" width="99%" disabled="true"/>
+                    <doublebox inplace="true" value="@bind(each.prepos.salePrice)" width="99%" disabled="true"/>
+                    <doublebox inplace="true" value="@bind(each.prepos.buyPrice)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.firstPromo)" width="99%" disabled="true"/>
+                    <combobox width="99%" readonly="true"
+                              model="@load(each.suitableDartsList)" selectedItem="@bind(each.selectedPromo)" onChange="@command('promoSelected', preposModel=each)" onSelect="@command('promoSelected', preposModel=each)">
+                        <template name="model">
+                            <comboitem label="@load(each.authorizationNumber)" description="@load(each.endUserName)" />
+                        </template>
+                    </combobox>
+                    <textbox inplace="true" value="@bind(each.prepos.endUser)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.clientNumber)" width="99%" disabled="true"/>
+                    <datebox inplace="true" value="@bind(each.prepos.shippedDate)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.shippedBillNumber)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.comment)" width="99%" disabled="true"/>
+                    <textbox inplace="true" value="@bind(each.prepos.serials)" width="99%" disabled="true"/>
+                    <intbox inplace="true" value="@bind(each.prepos.zip)" width="99%" disabled="true"/>
+
                 </row>
             </template>
         </grid>

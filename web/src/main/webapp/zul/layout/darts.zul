@@ -64,7 +64,9 @@
         <datebox value="@bind(darts.startDate)" />
         EndDate:
         <datebox value="@bind(darts.endDate)" />
-        EesellerName:
+        Disti Discount:
+        <doublebox value="@bind(darts.distiDiscount)" />
+        ResellerName:
         <textbox value="@bind(darts.resellerName)" />
         ResellerCountry:
         <textbox value="@bind(darts.resellerCountry)" />

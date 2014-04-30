@@ -50,12 +50,12 @@ public class SidebarAjaxbasedController extends SelectorComposer<Component> {
 		Image image = new Image(imageSrc);
 		Label lab = new Label(label);
 		
-		column.appendChild(image);
+		//column.appendChild(image);
 		column.appendChild(lab);
 		
 		//set style attribute
 		column.setSclass("sidebar-fn");
-		column.setHeight(image.getHeight());
+		//column.setHeight(image.getHeight());
 		//new and register listener for events
 		EventListener<Event> onActionListener = new SerializableEventListener<Event>(){
 			private static final long serialVersionUID = 1L;
