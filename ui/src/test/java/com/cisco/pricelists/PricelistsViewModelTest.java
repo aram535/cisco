@@ -1,7 +1,7 @@
-package com.cisco.promos;
+package com.cisco.pricelists;
 
 import com.cisco.exception.CiscoException;
-import com.cisco.promos.excel.PromosImporter;
+import com.cisco.pricelists.excel.PricelistImporter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,20 +17,20 @@ import static org.mockito.Mockito.*;
 /**
  * User: Rost
  * Date: 30.04.2014
- * Time: 14:24
+ * Time: 18:30
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PromosViewModelTest {
+public class PricelistsViewModelTest {
 
     @Mock
     private Media media;
 
     private UploadEvent uploadEvent;
 
-    private PromosViewModel promosViewModel = new PromosViewModel();
+    private PricelistsViewModel pricelistsViewModel = new PricelistsViewModel();
 
     @Mock
-    private PromosImporter promosImporter;
+    private PricelistImporter pricelistImporter;
 
     @Mock
     private InputStream inputStream;
@@ -38,25 +38,24 @@ public class PromosViewModelTest {
     @Before
     public void init() {
         uploadEvent = new UploadEvent("event", null, new Media[]{media});
-        promosViewModel.setPromosImporter(promosImporter);
+        pricelistsViewModel.setPricelistImporter(pricelistImporter);
     }
 
     @Test(expected = CiscoException.class)
-    public void thatImportPromosThrowsCiscoExceptionIfMediaTypeIsNotBinary() {
+    public void thatImportPricelistThrowsCiscoExceptionIfMediaTypeIsNotBinary() {
         when(media.isBinary()).thenReturn(false);
 
-        promosViewModel.importPromos(uploadEvent);
+        pricelistsViewModel.importPricelist(uploadEvent);
     }
 
     @Test
-    public void thatPromosViewModelDelegatesImportToPromosImporter() {
+    public void thatPricelistViewModelDelegatesImportToPricelistImporter() {
         when(media.isBinary()).thenReturn(true);
         when(media.getStreamData()).thenReturn(inputStream);
 
-        promosViewModel.importPromos(uploadEvent);
+        pricelistsViewModel.importPricelist(uploadEvent);
 
-        verify(promosImporter).importPromos(inputStream);
-        verifyNoMoreInteractions(promosImporter);
+        verify(pricelistImporter).importPricelist(inputStream);
+        verifyNoMoreInteractions(pricelistImporter);
     }
-
 }

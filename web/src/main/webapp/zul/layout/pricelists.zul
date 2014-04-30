@@ -2,49 +2,53 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.pricelists.PricelistsViewModel')"
         validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allPricelists)" selectedItem="@bind(vm.selectedPricelistModel)">
+    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allPricelists)"
+             selectedItem="@bind(vm.selectedPricelistModel)">
         <listhead sizable="true">
-            <listheader label="Id" sort="auto(id)" />
-            <listheader label="Part number" sort="auto(partNumber)" />
-            <listheader label="Description"  sort="auto(description)" />
-            <listheader label="Gpl" sort="auto(gpl)" />
-            <listheader label="Wpl"  sort="auto(wpl)" />
-            <listheader label="Discount"  sort="auto(discount)" />
+            <listheader label="Id" sort="auto(id)"/>
+            <listheader label="Part number" sort="auto(partNumber)"/>
+            <listheader label="Description" sort="auto(description)"/>
+            <listheader label="Gpl" sort="auto(gpl)"/>
+            <listheader label="Wpl" sort="auto(wpl)"/>
+            <listheader label="Discount" sort="auto(discount)"/>
         </listhead>
         <template name="model" var="pricelists">
             <listitem value="@load(pricelists)">
-                <listcell label="@bind(pricelists.id)" />
-                <listcell label="@bind(pricelists.partNumber)" />
-                <listcell label="@bind(pricelists.description)" />
-                <listcell label="@bind(pricelists.gpl)" />
-                <listcell label="@bind(pricelists.wpl)" />
-                <listcell label="@bind(pricelists.discount)" />
+                <listcell label="@bind(pricelists.id)"/>
+                <listcell label="@bind(pricelists.partNumber)"/>
+                <listcell label="@bind(pricelists.description)"/>
+                <listcell label="@bind(pricelists.gpl)"/>
+                <listcell label="@bind(pricelists.wpl)"/>
+                <listcell label="@bind(pricelists.discount)"/>
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" form="@id('pricelists') @load(vm.selectedPricelistModel) @save(vm.selectedPricelistModel, before='update') @save(vm.newPricelistModel, before='add')">
-        <caption label="Pricelist`s info" />
+    <groupbox id="mygrp"
+              form="@id('pricelists') @load(vm.selectedPricelistModel) @save(vm.selectedPricelistModel, before='update') @save(vm.newPricelistModel, before='add')">
+        <caption label="Pricelist`s info"/>
         Part number:
-        <textbox value="@bind(pricelists.partNumber)" />
+        <textbox value="@bind(pricelists.partNumber)"/>
         Description:
-        <textbox value="@bind(pricelists.description)" />
+        <textbox value="@bind(pricelists.description)"/>
         Gpl:
-        <intbox value="@bind(pricelists.gpl)" />
+        <intbox value="@bind(pricelists.gpl)"/>
         Wpl:
-        <doublebox value="@bind(pricelists.wpl)" />
+        <doublebox value="@bind(pricelists.wpl)"/>
         Discount:
-        <doublebox value="@bind(pricelists.discount)" />
-        <button id="add" label="Add" onClick="@command('add')" />
+        <doublebox value="@bind(pricelists.discount)"/>
+        <button id="add" label="Add" onClick="@command('add')"/>
         <button id="update" label="Update" onClick="@command('update')"
-                disabled="@load(empty vm.selectedPricelistModel)" />
+                disabled="@load(empty vm.selectedPricelistModel)"/>
         <button id="delete" label="Delete" onClick="@command('delete')"
-                disabled="@load(empty vm.selectedPricelistModel)" />
+                disabled="@load(empty vm.selectedPricelistModel)"/>
 
         <hlayout>
-            <label style="color:red" value="@load(vmsgs['pricelistNumber'])" />
-            <label style="color:red" value="@load(vmsgs['name'])" />
-            <label style="color:red" value="@load(vmsgs['city'])" />
-            <label style="color:red" value="@load(vmsgs['address'])" />
+            <label style="color:red" value="@load(vmsgs['pricelistNumber'])"/>
+            <label style="color:red" value="@load(vmsgs['name'])"/>
+            <label style="color:red" value="@load(vmsgs['city'])"/>
+            <label style="color:red" value="@load(vmsgs['address'])"/>
         </hlayout>
     </groupbox>
+    <button id="importPricelist" label="import" upload="true"
+            onUpload="@command('importPricelist',upload=event)"/>
 </window>

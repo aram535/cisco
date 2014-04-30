@@ -9,11 +9,15 @@ import java.util.List;
  */
 public interface PricelistsDao {
 
-	public List<Pricelist> getPricelists();
+    List<Pricelist> getPricelists();
 
-	public void save(Pricelist pricelist);
+    void save(Pricelist pricelist);
 
-	public void update(Pricelist pricelist);
+    void update(Pricelist pricelist);
 
-	public void delete(Pricelist pricelist);
+    void delete(Pricelist pricelist);
+
+    int deleteAll();
+
+    void saveAll(Iterable<Pricelist> expectedPricelist);
 }
