@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,7 +41,16 @@ public class HibernateDartsDao implements DartsDao {
         currentSession.update(dart);
     }
 
-    @Transactional
+	@Transactional
+	@Override
+	public void update(Collection<Dart> darts) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		for (Dart dart : darts) {
+			currentSession.update(dart);
+		}
+	}
+
+	@Transactional
     @Override
     public void delete(Dart dart) {
         Session currentSession = sessionFactory.getCurrentSession();

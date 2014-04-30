@@ -57,8 +57,6 @@ public class PreposModel {
 			this.prepos.setSecondPromo(selectedPromo.getAuthorizationNumber());
 			this.selectedPromo = selectedPromo;
 		}
-
-
 	}
 
 	public void recountPrepos(double buyDiscount, double buyPrice) {
@@ -69,8 +67,8 @@ public class PreposModel {
 	private void recountDartQuantity(Dart newDart) {
 		this.selectedPromo.setQuantity(this.selectedPromo.getQuantity() + prepos.getQuantity());
 
-		selectedPromo.setQuantity(selectedPromo.getQuantity() - prepos.getQuantity());
-		prepos.setSecondPromo(selectedPromo.getAuthorizationNumber());
+		newDart.setQuantity(newDart.getQuantity() - prepos.getQuantity());
+		prepos.setSecondPromo(newDart.getAuthorizationNumber());
 	}
 
 

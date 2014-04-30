@@ -3,6 +3,7 @@ package com.cisco.darts.service;
 import com.cisco.darts.dto.Dart;
 import com.google.common.collect.Table;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,6 +16,8 @@ public interface DartsService {
 	void save(Dart dart);
 
 	void update(Dart dart);
+
+	void update(Collection<Dart> darts);
 
 	void delete(Dart dart);
 

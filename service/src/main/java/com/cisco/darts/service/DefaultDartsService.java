@@ -7,6 +7,7 @@ import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,6 +32,11 @@ public class DefaultDartsService implements DartsService {
 	@Override
 	public void update(Dart dart) {
 		dartsDao.update(dart);
+	}
+
+	@Override
+	public void update(Collection<Dart> darts) {
+		dartsDao.update(darts);
 	}
 
 	@Override

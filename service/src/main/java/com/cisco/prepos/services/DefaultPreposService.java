@@ -4,6 +4,7 @@ import com.cisco.prepos.model.PreposModel;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class DefaultPreposService implements PreposService {
 
     private List<PreposModel> preposModels = Lists.newArrayList();
 
+	@Transactional
     @Override
     public List<PreposModel> getAllData() {
 
@@ -33,9 +35,10 @@ public class DefaultPreposService implements PreposService {
 
 		preposConstructor.recountPreposForNewPromo(preposModel);
 	}
+
     @Override
     public void save(List<PreposModel> prePos) {
-
+		preposConstructor.save(prePos);
     }
 
 }

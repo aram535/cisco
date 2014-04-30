@@ -18,5 +18,7 @@ public interface SalesService {
 
 	void update(Sale sale);
 
+	void update(List<Sale> sales);
+
 	void delete(Sale sale);
 }

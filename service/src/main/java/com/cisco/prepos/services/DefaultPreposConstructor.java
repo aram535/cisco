@@ -20,7 +20,8 @@ import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -36,7 +37,7 @@ import static com.cisco.sales.dto.Sale.Status.NOT_PROCESSED;
  * Time: 22:39
  */
 
-@Component
+@Service
 @PropertySource("classpath:prepos.properties")
 public class DefaultPreposConstructor implements PreposConstructor {
 
@@ -80,6 +81,7 @@ public class DefaultPreposConstructor implements PreposConstructor {
 		dartsTable = dartsService.getDartsTable();
 	}
 
+	@Transactional
 	@Override
     public List<PreposModel> getNewPreposModels() {
 
@@ -134,7 +136,8 @@ public class DefaultPreposConstructor implements PreposConstructor {
 	        sale.setStatus(Sale.Status.PROCESSED);
         }
 
-		//update sales
+		updateSalesTable(sales);
+
         return preposes;
     }
 
@@ -164,7 +167,16 @@ public class DefaultPreposConstructor implements PreposConstructor {
 			preposes.add(model.getPrepos());
 		}
 
+		updateDartsTable(dartsTable);
 		preposesDao.save(preposes);
+	}
+
+	private void updateSalesTable(List<Sale> sales) {
+		salesService.update(sales);
+	}
+
+	private void updateDartsTable(Table<String, String, Dart> darts) {
+		dartsService.update(darts.values());
 	}
 
 	private void assignOk(Prepos prepos) {
@@ -301,4 +313,6 @@ public class DefaultPreposConstructor implements PreposConstructor {
 		}
 
 	}
+
+
 }

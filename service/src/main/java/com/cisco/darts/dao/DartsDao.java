@@ -2,6 +2,7 @@ package com.cisco.darts.dao;
 
 import com.cisco.darts.dto.Dart;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -10,8 +11,11 @@ import java.util.List;
 public interface DartsDao {
 
 	List<Dart> getDarts();
-	void save(Dart client);
-	void update(Dart client);
+	void save(Dart dart);
 
-	void delete(Dart client);
+	void update(Dart dart);
+
+	void update(Collection<Dart> darts);
+
+	void delete(Dart dart);
 }

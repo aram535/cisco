@@ -17,4 +17,5 @@ public interface PreposConstructor {
 	void save(List<PreposModel> preposModels);
 
 	void recountPreposForNewPromo(PreposModel preposModel);
+
 }

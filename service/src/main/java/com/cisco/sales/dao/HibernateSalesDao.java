@@ -45,6 +45,15 @@ public class HibernateSalesDao implements SalesDao {
 
 	@Transactional
 	@Override
+	public void update(List<Sale> sales) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		for (Sale sale : sales) {
+			currentSession.saveOrUpdate(sale);
+		}
+	}
+
+	@Transactional
+	@Override
 	public void delete(Sale sale) {
 		Session currentSession = sessionFactory.getCurrentSession();
 

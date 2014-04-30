@@ -13,7 +13,10 @@ public interface SalesDao {
     List<Sale> getSales();
 
 	void save(Sale sale);
+
 	void update(Sale sale);
+
+	void update(List<Sale> sales);
 
 	void delete(Sale sale);
 

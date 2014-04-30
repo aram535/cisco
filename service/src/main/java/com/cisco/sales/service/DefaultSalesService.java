@@ -50,8 +50,13 @@ public class DefaultSalesService implements SalesService {
 	}
 
 	@Override
-	public void update(Sale sale) {
+ 	public void update(Sale sale) {
 		salesDao.update(sale);
+	}
+
+	@Override
+	public void update(List<Sale> sales) {
+		salesDao.update(sales);
 	}
 
 	@Override

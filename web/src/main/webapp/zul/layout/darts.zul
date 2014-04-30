@@ -4,7 +4,6 @@
         validationMessages="@id('vmsgs')">
     <listbox id="box" multiple="true" rows="10" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)">
         <listhead sizable="true" menupopup="auto">
-            <listheader hflex="min" label="Id" sort="auto(id)" />
             <listheader hflex="min" label="Authorization number" sort="auto(authorizationNumber)"/>
             <listheader hflex="min" label="Version"  sort="auto(version)" />
             <listheader hflex="min" label="DistributorInfo" sort="auto(distributorInfo)" />
@@ -17,6 +16,7 @@
             <listheader hflex="min" label="EndUserName"  sort="auto(endUserName)" />
             <listheader hflex="min" label="EndUserCountry"  sort="auto(endUserCountry)" />
             <listheader hflex="min" label="Quantity"  sort="auto(quantity)" />
+            <listheader hflex="min" label="Quantity Initial"  sort="auto(quantityInitial)" />
             <listheader hflex="min" label="CiscoSku"  sort="auto(ciscoSku)" />
             <listheader hflex="min" label="DistiSku"  sort="auto(distiSku)" />
             <listheader hflex="min" label="ListPrice"  sort="auto(listPrice)" />
@@ -28,7 +28,6 @@
         </listhead>
         <template name="model" var="darts">
             <listitem value="@load(darts)">
-                <listcell hflex="max" label="@bind(darts.id)" />
                 <listcell hflex="max" label="@bind(darts.authorizationNumber)" />
                 <listcell hflex="max" label="@bind(darts.version)" />
                 <listcell hflex="max" label="@bind(darts.distributorInfo)" />
@@ -41,12 +40,14 @@
                 <listcell hflex="max" label="@bind(darts.endUserName)" />
                 <listcell hflex="max" label="@bind(darts.endUserCountry)" />
                 <listcell hflex="max" label="@bind(darts.quantity)" />
+                <listcell hflex="max" label="@bind(darts.quantityInitial)" />
                 <listcell hflex="max" label="@bind(darts.ciscoSku)" />
                 <listcell hflex="max" label="@bind(darts.distiSku)" />
                 <listcell hflex="max" label="@bind(darts.listPrice)" />
                 <listcell hflex="max" label="@bind(darts.claimUnit)" />
                 <listcell hflex="max" label="@bind(darts.extCreditAmt)" />
                 <listcell hflex="max" label="@bind(darts.fastTrackPie)" />
+                <listcell hflex="max" label="@bind(darts.id)"/>
                 <listcell hflex="max" label="@bind(darts.ipNgnPartnerPricingEm)" />
                 <listcell hflex="max" label="@bind(darts.mdmFulfillment)" />
             </listitem>
