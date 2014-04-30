@@ -56,7 +56,7 @@ public class DefaultDartsExtractor implements DartsExtractor {
     public List<Dart> extract(File file) {
         List<Dart> darts = Lists.newArrayList();
         try {
-
+            logger.debug("extracting darts from file {}", file.getAbsolutePath());
             FileInputStream fileInputStream = new FileInputStream(file);
             Workbook workbook = fieldsExtractor.getWorkbook(fileInputStream);
             Sheet sheet = workbook.getSheetAt(0);
@@ -144,6 +144,7 @@ public class DefaultDartsExtractor implements DartsExtractor {
             e.printStackTrace();
         }
 
+        logger.debug("extracted darts {}", darts);
         return darts;
     }
 
