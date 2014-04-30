@@ -1,6 +1,7 @@
 package com.cisco.promos.dao;
 
 import com.cisco.promos.dto.Promo;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,38 +16,59 @@ import java.util.List;
 @Repository
 public class HibernatePromosDao implements PromosDao {
 
-	@Autowired
-	private SessionFactory sessionFactory;
+    private static final String DELETE_ALL_HQL = String.format("delete from %s", Promo.class.getSimpleName().toLowerCase());
 
-	@Transactional
-	@Override
-	public List<Promo> getPromos() {
-		Session currentSession = sessionFactory.getCurrentSession();
+    @Autowired
+    private SessionFactory sessionFactory;
 
-		return currentSession.createCriteria(Promo.class).list();
-	}
+    @Transactional
+    @Override
+    public List<Promo> getPromos() {
+        Session currentSession = sessionFactory.getCurrentSession();
 
-	@Transactional
-	@Override
-	public void save(Promo promo) {
-		Session currentSession = sessionFactory.getCurrentSession();
+        return currentSession.createCriteria(Promo.class).list();
+    }
 
-		currentSession.save(promo);
-	}
+    @Transactional
+    @Override
+    public void save(Promo promo) {
+        Session currentSession = sessionFactory.getCurrentSession();
 
-	@Transactional
-	@Override
-	public void update(Promo promo) {
-		Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.save(promo);
+    }
 
-		currentSession.update(promo);
-	}
+    @Transactional
+    @Override
+    public void saveAll(Iterable<Promo> promos) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        for (Promo promo : promos) {
+            currentSession.save(promo);
+        }
+    }
 
-	@Transactional
-	@Override
-	public void delete(Promo promo) {
-		Session currentSession = sessionFactory.getCurrentSession();
+    @Transactional
+    @Override
+    public void update(Promo promo) {
+        Session currentSession = sessionFactory.getCurrentSession();
 
-		currentSession.delete(promo);
-	}
+        currentSession.update(promo);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Promo promo) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        currentSession.delete(promo);
+    }
+
+    @Transactional
+    @Override
+    public int deleteAll() {
+        Session currentSession = sessionFactory.getCurrentSession();
+        Query query = currentSession.createQuery(DELETE_ALL_HQL);
+        return query.executeUpdate();
+    }
+
+
 }

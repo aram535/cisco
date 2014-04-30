@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import static com.cisco.promos.dto.PromoBuilder.newPromoBuilder;
  * Date: 30.04.2014
  * Time: 0:16
  */
+@Component
 public class DefaultPromosExtractor implements PromosExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

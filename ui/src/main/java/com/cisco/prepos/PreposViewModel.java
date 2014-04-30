@@ -41,12 +41,13 @@ public class PreposViewModel {
     }
 
 
-	@Command("promoSelected")
-	public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
+    @Command("promoSelected")
+    public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
 
-		preposService.recountPrepos(preposModel);
-		BindUtils.postNotifyChange(null, null, preposModel, "prepos");
-	}
+        preposService.recountPrepos(preposModel);
+        BindUtils.postNotifyChange(null, null, preposModel, "prepos");
+    }
+
     public void setPreposService(PreposService preposService) {
         this.preposService = preposService;
     }

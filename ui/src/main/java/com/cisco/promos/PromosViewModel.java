@@ -1,13 +1,20 @@
 package com.cisco.promos;
 
+import com.cisco.exception.CiscoException;
 import com.cisco.promos.dto.Promo;
+import com.cisco.promos.excel.PromosImporter;
 import com.cisco.promos.service.PromosService;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -17,58 +24,80 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PromosViewModel {
 
-	private Promo selectedPromoModel;
-	private Promo newPromoModel = new Promo();
+    private static final String ALL_PROMOS_CHANGE = "allPromos";
+    private static final String SELECTED_EVENT_CHANGE = "selectedEvent";
 
-	@WireVariable
-	private PromosService promosService;
+    private Promo selectedPromoModel;
+    private Promo newPromoModel = new Promo();
 
-	private List<Promo> promoList;
+    @WireVariable
+    private PromosService promosService;
 
-	public Promo getSelectedPromoModel() {
-		return selectedPromoModel;
-	}
+    @WireVariable
+    private PromosImporter promosImporter;
 
-	public void setSelectedPromoModel(Promo selectedPromoModel) {
-		this.selectedPromoModel = selectedPromoModel;
-	}
+    private List<Promo> promoList;
 
-	public Promo getNewPromoModel() {
-		return newPromoModel;
-	}
+    public Promo getSelectedPromoModel() {
+        return selectedPromoModel;
+    }
 
-	public void setNewPromoModel(Promo newPromoModel) {
-		this.newPromoModel = newPromoModel;
-	}
+    public void setSelectedPromoModel(Promo selectedPromoModel) {
+        this.selectedPromoModel = selectedPromoModel;
+    }
 
-	public void setPromoList(List<Promo> promoList) {
-		this.promoList = promoList;
-	}
+    public Promo getNewPromoModel() {
+        return newPromoModel;
+    }
 
-	public List<Promo> getAllPromos() {
-		return promosService.getPromos();
-	}
+    public void setNewPromoModel(Promo newPromoModel) {
+        this.newPromoModel = newPromoModel;
+    }
 
-	@Command("add")
-	@NotifyChange("allPromos")
-	public void add() {
-		promosService.save(newPromoModel);
-		this.newPromoModel = new Promo();
-	}
+    public void setPromoList(List<Promo> promoList) {
+        this.promoList = promoList;
+    }
 
-	@Command("update")
-	@NotifyChange("allPromos")
-	public void update() {
-		promosService.update(selectedPromoModel);
-	}
+    public List<Promo> getAllPromos() {
+        return promosService.getPromos();
+    }
 
-	@Command("delete")
-	@NotifyChange({"allPromos", "selectedEvent"})
-	public void delete() {
+    @Command("add")
+    @NotifyChange(ALL_PROMOS_CHANGE)
+    public void add() {
+        promosService.save(newPromoModel);
+        this.newPromoModel = new Promo();
+    }
 
-		if (selectedPromoModel != null) {
-			promosService.delete(selectedPromoModel);
-			selectedPromoModel = null;
-		}
-	}
+    @Command("update")
+    @NotifyChange(ALL_PROMOS_CHANGE)
+    public void update() {
+        promosService.update(selectedPromoModel);
+    }
+
+    @Command("delete")
+    @NotifyChange({ALL_PROMOS_CHANGE, SELECTED_EVENT_CHANGE})
+    public void delete() {
+
+        if (selectedPromoModel != null) {
+            promosService.delete(selectedPromoModel);
+            selectedPromoModel = null;
+        }
+    }
+
+    @Command
+    @NotifyChange({ALL_PROMOS_CHANGE})
+    public void importPromos(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
+        Media media = event.getMedia();
+        if (media.isBinary()) {
+            InputStream inputStream = media.getStreamData();
+            promosImporter.importPromos(inputStream);
+        } else {
+            throw new CiscoException("media is not binary");
+        }
+    }
+
+    void setPromosImporter(PromosImporter promosImporter) {
+        this.promosImporter = promosImporter;
+    }
 }

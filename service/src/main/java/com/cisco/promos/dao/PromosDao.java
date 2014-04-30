@@ -8,11 +8,15 @@ import java.util.List;
  * Created by Alf on 19.04.2014.
  */
 public interface PromosDao {
-	List<Promo> getPromos();
+    List<Promo> getPromos();
 
-	void save(Promo promo);
+    void save(Promo promo);
 
-	void update(Promo promo);
+    void saveAll(Iterable<Promo> promos);
 
-	void delete(Promo promo);
+    void update(Promo promo);
+
+    void delete(Promo promo);
+
+    int deleteAll();
 }
