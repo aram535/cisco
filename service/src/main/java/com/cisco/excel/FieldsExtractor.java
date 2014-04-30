@@ -3,7 +3,7 @@ package com.cisco.excel;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Timestamp;
 
 /**
@@ -21,5 +21,5 @@ public interface FieldsExtractor {
 
     String extractStringValue(Row row, int column);
 
-    Workbook getWorkbook(FileInputStream fileInputStream);
+    Workbook getWorkbook(InputStream inputStream);
 }

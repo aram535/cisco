@@ -2,7 +2,6 @@ package com.cisco.pricelists.excel;
 
 import com.cisco.excel.DefaultFieldsExtractor;
 import com.cisco.excel.FieldsExtractor;
-import com.cisco.exception.CiscoException;
 import com.cisco.pricelists.dto.Pricelist;
 import com.google.common.collect.Lists;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,10 +10,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
@@ -38,13 +35,13 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
     private final FieldsExtractor fieldsExtractor = new DefaultFieldsExtractor();
 
     @Override
-    public List<Pricelist> extract(File file) {
-        logger.debug("Extracting prices from file {}", file.getAbsolutePath());
+    public List<Pricelist> extract(InputStream inputStream) {
+        logger.debug("Extracting prices from file started...");
 
         List<Pricelist> pricelist = Lists.newArrayList();
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            Workbook workbook = fieldsExtractor.getWorkbook(fileInputStream);
+
+            Workbook workbook = fieldsExtractor.getWorkbook(inputStream);
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
 
@@ -64,10 +61,8 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
 
                 pricelist.add(price);
             }
-            fileInputStream.close();
+            inputStream.close();
 
-        } catch (FileNotFoundException e) {
-            throw new CiscoException(String.format("Cannot find file %s", file.getAbsolutePath()), e);
         } catch (IOException e) {
             logger.error("Error occured during Darts import", e);
             e.printStackTrace();

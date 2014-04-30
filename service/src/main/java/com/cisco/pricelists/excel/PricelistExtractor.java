@@ -2,7 +2,7 @@ package com.cisco.pricelists.excel;
 
 import com.cisco.pricelists.dto.Pricelist;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface PricelistExtractor {
 
-    public List<Pricelist> extract(File file);
+    public List<Pricelist> extract(InputStream file);
 
 }

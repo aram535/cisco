@@ -5,9 +5,8 @@ import com.cisco.promos.dto.PromoBuilder;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -23,10 +22,10 @@ public class PromosExtractorTest {
 
     @Test
     public void thatExtractReturnsAllDataFromExcelFile() throws URISyntaxException {
-        URL promosUrl = this.getClass().getResource("/templates/Promos.xlsx");
-        File promosFile = new File(promosUrl.toURI());
+        InputStream inputStream = this.getClass().getResourceAsStream("/templates/Promos.xlsx");
 
-        List<Promo> extractedPrices = promosExtractor.extract(promosFile);
+
+        List<Promo> extractedPrices = promosExtractor.extract(inputStream);
 
         assertThat(extractedPrices).isNotNull().isNotEmpty().hasSize(3);
         assertThat(extractedPrices).containsAll(createExpectedPromos());

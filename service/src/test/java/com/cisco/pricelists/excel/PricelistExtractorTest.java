@@ -5,9 +5,8 @@ import com.cisco.pricelists.dto.PricelistBuilder;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -23,10 +22,9 @@ public class PricelistExtractorTest {
 
     @Test
     public void thatExtractReturnsAllDataFromExcelFile() throws URISyntaxException {
-        URL pricelistUrl = this.getClass().getResource("/templates/Pricelist.xlsx");
-        File pricelistFile = new File(pricelistUrl.toURI());
+        InputStream inputStream = this.getClass().getResourceAsStream("/templates/Pricelist.xlsx");
 
-        List<Pricelist> extractedPrices = pricelistExtractor.extract(pricelistFile);
+        List<Pricelist> extractedPrices = pricelistExtractor.extract(inputStream);
 
         assertThat(extractedPrices).isNotNull().isNotEmpty().hasSize(4);
         assertThat(extractedPrices).containsAll(createExpectedPricelist());

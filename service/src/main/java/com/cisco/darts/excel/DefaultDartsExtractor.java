@@ -3,7 +3,6 @@ package com.cisco.darts.excel;
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartBuilder;
 import com.cisco.excel.DefaultFieldsExtractor;
-import com.cisco.exception.CiscoException;
 import com.google.common.collect.Lists;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -11,10 +10,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
@@ -53,12 +50,11 @@ public class DefaultDartsExtractor implements DartsExtractor {
 
 
     @Override
-    public List<Dart> extract(File file) {
+    public List<Dart> extract(InputStream inputStream) {
         List<Dart> darts = Lists.newArrayList();
         try {
-            logger.debug("extracting darts from file {}", file.getAbsolutePath());
-            FileInputStream fileInputStream = new FileInputStream(file);
-            Workbook workbook = fieldsExtractor.getWorkbook(fileInputStream);
+            logger.debug("extracting darts started...");
+            Workbook workbook = fieldsExtractor.getWorkbook(inputStream);
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
 
@@ -135,10 +131,8 @@ public class DefaultDartsExtractor implements DartsExtractor {
                 darts.add(dart);
             }
 
-            fileInputStream.close();
+            inputStream.close();
 
-        } catch (FileNotFoundException e) {
-            throw new CiscoException(String.format("Cannot find file %s", file.getAbsolutePath()), e);
         } catch (IOException e) {
             logger.error("Error occured during Darts import", e);
             e.printStackTrace();

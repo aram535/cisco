@@ -2,7 +2,7 @@ package com.cisco.darts.excel;
 
 import com.cisco.darts.dto.Dart;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface DartsExtractor {
 
-    List<Dart> extract(File file);
+    List<Dart> extract(InputStream file);
 
 }

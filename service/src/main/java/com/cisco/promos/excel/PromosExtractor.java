@@ -2,7 +2,7 @@ package com.cisco.promos.excel;
 
 import com.cisco.promos.dto.Promo;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface PromosExtractor {
 
-    List<Promo> extract(File file);
+    List<Promo> extract(InputStream file);
 
 }

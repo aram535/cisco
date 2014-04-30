@@ -2,7 +2,6 @@ package com.cisco.promos.excel;
 
 import com.cisco.excel.DefaultFieldsExtractor;
 import com.cisco.excel.FieldsExtractor;
-import com.cisco.exception.CiscoException;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Lists;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,10 +10,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,13 +39,12 @@ public class DefaultPromosExtractor implements PromosExtractor {
     private final FieldsExtractor fieldsExtractor = new DefaultFieldsExtractor();
 
     @Override
-    public List<Promo> extract(File file) {
-        logger.debug("Extracting promos list from file {}", file.getAbsolutePath());
+    public List<Promo> extract(InputStream inputStream) {
+        logger.debug("Extracting promos list from file started...");
 
         List<Promo> promos = Lists.newArrayList();
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            Workbook workbook = fieldsExtractor.getWorkbook(fileInputStream);
+            Workbook workbook = fieldsExtractor.getWorkbook(inputStream);
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
 
@@ -85,10 +81,8 @@ public class DefaultPromosExtractor implements PromosExtractor {
                 promos.add(promo);
             }
 
-            fileInputStream.close();
+            inputStream.close();
 
-        } catch (FileNotFoundException e) {
-            throw new CiscoException(String.format("Cannot find file %s", file.getAbsolutePath()), e);
         } catch (IOException e) {
             logger.error("Error occured during Darts import", e);
             e.printStackTrace();

@@ -5,9 +5,8 @@ import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -26,10 +25,9 @@ public class DartsExtractorTest {
 
     @Test
     public void thatDartsExtractedFromCorrectFile() throws URISyntaxException {
-        URL dartsUrl = this.getClass().getResource("/templates/Darts.xlsx");
-        File dartsFile = new File(dartsUrl.toURI());
+        InputStream inputStream = this.getClass().getResourceAsStream("/templates/Darts.xlsx");
 
-        List<Dart> extractedDarts = dartsExtractor.extract(dartsFile);
+        List<Dart> extractedDarts = dartsExtractor.extract(inputStream);
 
         assertThat(extractedDarts).isNotNull().isNotEmpty().hasSize(8);
         assertThat(extractedDarts).containsAll(createExpectedDarts());

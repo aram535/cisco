@@ -9,8 +9,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Locale;
 
@@ -46,15 +46,15 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
     }
 
     @Override
-    public Workbook getWorkbook(FileInputStream fileInputStream) {
+    public Workbook getWorkbook(InputStream inputStream) {
         Workbook workbook;
         try {
-            workbook = WorkbookFactory.create(fileInputStream);
+            workbook = WorkbookFactory.create(inputStream);
         } catch (Exception e) {
             throw new CiscoException(e);
         } finally {
             try {
-                fileInputStream.close();
+                inputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
