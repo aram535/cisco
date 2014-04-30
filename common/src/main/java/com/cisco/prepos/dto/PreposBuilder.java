@@ -17,7 +17,7 @@ public class PreposBuilder {
     private int quantity;
     private boolean ok;
     private int delta;
-    private int saleDiscount;
+    private double saleDiscount;
     private double buyDiscount;
     private double salePrice;
     private double buyPrice;
@@ -79,7 +79,7 @@ public class PreposBuilder {
         return this;
     }
 
-    public PreposBuilder saleDiscount(int saleDiscount) {
+    public PreposBuilder saleDiscount(double saleDiscount) {
         this.saleDiscount = saleDiscount;
         return this;
     }
@@ -176,7 +176,7 @@ public class PreposBuilder {
 		return delta;
 	}
 
-	public int getSaleDiscount() {
+	public double getSaleDiscount() {
 		return saleDiscount;
 	}
 

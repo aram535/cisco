@@ -67,9 +67,10 @@ public class HibernateDartsDaoTest extends BasicDb {
         Dart dart = DartBuilder.builder().setId(1).setAuthorizationNumber("MDMF-4526117-1403").setVersion(1)
                 .setDistributorInfo("ERC").setStartDate(someDate).setEndDate(someDate).setDistiDiscount(20.20)
                 .setResellerName("ResName").setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName("EndUserName").setEndUserCountry("Country").setQuantity(10).setCiscoSku("CiscoSku")
-                .setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1).setExtCreditAmt(100.1)
-                .setFastTrackPie(100.1).setIpNgnPartnerPricingEm(100.1).setMdmFulfillment(100.1).build();
+                .setEndUserName("EndUserName").setEndUserCountry("Country").setQuantity(10).setQuantityInitial(10)
+		        .setCiscoSku("CiscoSku").setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1)
+		        .setExtCreditAmt(100.1).setFastTrackPie(100.1).setIpNgnPartnerPricingEm(100.1).setMdmFulfillment(100.1)
+		        .build();
 
         return dart;
     }
@@ -81,9 +82,10 @@ public class HibernateDartsDaoTest extends BasicDb {
         Dart dart = DartBuilder.builder().setAuthorizationNumber("MDMF-4526117-1403").setVersion(3)
                 .setDistributorInfo("ERC").setStartDate(someDate).setEndDate(someDate).setDistiDiscount(20.20)
                 .setResellerName("ResName").setResellerCountry("Poland").setResellerAcct(123)
-                .setEndUserName("EndUserName").setEndUserCountry("Country").setQuantity(10).setCiscoSku("CiscoSku")
-                .setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1).setExtCreditAmt(100.1)
-                .setFastTrackPie(100.1).setIpNgnPartnerPricingEm(100.1).setMdmFulfillment(100.1).build();
+                .setEndUserName("EndUserName").setEndUserCountry("Country").setQuantity(10).setQuantityInitial(10)
+		        .setCiscoSku("CiscoSku").setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1)
+		        .setExtCreditAmt(100.1).setFastTrackPie(100.1).setIpNgnPartnerPricingEm(100.1).setMdmFulfillment(100.1)
+		        .build();
 
         return dart;
     }

@@ -16,6 +16,7 @@ public class DartBuilder {
     private String endUserName;
     private String endUserCountry;
     private int quantity;
+	private int quantityInitial;
     private String ciscoSku;
     private String distiSku;
     private double listPrice;
@@ -25,7 +26,7 @@ public class DartBuilder {
     private double ipNgnPartnerPricingEm;
     private double mdmFulfillment;
 
-    public static DartBuilder builder() {
+	public static DartBuilder builder() {
         return new DartBuilder();
     }
 
@@ -49,6 +50,7 @@ public class DartBuilder {
         builder.mdmFulfillment = dart.getMdmFulfillment();
         builder.listPrice = dart.getListPrice();
         builder.quantity = dart.getQuantity();
+	    builder.quantityInitial = dart.getQuantityInitial();
         builder.resellerAcct = dart.getResellerAcct();
         builder.resellerCountry = dart.getResellerCountry();
         builder.resellerName = dart.getResellerName();
@@ -160,7 +162,12 @@ public class DartBuilder {
         return this;
     }
 
-    public Dart build() {
-        return new Dart(id, authorizationNumber, version, distributorInfo, startDate, endDate, distiDiscount, resellerName, resellerCountry, resellerAcct, endUserName, endUserCountry, quantity, ciscoSku, distiSku, listPrice, claimUnit, extCreditAmt, fastTrackPie, ipNgnPartnerPricingEm, mdmFulfillment);
+	public DartBuilder setQuantityInitial(int quantityInitial) {
+		this.quantityInitial = quantityInitial;
+		return this;
+	}
+
+	public Dart build() {
+        return new Dart(id, authorizationNumber, version, distributorInfo, startDate, endDate, distiDiscount, resellerName, resellerCountry, resellerAcct, endUserName, endUserCountry, quantity, quantityInitial, ciscoSku, distiSku, listPrice, claimUnit, extCreditAmt, fastTrackPie, ipNgnPartnerPricingEm, mdmFulfillment);
     }
 }

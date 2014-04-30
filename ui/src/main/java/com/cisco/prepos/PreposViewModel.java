@@ -29,16 +29,15 @@ public class PreposViewModel {
         return preposes;
     }
 
-    @Command("add")
+    @Command("refresh")
     @NotifyChange("allPrepos")
-    public void add() {
+    public void refresh() {
 
     }
 
-    @Command("update")
-    @NotifyChange("allPrepos")
-    public void update() {
-        //preposService.update(preposes);
+    @Command("save")
+    public void save() {
+        preposService.save(preposes);
     }
 
 

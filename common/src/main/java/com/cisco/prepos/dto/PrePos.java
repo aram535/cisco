@@ -22,7 +22,7 @@ public class Prepos {
     private int quantity;
     private boolean ok;
     private int delta;
-    private int saleDiscount;
+    private double saleDiscount;
     private double buyDiscount;
     private double salePrice;
     private double buyPrice;
@@ -39,7 +39,7 @@ public class Prepos {
 	public Prepos() {
 	}
 
-	Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, int saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip) {
+	Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip) {
         this.id = id;
         this.type = type;
         this.partnerName = partnerName;
@@ -105,7 +105,7 @@ public class Prepos {
 	}
 
 	@Column(name = "sale_discount")
-	public int getSaleDiscount() {
+	public double getSaleDiscount() {
 		return saleDiscount;
 	}
 
@@ -201,7 +201,7 @@ public class Prepos {
         this.delta = delta;
     }
 
-    public void setSaleDiscount(int saleDiscount) {
+    public void setSaleDiscount(double saleDiscount) {
         this.saleDiscount = saleDiscount;
     }
 

@@ -178,7 +178,7 @@ public class DefaultPreposConstructor implements PreposConstructor {
 
 	private void assignBuyPrice(Prepos prepos, double gpl) {
 
-		double buyPrice = gpl * (1 -  prepos.getBuyDiscount());
+		double buyPrice = (double)Math.round(gpl * (1 -  prepos.getBuyDiscount()) * 100) / 100;
 
 		prepos.setBuyPrice(buyPrice);
 	}
@@ -206,15 +206,14 @@ public class DefaultPreposConstructor implements PreposConstructor {
 		for (Dart dart : suitableAuthNumsDarts.values()) {
 			if(prepos.getPartnerName().equals(dart.getResellerName()) && dart.getQuantity() >= prepos.getQuantity()) {
 				suitableDarts.put(dart.getAuthorizationNumber(), dart);
-			}
 
-			if(prepos.getSecondPromo() == null) {
-				prepos.setSecondPromo(dart.getAuthorizationNumber());
-				dart.setQuantity(dart.getQuantity() - prepos.getQuantity());
-				preposModel.setSelectedPromo(dart);
-				prepos.setEndUser(dart.getEndUserName());
+				if(prepos.getSecondPromo() == null) {
+					prepos.setSecondPromo(dart.getAuthorizationNumber());
+					dart.setQuantity(dart.getQuantity() - prepos.getQuantity());
+					preposModel.setSelectedPromo(dart);
+					prepos.setEndUser(dart.getEndUserName());
+				}
 			}
-
 		}
 
 		preposModel.setSuitableDarts(suitableDarts);
@@ -223,7 +222,7 @@ public class DefaultPreposConstructor implements PreposConstructor {
 
 	private void assignSaleDiscount(Prepos prepos, double gpl) {
 
-		int saleDiscount = 100 - (int) Math.round((prepos.getSalePrice() / gpl) * 100);
+		double saleDiscount = (double) Math.round((1 - (prepos.getSalePrice() / gpl))*100) / 100;
 
 		prepos.setSaleDiscount(saleDiscount);
 	}

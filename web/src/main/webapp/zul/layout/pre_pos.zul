@@ -47,7 +47,7 @@
                     </combobox>
                     <textbox inplace="true" value="@bind(each.prepos.endUser)" width="99%" disabled="true"/>
                     <textbox inplace="true" value="@bind(each.prepos.clientNumber)" width="99%" disabled="true"/>
-                    <datebox inplace="true" value="@bind(each.prepos.shippedDate)" width="99%" disabled="true"/>
+                    <datebox inplace="true" value="@bind(each.prepos.shippedDate)" width="99%"/>
                     <textbox inplace="true" value="@bind(each.prepos.shippedBillNumber)" width="99%" disabled="true"/>
                     <textbox inplace="true" value="@bind(each.prepos.comment)" width="99%" disabled="true"/>
                     <textbox inplace="true" value="@bind(each.prepos.serials)" width="99%" disabled="true"/>
@@ -56,6 +56,7 @@
                 </row>
             </template>
         </grid>
-        <button id="update" label="Update" onClick="@command('update')"/>
+        <button id="save" label="Save" onClick="@command('save')"/>
+        <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
     </div>
 </zk>

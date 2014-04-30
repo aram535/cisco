@@ -54,6 +54,7 @@ public class DartsViewModel {
 	@NotifyChange("allDarts")
 	public void add() {
 
+		newDartModel.setQuantityInitial(newDartModel.getQuantity());
 		dartsService.save(newDartModel);
 		this.newDartModel = new Dart();
 

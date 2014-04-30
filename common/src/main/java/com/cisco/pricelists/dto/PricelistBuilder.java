@@ -9,7 +9,7 @@ public class PricelistBuilder {
 	private String description;
 	private int gpl;
 	private double wpl;
-	private int discount;
+	private double discount;
 
 	private PricelistBuilder() {
 	}
@@ -43,7 +43,7 @@ public class PricelistBuilder {
 		return this;
 	}
 
-	public PricelistBuilder setDiscount(int discount) {
+	public PricelistBuilder setDiscount(double discount) {
 		this.discount = discount;
 		return this;
 	}
