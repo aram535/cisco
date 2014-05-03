@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  * Time: 22:38
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PreposConstructorTest {
+public class PreposMediatorTest {
 
     private static final Timestamp CURRENT_TIME = new Timestamp(DateTime.now().getMillis());
     private static final String CISCO_TYPE = "CISCO SB";
@@ -68,7 +68,7 @@ public class PreposConstructorTest {
     private static final double PRICELIST_DISCOUNT = 0.3;
 
     @InjectMocks
-    private PreposConstructor preposConstructor = new DefaultPreposConstructor();
+    private PreposMediator preposMediator = new DefaultPreposMediator();
 
     @Mock
     private SalesService salesService;
@@ -90,7 +90,7 @@ public class PreposConstructorTest {
     @Test
     public void thatGetPreposesReturnsEmptyListIfThereAreNoSales() {
         when(salesService.getSales(NOT_PROCESSED)).thenReturn(Lists.<Sale>newArrayList());
-        List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isEmpty();
     }
 
@@ -100,7 +100,7 @@ public class PreposConstructorTest {
 		mockRelatedServices();
         when(pricelistsService.getPricelistsMap()).thenReturn(Maps.<String, Pricelist>newHashMap());
 
-        preposConstructor.getNewPreposModels();
+        preposMediator.getNewPreposModels();
     }
 
     @Test
@@ -110,7 +110,7 @@ public class PreposConstructorTest {
 
 	    when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
 
-        List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
         assertThat(preposes).hasSize(1);
         assertThat(preposes).isEqualTo(createExpectedPreposesForCaseWhenNoMatchingByClientNumber());
