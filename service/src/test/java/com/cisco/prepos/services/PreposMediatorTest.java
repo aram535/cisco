@@ -22,7 +22,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +43,7 @@ import static org.mockito.Mockito.when;
  * Time: 22:38
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PreposMediatorTest {
+public class PreposConstructorTest {
 
     private static final Timestamp CURRENT_TIME = new Timestamp(DateTime.now().getMillis());
     private static final String CISCO_TYPE = "CISCO SB";
@@ -69,7 +68,7 @@ public class PreposMediatorTest {
     private static final double PRICELIST_DISCOUNT = 0.3;
 
     @InjectMocks
-    private PreposMediator preposMediator = new DefaultPreposMediator();
+    private PreposConstructor preposConstructor = new DefaultPreposConstructor();
 
     @Mock
     private SalesService salesService;
@@ -88,14 +87,10 @@ public class PreposMediatorTest {
 
     private Sale firstSale;
 
-	@Before
-	public void initPreposConstructor() {
-		preposMediator.setPreposModelConstructor(new DefaultPreposModelConstructor());
-	}
     @Test
     public void thatGetPreposesReturnsEmptyListIfThereAreNoSales() {
         when(salesService.getSales(NOT_PROCESSED)).thenReturn(Lists.<Sale>newArrayList());
-        List<PreposModel> preposes = preposMediator.getNewPreposModels();
+        List<PreposModel> preposes = preposConstructor.getNewPreposModels();
         assertThat(preposes).isNotNull().isEmpty();
     }
 
@@ -105,7 +100,7 @@ public class PreposMediatorTest {
 		mockRelatedServices();
         when(pricelistsService.getPricelistsMap()).thenReturn(Maps.<String, Pricelist>newHashMap());
 
-        preposMediator.getNewPreposModels();
+        preposConstructor.getNewPreposModels();
     }
 
     @Test
@@ -115,7 +110,7 @@ public class PreposMediatorTest {
 
 	    when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
 
-        List<PreposModel> preposes = preposMediator.getNewPreposModels();
+        List<PreposModel> preposes = preposConstructor.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
         assertThat(preposes).hasSize(1);
         assertThat(preposes).isEqualTo(createExpectedPreposesForCaseWhenNoMatchingByClientNumber());
