@@ -1,20 +1,20 @@
 <window id="sales" title="Sales" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.sales.SalesViewModel')"
-        validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="10" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)">
+        validationMessages="@id('vmsgs')" vflex="1" hflex="1">
+    <listbox id="box" multiple="true" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)" vflex="85%" autopaging="true" mold="paging">
         <listhead sizable="true">
-            <listheader label="Shipped date" sort="auto(shippedDate)"/>
-            <listheader label="Shipped BN:" sort="auto(shippedBillNumber)"/>
-            <listheader label="Client name" sort="auto(clientName)"/>
-            <listheader label="Client number" sort="auto(clientNumber)"/>
-            <listheader label="Client zip" sort="auto(clientZip)"/>
-            <listheader label="PN" sort="auto(partNumber)"/>
-            <listheader label="Quantity" sort="auto(quantity)"/>
-            <listheader label="Serials" sort="auto(serials)"/>
-            <listheader label="Price" sort="auto(price)"/>
-            <listheader label="Cisco Type" sort="auto(ciscoType)"/>
-            <listheader label="Comment" sort="auto(comment)"/>
+            <listheader hflex="1" label="Shipped date" sort="auto(shippedDate)"/>
+            <listheader hflex="1" label="Shipped BN:" sort="auto(shippedBillNumber)"/>
+            <listheader hflex="1" label="Client name" sort="auto(clientName)"/>
+            <listheader hflex="1" label="Client number" sort="auto(clientNumber)"/>
+            <listheader hflex="1" label="Client zip" sort="auto(clientZip)"/>
+            <listheader hflex="1" label="PN" sort="auto(partNumber)"/>
+            <listheader hflex="1" label="Quantity" sort="auto(quantity)"/>
+            <listheader hflex="1" label="Serials" sort="auto(serials)"/>
+            <listheader hflex="1" label="Price" sort="auto(price)"/>
+            <listheader hflex="1" label="Cisco Type" sort="auto(ciscoType)"/>
+            <listheader hflex="1" label="Comment" sort="auto(comment)"/>
         </listhead>
 
         <template name="model" var="sale">
@@ -34,7 +34,7 @@
         </template>
     </listbox>
 
-    <groupbox id="mygrp" form="@id('sales') @load(vm.selectedSaleModel) @save(vm.selectedSaleModel, before='update') @save(vm.newSaleModel, before='add') ">
+    <groupbox id="mygrp" vflex="15%" form="@id('sales') @load(vm.selectedSaleModel) @save(vm.selectedSaleModel, before='update') @save(vm.newSaleModel, before='add') ">
         <caption label="Sale`s info" />
         Shipped date:
         <datebox value="@bind(sales.shippedDate)" />

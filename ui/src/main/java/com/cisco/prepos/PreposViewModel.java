@@ -1,7 +1,9 @@
 package com.cisco.prepos;
 
+import com.cisco.prepos.model.PreposFilter;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.PreposService;
+import com.google.common.collect.Lists;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -19,36 +21,52 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
-    private List<PreposModel> preposes;
+	private List<PreposModel> preposes;
+	private List<PreposModel> filteredPreposes;
 
-    @WireVariable
-    private PreposService preposService;
+	private PreposFilter preposFilter = new PreposFilter();
 
-    public List<PreposModel> getAllPrepos() {
-        preposes = preposService.getAllData();
-        return preposes;
-    }
+	@WireVariable
+	private PreposService preposService;
 
-    @Command("refresh")
-    @NotifyChange("allPrepos")
-    public void refresh() {
+	public List<PreposModel> getAllPrepos() {
 
-    }
+		if (preposes == null) {
+			preposes = preposService.getAllData();
+			filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
+		}
 
-    @Command("save")
-    public void save() {
-        preposService.save(preposes);
-    }
+		return filteredPreposes;
+	}
+
+	public PreposFilter getFoodFilter() {
+		return preposFilter;
+	}
+
+	@Command("refresh")
+	@NotifyChange("allPrepos")
+	public void refresh() {
+		preposes = preposService.getAllData();
+		filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
+	}
+
+	@Command("save")
+	public void save() {
+		preposService.save(preposes);
+	}
 
 
-    @Command("promoSelected")
-    public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
+	@Command("promoSelected")
+	public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
 
-        preposService.recountPrepos(preposModel);
-        BindUtils.postNotifyChange(null, null, preposModel, "prepos");
-    }
+		preposService.recountPrepos(preposModel);
+		BindUtils.postNotifyChange(null, null, preposModel, "prepos");
+	}
 
-    public void setPreposService(PreposService preposService) {
-        this.preposService = preposService;
-    }
+	@Command
+	@NotifyChange({"allPrepos"})
+	public void changeFilter() {
+		filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, preposes);
+	}
+
 }

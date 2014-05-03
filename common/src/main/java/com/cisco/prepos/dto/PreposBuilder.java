@@ -30,6 +30,7 @@ public class PreposBuilder {
     private String comment;
     private String serials;
     private int zip;
+	private Prepos.Status status;
 
     private PreposBuilder() {
     }
@@ -144,6 +145,11 @@ public class PreposBuilder {
         return this;
     }
 
+	public PreposBuilder status(Prepos.Status status) {
+		this.status = status;
+		return this;
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -228,8 +234,11 @@ public class PreposBuilder {
 		return zip;
 	}
 
+	public Prepos.Status getStatus() {
+		return status;
+	}
 	public Prepos build() {
-        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip);
+        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip, status);
         return prepos;
     }
 }

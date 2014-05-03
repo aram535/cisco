@@ -1,8 +1,8 @@
 <window id="win" title="Names" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.darts.DartsViewModel')"
-        validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)">
+        validationMessages="@id('vmsgs')" vflex="1" hflex="1">
+    <listbox id="box" multiple="true" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)" vflex="85%" autopaging="true" mold="paging">
         <listhead sizable="true" menupopup="auto">
             <listheader hflex="min" label="Authorization number" sort="auto(authorizationNumber)"/>
             <listheader hflex="min" label="Version"  sort="auto(version)" />
@@ -28,32 +28,32 @@
         </listhead>
         <template name="model" var="darts">
             <listitem value="@load(darts)">
-                <listcell hflex="max" label="@bind(darts.authorizationNumber)" />
-                <listcell hflex="max" label="@bind(darts.version)" />
-                <listcell hflex="max" label="@bind(darts.distributorInfo)" />
-                <listcell hflex="max" label="@bind(darts.startDate)" />
-                <listcell hflex="max" label="@bind(darts.endDate)" />
-                <listcell hflex="max" label="@bind(darts.distiDiscount)" />
-                <listcell hflex="max" label="@bind(darts.resellerName)" />
-                <listcell hflex="max" label="@bind(darts.resellerCountry)" />
-                <listcell hflex="max" label="@bind(darts.resellerAcct)" />
-                <listcell hflex="max" label="@bind(darts.endUserName)" />
-                <listcell hflex="max" label="@bind(darts.endUserCountry)" />
-                <listcell hflex="max" label="@bind(darts.quantity)" />
-                <listcell hflex="max" label="@bind(darts.quantityInitial)" />
-                <listcell hflex="max" label="@bind(darts.ciscoSku)" />
-                <listcell hflex="max" label="@bind(darts.distiSku)" />
-                <listcell hflex="max" label="@bind(darts.listPrice)" />
-                <listcell hflex="max" label="@bind(darts.claimUnit)" />
-                <listcell hflex="max" label="@bind(darts.extCreditAmt)" />
-                <listcell hflex="max" label="@bind(darts.fastTrackPie)" />
-                <listcell hflex="max" label="@bind(darts.id)"/>
-                <listcell hflex="max" label="@bind(darts.ipNgnPartnerPricingEm)" />
-                <listcell hflex="max" label="@bind(darts.mdmFulfillment)" />
+                <listcell label="@bind(darts.authorizationNumber)" />
+                <listcell label="@bind(darts.version)" />
+                <listcell label="@bind(darts.distributorInfo)" />
+                <listcell label="@bind(darts.startDate)" />
+                <listcell label="@bind(darts.endDate)" />
+                <listcell label="@bind(darts.distiDiscount)" />
+                <listcell label="@bind(darts.resellerName)" />
+                <listcell label="@bind(darts.resellerCountry)" />
+                <listcell label="@bind(darts.resellerAcct)" />
+                <listcell label="@bind(darts.endUserName)" />
+                <listcell label="@bind(darts.endUserCountry)" />
+                <listcell label="@bind(darts.quantity)" />
+                <listcell label="@bind(darts.quantityInitial)" />
+                <listcell label="@bind(darts.ciscoSku)" />
+                <listcell label="@bind(darts.distiSku)" />
+                <listcell label="@bind(darts.listPrice)" />
+                <listcell label="@bind(darts.claimUnit)" />
+                <listcell label="@bind(darts.extCreditAmt)" />
+                <listcell label="@bind(darts.fastTrackPie)" />
+                <listcell label="@bind(darts.id)"/>
+                <listcell label="@bind(darts.ipNgnPartnerPricingEm)" />
+                <listcell label="@bind(darts.mdmFulfillment)" />
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
+    <groupbox id="mygrp" vflex="15%" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
         <caption label="DART`s info" />
         AuthorizationNumber:
         <textbox value="@bind(darts.authorizationNumber)" />

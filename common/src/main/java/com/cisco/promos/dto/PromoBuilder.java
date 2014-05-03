@@ -1,5 +1,7 @@
 package com.cisco.promos.dto;
 
+import java.sql.Timestamp;
+
 /**
  * Created by Alf on 19.04.2014.
  */
@@ -13,6 +15,7 @@ public class PromoBuilder {
 	private String code;
 	private double claimPerUnit;
 	private int version;
+	private Timestamp endDate;
 
 	private PromoBuilder() {
 	}
@@ -66,6 +69,11 @@ public class PromoBuilder {
 		return this;
 	}
 
+	public PromoBuilder setEndDate(Timestamp endDate) {
+		this.endDate = endDate;
+		return this;
+	}
+
 	public Promo build() {
 		Promo promo = new Promo();
 		promo.setId(id);
@@ -77,6 +85,7 @@ public class PromoBuilder {
 		promo.setCode(code);
 		promo.setClaimPerUnit(claimPerUnit);
 		promo.setVersion(version);
+		promo.setEndDate(endDate);
 		return promo;
 	}
 }

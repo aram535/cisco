@@ -22,6 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,7 @@ import static org.mockito.Mockito.when;
  * Time: 22:38
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PreposConstructorTest {
+public class PreposMediatorTest {
 
     private static final Timestamp CURRENT_TIME = new Timestamp(DateTime.now().getMillis());
     private static final String CISCO_TYPE = "CISCO SB";
@@ -68,7 +69,7 @@ public class PreposConstructorTest {
     private static final double PRICELIST_DISCOUNT = 0.3;
 
     @InjectMocks
-    private PreposConstructor preposConstructor = new DefaultPreposConstructor();
+    private PreposMediator preposMediator = new DefaultPreposMediator();
 
     @Mock
     private SalesService salesService;
@@ -87,10 +88,14 @@ public class PreposConstructorTest {
 
     private Sale firstSale;
 
+	@Before
+	public void initPreposConstructor() {
+		preposMediator.setPreposModelConstructor(new DefaultPreposModelConstructor());
+	}
     @Test
     public void thatGetPreposesReturnsEmptyListIfThereAreNoSales() {
         when(salesService.getSales(NOT_PROCESSED)).thenReturn(Lists.<Sale>newArrayList());
-        List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isEmpty();
     }
 
@@ -100,7 +105,7 @@ public class PreposConstructorTest {
 		mockRelatedServices();
         when(pricelistsService.getPricelistsMap()).thenReturn(Maps.<String, Pricelist>newHashMap());
 
-        preposConstructor.getNewPreposModels();
+        preposMediator.getNewPreposModels();
     }
 
     @Test
@@ -110,7 +115,7 @@ public class PreposConstructorTest {
 
 	    when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
 
-        List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
         assertThat(preposes).hasSize(1);
         assertThat(preposes).isEqualTo(createExpectedPreposesForCaseWhenNoMatchingByClientNumber());
@@ -121,7 +126,7 @@ public class PreposConstructorTest {
 
 		mockRelatedServices();
 
-		List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+		List<PreposModel> preposes = preposMediator.getNewPreposModels();
 		assertThat(preposes).isNotNull().isNotEmpty();
 		assertThat(preposes).hasSize(1);
 
@@ -139,7 +144,7 @@ public class PreposConstructorTest {
 		mockRelatedServices();
 		when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
 
-		List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+		List<PreposModel> preposes = preposMediator.getNewPreposModels();
 
 		Prepos actualPrepos = preposes.get(0).getPrepos();
 		assertThat(actualPrepos.getSecondPromo()).isNullOrEmpty();
@@ -153,7 +158,7 @@ public class PreposConstructorTest {
 		when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
 		when(promosService.getPromosMap()).thenReturn(Maps.<String, Promo>newHashMap());
 
-		List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+		List<PreposModel> preposes = preposMediator.getNewPreposModels();
 
 		Prepos actualPrepos = preposes.get(0).getPrepos();
 		assertThat(actualPrepos.getSecondPromo()).isNullOrEmpty();
@@ -173,7 +178,7 @@ public class PreposConstructorTest {
 
 		mockRelatedServices();
 
-		List<PreposModel> preposes = preposConstructor.getNewPreposModels();
+		List<PreposModel> preposes = preposMediator.getNewPreposModels();
 		assertThat(preposes).isNotNull().isNotEmpty();
 		assertThat(preposes).hasSize(1);
 
@@ -220,7 +225,7 @@ public class PreposConstructorTest {
 
 	private Map<String, Promo> createExpectedPromos() {
 		Map<String, Promo> promos = Maps.newHashMap();
-		Promo promo = new Promo(1L, PART_NUMBER, "2 Port Phone Adapter", PROMO_DISCOUNT, PROMO_CODE, GPL, PROMO_CODE, 5.52, 8);
+		Promo promo = new Promo(1L, PART_NUMBER, "2 Port Phone Adapter", PROMO_DISCOUNT, PROMO_CODE, GPL, PROMO_CODE, 5.52, 8, CURRENT_TIME);
 		promos.put(PART_NUMBER, promo);
 		return promos;
 	}
@@ -273,7 +278,7 @@ public class PreposConstructorTest {
 		Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
 				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
 				.setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY+1)
+				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
 				.setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
 				.setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
 				.setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
@@ -306,7 +311,8 @@ public class PreposConstructorTest {
 			    partNumber(PART_NUMBER).quantity(QUANTITY).salePrice(PRICE).saleDiscount(SALE_DISCOUNT).
 			    firstPromo(PROMO_CODE).secondPromo(AUTHORIZATION_NUMBER).buyDiscount(DISTI_DISCOUNT).
 			    buyPrice(buyPrice).clientNumber(CLIENT_NUMBER).endUser(END_USER_NAME).shippedDate(CURRENT_TIME).
-			    shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true).
+			    shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
+			    .status(Prepos.Status.NOT_PROCESSED).
 			    build();
 
 	    PreposModel preposModel = new PreposModel();
@@ -323,7 +329,8 @@ public class PreposConstructorTest {
                 partNumber(PART_NUMBER).quantity(QUANTITY).salePrice(PRICE).saleDiscount(SALE_DISCOUNT).
 		        firstPromo(PROMO_CODE).buyDiscount(PROMO_DISCOUNT).buyPrice(buyPrice).
 		        clientNumber(CLIENT_NUMBER).shippedDate(CURRENT_TIME).
-		        shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true).
+		        shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
+		        .status(Prepos.Status.NOT_PROCESSED).
 		        build();
 
 	    PreposModel preposModel = new PreposModel();

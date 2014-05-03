@@ -1,16 +1,16 @@
 <window id="win" title="Names" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.pricelists.PricelistsViewModel')"
-        validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allPricelists)"
-             selectedItem="@bind(vm.selectedPricelistModel)">
+        validationMessages="@id('vmsgs')" vflex="1" hflex="1">
+    <listbox id="box" multiple="true" model="@bind(vm.allPricelists)"
+             selectedItem="@bind(vm.selectedPricelistModel)" vflex="85%" autopaging="true" mold="paging">
         <listhead sizable="true">
-            <listheader label="Id" sort="auto(id)"/>
-            <listheader label="Part number" sort="auto(partNumber)"/>
-            <listheader label="Description" sort="auto(description)"/>
-            <listheader label="Gpl" sort="auto(gpl)"/>
-            <listheader label="Wpl" sort="auto(wpl)"/>
-            <listheader label="Discount" sort="auto(discount)"/>
+            <listheader hflex="min" label="Id" sort="auto(id)"/>
+            <listheader hflex="1" label="Part number" sort="auto(partNumber)"/>
+            <listheader hflex="1" label="Description" sort="auto(description)"/>
+            <listheader hflex="1" label="Gpl" sort="auto(gpl)"/>
+            <listheader hflex="1" label="Wpl" sort="auto(wpl)"/>
+            <listheader hflex="1" label="Discount" sort="auto(discount)"/>
         </listhead>
         <template name="model" var="pricelists">
             <listitem value="@load(pricelists)">
@@ -23,7 +23,7 @@
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp"
+    <groupbox id="mygrp" vflex="15%"
               form="@id('pricelists') @load(vm.selectedPricelistModel) @save(vm.selectedPricelistModel, before='update') @save(vm.newPricelistModel, before='add')">
         <caption label="Pricelist`s info"/>
         Part number:

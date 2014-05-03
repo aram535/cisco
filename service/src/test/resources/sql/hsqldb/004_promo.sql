@@ -7,5 +7,6 @@ CREATE TABLE promo (
   gpl  INT,
   code     VARCHAR(1000),
   claim_per_unit     DOUBLE,
-  version        INT
+  version        INT,
+  end_date DATE
 );

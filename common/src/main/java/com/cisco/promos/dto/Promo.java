@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 /**
  * Created by Alf on 19.04.2014.
@@ -22,8 +23,9 @@ public class Promo {
 	private String code;
 	private double claimPerUnit;
 	private int version;
+	private Timestamp endDate;
 
-	public Promo(long id, String partNumber, String description, double discount, String name, int gpl, String code, double claimPerUnit, int version) {
+	public Promo(long id, String partNumber, String description, double discount, String name, int gpl, String code, double claimPerUnit, int version, Timestamp endDate) {
 		this.id = id;
 		this.partNumber = partNumber;
 		this.description = description;
@@ -33,6 +35,7 @@ public class Promo {
 		this.code = code;
 		this.claimPerUnit = claimPerUnit;
 		this.version = version;
+		this.endDate = endDate;
 	}
 
 	public Promo() {
@@ -84,6 +87,11 @@ public class Promo {
 		return version;
 	}
 
+	@Column(name = "end_date")
+	public Timestamp getEndDate() {
+		return endDate;
+	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -120,6 +128,10 @@ public class Promo {
 		this.version = version;
 	}
 
+	public void setEndDate(Timestamp endDate) {
+		this.endDate = endDate;
+	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -143,6 +155,7 @@ public class Promo {
 				.append(this.code, rhs.code)
 				.append(this.claimPerUnit, rhs.claimPerUnit)
 				.append(this.version, rhs.version)
+				.append(this.endDate, rhs.endDate)
 				.isEquals();
 	}
 
@@ -158,6 +171,7 @@ public class Promo {
 				.append(code)
 				.append(claimPerUnit)
 				.append(version)
+				.append(endDate)
 				.toHashCode();
 	}
 
@@ -174,6 +188,7 @@ public class Promo {
 				.append("code", code)
 				.append("claimPerUnit", claimPerUnit)
 				.append("version", version)
+				.append("endDate", endDate)
 				.toString();
 	}
 }

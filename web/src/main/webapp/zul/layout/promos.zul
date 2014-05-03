@@ -1,18 +1,19 @@
 <window id="win" title="Names" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.promos.PromosViewModel')"
-        validationMessages="@id('vmsgs')">
-    <listbox id="box" multiple="true" rows="10" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)">
+        validationMessages="@id('vmsgs')" vflex="1" hflex="1">
+    <listbox id="box" multiple="true" autopaging="true" mold="paging" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)" sizedByContent="true" vflex="85%" span="true">
         <listhead sizable="true">
-            <listheader label="Id" sort="auto(id)"/>
-            <listheader label="Part nubmer" sort="auto(partNumber)"/>
-            <listheader label="Description" sort="auto(description)"/>
-            <listheader label="Discount" sort="auto(discount)"/>
-            <listheader label="Name" sort="auto(name)"/>
-            <listheader label="Gpl" sort="auto(gpl)"/>
-            <listheader label="Code" sort="auto(code)"/>
-            <listheader label="Claim per unit" sort="auto(claimPerUnit)"/>
-            <listheader label="Version" sort="auto(version)"/>
+            <listheader hflex="min" label="Id" sort="auto(id)"/>
+            <listheader hflex="2" label="Part nubmer" sort="auto(partNumber)"/>
+            <listheader hflex="2" label="Description" sort="auto(description)"/>
+            <listheader hflex="1" label="Discount" sort="auto(discount)"/>
+            <listheader hflex="2" label="Name" sort="auto(name)"/>
+            <listheader hflex="1" label="Gpl" sort="auto(gpl)"/>
+            <listheader hflex="1" label="Code" sort="auto(code)"/>
+            <listheader hflex="1" label="Claim per unit" sort="auto(claimPerUnit)"/>
+            <listheader hflex="1" label="Version" sort="auto(version)"/>
+            <listheader hflex="1" label="End date" sort="auto(endDate)"/>
         </listhead>
         <template name="model" var="promos">
             <listitem value="@load(promos)">
@@ -25,11 +26,12 @@
                 <listcell label="@bind(promos.code)"/>
                 <listcell label="@bind(promos.claimPerUnit)"/>
                 <listcell label="@bind(promos.version)"/>
+                <listcell label="@bind(promos.endDate)"/>
             </listitem>
         </template>
     </listbox>
     <groupbox id="mygrp"
-              form="@id('promos') @load(vm.selectedPromoModel) @save(vm.selectedPromoModel, before='update') @save(vm.newPromoModel, before='add')">
+              form="@id('promos') @load(vm.selectedPromoModel) @save(vm.selectedPromoModel, before='update') @save(vm.newPromoModel, before='add')" vflex="15%">
         <caption label="Promo`s info"/>
         Part nubmer:
         <textbox value="@bind(promos.partNumber)"/>
@@ -46,7 +48,10 @@
         Claim per unit:
         <doublebox value="@bind(promos.claimPerUnit)"/>
         Version:
-        <intbox id="txtAddress" value="@bind(promos.version)"/>
+        <intbox value="@bind(promos.version)"/>
+        End date:
+        <datebox value="@bind(promos.endDate)"/>
+
         <button id="add" label="Add" onClick="@command('add')"/>
         <button id="update" label="Update" onClick="@command('update')"
                 disabled="@load(empty vm.selectedPromoModel)"/>

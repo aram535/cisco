@@ -9,13 +9,14 @@ import java.util.List;
  * Date: 21.04.2014
  * Time: 22:37
  */
-public interface PreposConstructor {
+public interface PreposMediator {
     List<PreposModel> getNewPreposModels();
 
 	List<PreposModel> getAllPreposModels();
 
 	void save(List<PreposModel> preposModels);
 
-	void recountPreposForNewPromo(PreposModel preposModel);
+	void updatePreposDiscount(PreposModel preposModel);
 
+	void setPreposModelConstructor(PreposModelConstructor defaultPreposModelConstructor);
 }

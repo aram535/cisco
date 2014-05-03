@@ -4,6 +4,7 @@ import com.cisco.hibernate.BasicDb;
 import com.cisco.promos.dto.Promo;
 import com.cisco.promos.dto.PromoBuilder;
 import com.google.common.collect.Lists;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.UnitilsJUnit4TestClassRunner;
@@ -11,6 +12,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -80,25 +82,34 @@ public class HibernatePromosDaoTest extends BasicDb {
     }
 
     private Promo createNewPromo() {
+	    long millisOfSomeDate = new DateTime(2014, 3, 14, 0, 0, 0, 0).getMillis();
+	    Timestamp someDate = new Timestamp(millisOfSomeDate);
+
         return PromoBuilder.newPromoBuilder().setPartNumber("Some Part Number").setDescription("4 Line IP Phone With Display, PoE and PC Port")
                 .setDiscount(42).setName("PP-SBFa81137-130126").setGpl(189).setCode("PP-SBFa81137-130126")
-                .setClaimPerUnit(9.45).setVersion(8).build();
+                .setClaimPerUnit(9.45).setVersion(8).setEndDate(someDate).build();
     }
 
     private List<Promo> createNewPromos() {
+	    long millisOfSomeDate = new DateTime(2014, 3, 14, 0, 0, 0, 0).getMillis();
+	    Timestamp someDate = new Timestamp(millisOfSomeDate);
+
         Promo firstPromo = PromoBuilder.newPromoBuilder().setPartNumber("Some Part Number").setDescription("4 Line IP Phone With Display, PoE and PC Port")
                 .setDiscount(42).setName("PP-SBFa81137-130126").setGpl(189).setCode("PP-SBFa81137-130126")
-                .setClaimPerUnit(9.45).setVersion(8).build();
+                .setClaimPerUnit(9.45).setVersion(8).setEndDate(someDate).build();
         Promo secondPromo = PromoBuilder.newPromoBuilder().setPartNumber("Some Other Part Number").setDescription("4 Line IP Phone With Display, PoE and PC Port")
                 .setDiscount(42).setName("PP-SBFa81137-130126").setGpl(189).setCode("PP-SBFa81137-130126")
-                .setClaimPerUnit(9.45).setVersion(8).build();
+                .setClaimPerUnit(9.45).setVersion(8).setEndDate(someDate).build();
 
         return Lists.newArrayList(firstPromo, secondPromo);
     }
 
     private Promo createExpectedPromo() {
+	    long millisOfSomeDate = new DateTime(2014, 2, 14, 0, 0, 0, 0).getMillis();
+	    Timestamp someDate = new Timestamp(millisOfSomeDate);
+
         return PromoBuilder.newPromoBuilder().setId(1).setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display, PoE and PC Port")
                 .setDiscount(42).setName("PP-SBFa81137-130126").setGpl(189).setCode("PP-SBFa81137-130126")
-                .setClaimPerUnit(9.45).setVersion(8).build();
+                .setClaimPerUnit(9.45).setVersion(8).setEndDate(someDate).build();
     }
 }

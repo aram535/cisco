@@ -15,7 +15,7 @@ import java.util.List;
 public class DefaultPreposService implements PreposService {
 
 	@Autowired
-	private PreposConstructor preposConstructor;
+	private PreposMediator preposMediator;
 
     private List<PreposModel> preposModels = Lists.newArrayList();
 
@@ -23,22 +23,21 @@ public class DefaultPreposService implements PreposService {
     @Override
     public List<PreposModel> getAllData() {
 
-	    List<PreposModel> newPreposModels = preposConstructor.getNewPreposModels();
-	    preposConstructor.save(newPreposModels);
+	    List<PreposModel> newPreposModels = preposMediator.getNewPreposModels();
+	    preposMediator.save(newPreposModels);
 
-	    preposModels = preposConstructor.getAllPreposModels();
+	    preposModels = preposMediator.getAllPreposModels();
         return preposModels;
     }
 
 	@Override
 	public void recountPrepos(PreposModel preposModel) {
-
-		preposConstructor.recountPreposForNewPromo(preposModel);
+		preposMediator.updatePreposDiscount(preposModel);
 	}
 
     @Override
     public void save(List<PreposModel> prePos) {
-		preposConstructor.save(prePos);
+		preposMediator.save(prePos);
     }
 
 }

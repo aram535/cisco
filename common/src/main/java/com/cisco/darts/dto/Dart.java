@@ -65,6 +65,11 @@ public class Dart {
         this.mdmFulfillment = mdmFulfillment;
     }
 
+	public Dart(String authorizationNumber, String endUserName) {
+		this.authorizationNumber = authorizationNumber;
+		this.endUserName = endUserName;
+	}
+
     public Dart() {
 
     }

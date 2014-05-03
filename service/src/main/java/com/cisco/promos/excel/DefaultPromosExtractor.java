@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class DefaultPromosExtractor implements PromosExtractor {
     private static final int CODE_COLUMN = 5;
     private static final int CLAIM_PER_UNIT_COLUMN = 6;
     private static final int VERSION_COLUMN = 7;
+    private static final int END_DATE_COLUMN = 8;
 
 
     private final FieldsExtractor fieldsExtractor = new DefaultFieldsExtractor();
@@ -67,7 +69,7 @@ public class DefaultPromosExtractor implements PromosExtractor {
                 String code = fieldsExtractor.extractStringValue(row, CODE_COLUMN);
                 double claimPerUnit = fieldsExtractor.extractDoubleValue(row, CLAIM_PER_UNIT_COLUMN);
                 int version = fieldsExtractor.extractIntValue(row, VERSION_COLUMN);
-
+	            Timestamp endDate = fieldsExtractor.extractTimestamp(row, END_DATE_COLUMN);
 
                 Promo promo = newPromoBuilder().
                         setPartNumber(partNumber).
@@ -78,6 +80,7 @@ public class DefaultPromosExtractor implements PromosExtractor {
                         setCode(code).
                         setClaimPerUnit(claimPerUnit).
                         setVersion(version).
+		                setEndDate(endDate).
                         build();
 
                 promos.add(promo);
