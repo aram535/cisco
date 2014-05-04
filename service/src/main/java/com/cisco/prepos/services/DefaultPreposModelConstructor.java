@@ -5,9 +5,7 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
-import com.cisco.prepos.services.discount.DefaultDiscountProvider;
 import com.cisco.prepos.services.discount.DiscountProvider;
-import com.cisco.prepos.services.partner.DefaultPartnerNameProvider;
 import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
@@ -15,28 +13,35 @@ import com.cisco.sales.dto.Sale;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.dto.Prepos.Status.NOT_PROCESSED;
+import static com.cisco.sales.dto.Sale.Status.PROCESSED;
 
 /**
  * Created by Alf on 03.05.2014.
  */
+@Component
 @PropertySource("classpath:prepos.properties")
 public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DiscountProvider discountProvider = new DefaultDiscountProvider();
+    @Autowired
+    private DiscountProvider discountProvider;
 
-    private final PartnerNameProvider partnerNameProvider = new DefaultPartnerNameProvider();
+    @Autowired
+    private PartnerNameProvider partnerNameProvider;
 
     @Value("${good.threshold}")
     private double threshold;
@@ -55,6 +60,11 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             PreposModel preposModel = new PreposModel();
             Prepos prepos = new Prepos();
 
+            String partNumber = sale.getPartNumber();
+            double gpl = getGpl(partNumber, pricelistsMap);
+
+            prepos.setPartNumber(partNumber);
+            prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
             prepos.setStatus(NOT_PROCESSED);
             prepos.setClientNumber(sale.getClientNumber());
             prepos.setShippedDate(sale.getShippedDate());
@@ -64,28 +74,31 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             prepos.setZip(sale.getClientZip());
             prepos.setType(sale.getCiscoType());
             prepos.setQuantity(sale.getQuantity());
-            prepos.setPartNumber(sale.getPartNumber());
             prepos.setSalePrice(sale.getPrice());
-            prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
 
-            Promo firstPromo = promosMap.get(prepos.getPartNumber());
-            if (firstPromo != null) {
-                prepos.setFirstPromo(firstPromo.getCode());
-            }
+            String firstPromo = getFirstPromo(promosMap, prepos);
+            prepos.setFirstPromo(firstPromo);
 
             assignSecondPromo(prepos, preposModel, dartsTable);
 
-            double gpl = getGpl(prepos, pricelistsMap);
 
-            assignSaleDiscount(prepos, gpl);
-            assignBuyDiscount(prepos, pricelistsMap, promosMap, dartsTable);
-            assignBuyPrice(prepos, gpl);
-            assignOk(prepos, threshold);
+            double saleDiscount = getSaleDiscount(prepos.getSalePrice(), gpl);
+            prepos.setSaleDiscount(saleDiscount);
+
+
+            double buyDiscount = discountProvider.getDiscount(getDiscountInfo(prepos), dartsTable, promosMap, pricelistsMap);
+            prepos.setBuyDiscount(buyDiscount);
+
+            double buyPrice = getBuyPrice(prepos.getBuyDiscount(), gpl);
+            prepos.setBuyPrice(buyPrice);
+
+            boolean okStatus = getOkStatus(prepos.getSalePrice(), prepos.getBuyPrice(), threshold);
+            prepos.setOk(okStatus);
 
             preposModel.setPrepos(prepos);
             preposes.add(preposModel);
 
-            sale.setStatus(Sale.Status.PROCESSED);
+            sale.setStatus(PROCESSED);
         }
 
         logger.debug(String.format("%d new sales processed", sales.size()));
@@ -113,9 +126,12 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
     @Override
     public void recountPreposDiscount(PreposModel preposModel, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable) {
 
-        double buyDiscount = discountProvider.getDiscount(preposModel.getPrepos(), dartsTable, promosMap, pricelistsMap);
+        Prepos prepos = preposModel.getPrepos();
+        Triplet<String, String, String> discountInfo = getDiscountInfo(prepos);
 
-        preposModel.getPrepos().setBuyDiscount(buyDiscount);
+        double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
+
+        prepos.setBuyDiscount(buyDiscount);
 
         Pricelist pricelist = pricelistsMap.get(preposModel.getPrepos().getPartNumber());
 
@@ -127,38 +143,40 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
         double buyPrice = (double) Math.round(gpl * (1 - preposModel.getPrepos().getBuyDiscount()) * 100) / 100;
 
-        preposModel.getPrepos().setBuyPrice(buyPrice);
-
-        if ((preposModel.getPrepos().getSalePrice() / preposModel.getPrepos().getBuyPrice()) > threshold) {
-            preposModel.getPrepos().setOk(true);
-        } else {
-            preposModel.getPrepos().setOk(false);
-        }
-    }
-
-    private void assignOk(Prepos prepos, double threshold) {
-
-        if ((prepos.getSalePrice() / prepos.getBuyPrice()) > threshold) {
-            prepos.setOk(true);
-        } else {
-            prepos.setOk(false);
-        }
-    }
-
-    private void assignBuyPrice(Prepos prepos, double gpl) {
-
-        double buyPrice = (double) Math.round(gpl * (1 - prepos.getBuyDiscount()) * 100) / 100;
-
         prepos.setBuyPrice(buyPrice);
+
+        boolean okStatus = getOkStatus(prepos.getSalePrice(), prepos.getBuyPrice(), threshold);
+        prepos.setOk(okStatus);
     }
 
-    private void assignBuyDiscount(Prepos prepos, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable) {
-
-        double buyDiscount = discountProvider.getDiscount(prepos, dartsTable, promosMap, pricelistsMap);
-
-        prepos.setBuyDiscount(buyDiscount);
+    private Triplet<String, String, String> getDiscountInfo(Prepos prepos) {
+        return new Triplet<>(prepos.getPartNumber(), prepos.getFirstPromo(), prepos.getSecondPromo());
     }
 
+    private String getFirstPromo(Map<String, Promo> promosMap, Prepos prepos) {
+        Promo firstPromo = promosMap.get(prepos.getPartNumber());
+        if (firstPromo != null) {
+            return firstPromo.getCode();
+        }
+        return null;
+    }
+
+    private boolean getOkStatus(double salePrice, double buyPrice, double threshold) {
+
+        if ((salePrice / buyPrice) > threshold) {
+            return true;
+        }
+        return false;
+    }
+
+    private double getBuyPrice(double buyDiscount, double gpl) {
+
+        double buyPrice = (double) Math.round(gpl * (1 - buyDiscount) * 100) / 100;
+
+        return buyPrice;
+    }
+
+    //TODO refactoring
     private void assignSecondPromo(Prepos prepos, PreposModel preposModel, Table<String, String, Dart> dartsTable) {
 
         Map<String, Dart> suitableDarts = Maps.newHashMap();
@@ -181,30 +199,20 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             preposModel.setSelectedDart(PreposModel.EMPTY_DART);
         }
         preposModel.setSuitableDarts(suitableDarts);
-
     }
 
-    private void assignSaleDiscount(Prepos prepos, double gpl) {
+    private double getSaleDiscount(double price, double gpl) {
 
-        double saleDiscount = (double) Math.round((1 - (prepos.getSalePrice() / gpl)) * 100) / 100;
+        double saleDiscount = (double) Math.round((1 - (price / gpl)) * 100) / 100;
 
-        prepos.setSaleDiscount(saleDiscount);
+        return saleDiscount;
     }
 
-    private void assignPartnerName(Sale sale, Prepos prepos, Map<String, Client> clientsMap) {
-        Client client = clientsMap.get(sale.getClientNumber());
-        if (client != null) {
-            prepos.setPartnerName(client.getName());
-        } else {
-            prepos.setPartnerName(sale.getClientName());
-        }
-    }
-
-    private double getGpl(Prepos prepos, Map<String, Pricelist> pricelistsMap) {
-        Pricelist pricelist = pricelistsMap.get(prepos.getPartNumber());
+    private double getGpl(String partNumber, Map<String, Pricelist> pricelistsMap) {
+        Pricelist pricelist = pricelistsMap.get(partNumber);
 
         if (pricelist == null) {
-            throw new CiscoException(String.format("price for sale part number %s not found", prepos.getPartNumber()));
+            throw new CiscoException(String.format("price for sale part number %s not found", partNumber));
         }
 
         return pricelist.getGpl();

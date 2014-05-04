@@ -56,7 +56,8 @@ public class DefaultPreposMediator implements PreposMediator {
     @Autowired
     private DartsService dartsService;
 
-    private final PreposModelConstructor preposModelConstructor = new DefaultPreposModelConstructor();
+    @Autowired
+    private PreposModelConstructor preposModelConstructor;
 
     private Map<String, Client> clientsMap;
     private Map<String, Pricelist> pricelistsMap;

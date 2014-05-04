@@ -2,6 +2,7 @@ package com.cisco.prepos.services.partner;
 
 import com.cisco.clients.dto.Client;
 import com.cisco.sales.dto.Sale;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import java.util.Map;
  * Date: 04.05.2014
  * Time: 16:17
  */
+@Component
 public class DefaultPartnerNameProvider implements PartnerNameProvider {
 
     @Override

@@ -10,6 +10,7 @@ import java.util.List;
  * Time: 22:37
  */
 public interface PreposMediator {
+
     List<PreposModel> getNewPreposModels();
 
     List<PreposModel> getAllPreposModels();

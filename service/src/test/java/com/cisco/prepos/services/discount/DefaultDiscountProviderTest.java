@@ -3,9 +3,6 @@ package com.cisco.prepos.services.discount;
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartBuilder;
 import com.cisco.exception.CiscoException;
-import com.cisco.prepos.dto.Prepos;
-import com.cisco.prepos.services.discount.DefaultDiscountProvider;
-import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
 import com.cisco.promos.dto.Promo;
@@ -13,11 +10,11 @@ import com.cisco.promos.dto.PromoBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import org.javatuples.Triplet;
 import org.junit.Test;
 
 import java.util.Map;
 
-import static com.cisco.prepos.dto.PreposBuilder.builder;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -41,38 +38,37 @@ public class DefaultDiscountProviderTest {
 
     @Test
     public void thatDiscountReturnsFromDartsIfExists() {
-        Prepos prepos = builder().secondPromo(SECOND_PROMO).partNumber(PART_NUMBER).build();
+        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, null, SECOND_PROMO);
 
-        double distiDiscount = discountProvider.getDiscount(prepos, getDartsTable(), getPromosMap(), getPriceMap());
+        double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
 
         assertThat(distiDiscount).isEqualTo(DART_DISTI_DISCOUNT);
     }
 
     @Test
     public void thatDiscountReturnsFromPromosMapIfNoDartFound() {
-        Prepos prepos = builder().firstPromo(FIRST_PROMO).secondPromo(OTHER_PROMO).partNumber(PART_NUMBER).build();
+        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, FIRST_PROMO, OTHER_PROMO);
 
-
-        double distiDiscount = discountProvider.getDiscount(prepos, getDartsTable(), getPromosMap(), getPriceMap());
+        double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
 
         assertThat(distiDiscount).isEqualTo(PROMO_DISCOUNT);
     }
 
     @Test
     public void thatDiscountReturnsFromPricelistMapIfNoDartAndPromoFound() {
-        Prepos prepos = builder().firstPromo(OTHER_PROMO).secondPromo(OTHER_PROMO).partNumber(PART_NUMBER).build();
+        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, OTHER_PROMO, OTHER_PROMO);
 
-        double distiDiscount = discountProvider.getDiscount(prepos, getDartsTable(), getPromosMapWithoutNeededPromo(), getPriceMap());
+        double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMapWithoutNeededPromo(), getPriceMap());
 
         assertThat(distiDiscount).isEqualTo(PRICE_LIST_DISCOUNT);
     }
 
     @Test(expected = CiscoException.class)
     public void thatThrowsCiscoExceptionIfNoPriceFound() {
-        Prepos prepos = builder().firstPromo(OTHER_PROMO).secondPromo(OTHER_PROMO).partNumber(OTHER_PART_NUMBER).build();
+        Triplet<String, String, String> discountInfo = new Triplet<>(OTHER_PART_NUMBER, OTHER_PROMO, OTHER_PROMO);
 
 
-        discountProvider.getDiscount(prepos, getDartsTable(), getPromosMap(), getPriceMap());
+        discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
     }
 
     private Map<String, Pricelist> getPriceMap() {

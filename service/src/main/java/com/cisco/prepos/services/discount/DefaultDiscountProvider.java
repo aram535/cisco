@@ -2,10 +2,10 @@ package com.cisco.prepos.services.discount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
-import com.cisco.prepos.dto.Prepos;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Table;
+import org.javatuples.Triplet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,26 +17,27 @@ import java.util.Map;
  * Date: 30.04.2014
  * Time: 19:22
  */
+@Component
 public class DefaultDiscountProvider implements DiscountProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public double getDiscount(Prepos prepos, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap, Map<String, Pricelist> priceMap) {
+    public double getDiscount(Triplet<String, String, String> discountInfo, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap, Map<String, Pricelist> priceMap) {
 
-        String partNumber = prepos.getPartNumber();
+        String partNumber = discountInfo.getValue0();
+        String firstPromo = discountInfo.getValue1();
+        String secondPromo = discountInfo.getValue2();
 
-        if (prepos.getSecondPromo() != null) {
+        if (secondPromo != null) {
 
             Dart dart = dartsTable.get(partNumber,
-                    prepos.getSecondPromo());
+                    secondPromo);
 
             if (dart != null) {
                 return dart.getDistiDiscount();
             }
         }
-
-        String firstPromo = prepos.getFirstPromo();
 
         if (firstPromo != null) {
             Promo promo = promosMap.get(partNumber);
