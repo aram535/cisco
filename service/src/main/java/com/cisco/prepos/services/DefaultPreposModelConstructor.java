@@ -5,6 +5,10 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
+import com.cisco.prepos.services.discount.DefaultDiscountProvider;
+import com.cisco.prepos.services.discount.DiscountProvider;
+import com.cisco.prepos.services.partner.DefaultPartnerNameProvider;
+import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.cisco.sales.dto.Sale;
@@ -20,6 +24,8 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 
+import static com.cisco.prepos.dto.Prepos.Status.NOT_PROCESSED;
+
 /**
  * Created by Alf on 03.05.2014.
  */
@@ -29,6 +35,8 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DiscountProvider discountProvider = new DefaultDiscountProvider();
+
+    private final PartnerNameProvider partnerNameProvider = new DefaultPartnerNameProvider();
 
     @Value("${good.threshold}")
     private double threshold;
@@ -47,7 +55,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             PreposModel preposModel = new PreposModel();
             Prepos prepos = new Prepos();
 
-            prepos.setStatus(Prepos.Status.NOT_PROCESSED);
+            prepos.setStatus(NOT_PROCESSED);
             prepos.setClientNumber(sale.getClientNumber());
             prepos.setShippedDate(sale.getShippedDate());
             prepos.setShippedBillNumber(sale.getShippedBillNumber());
@@ -58,8 +66,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             prepos.setQuantity(sale.getQuantity());
             prepos.setPartNumber(sale.getPartNumber());
             prepos.setSalePrice(sale.getPrice());
-
-            assignPartnerName(sale, prepos, clientsMap);
+            prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
 
             Promo firstPromo = promosMap.get(prepos.getPartNumber());
             if (firstPromo != null) {
@@ -171,7 +178,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
         }
 
         if (preposModel.getSelectedDart() == null) {
-            preposModel.setSelectedDart(PreposModel.emptyDart);
+            preposModel.setSelectedDart(PreposModel.EMPTY_DART);
         }
         preposModel.setSuitableDarts(suitableDarts);
 

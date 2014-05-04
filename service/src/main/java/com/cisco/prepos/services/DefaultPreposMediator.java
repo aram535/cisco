@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -57,14 +56,13 @@ public class DefaultPreposMediator implements PreposMediator {
     @Autowired
     private DartsService dartsService;
 
-    private PreposModelConstructor preposModelConstructor = new DefaultPreposModelConstructor();
+    private final PreposModelConstructor preposModelConstructor = new DefaultPreposModelConstructor();
 
     private Map<String, Client> clientsMap;
     private Map<String, Pricelist> pricelistsMap;
     private Map<String, Promo> promosMap;
     private Table<String, String, Dart> dartsTable;
 
-    //@PostConstruct
     public void initRelatedTablesData() {
 
         clientsMap = clientsService.getClientsMap();
@@ -73,7 +71,6 @@ public class DefaultPreposMediator implements PreposMediator {
         dartsTable = dartsService.getDartsTable();
     }
 
-    @Transactional
     @Override
     public List<PreposModel> getNewPreposModels() {
 
@@ -124,7 +121,4 @@ public class DefaultPreposMediator implements PreposMediator {
         dartsService.update(darts.values());
     }
 
-    public void setPreposModelConstructor(PreposModelConstructor preposModelConstructor) {
-        this.preposModelConstructor = preposModelConstructor;
-    }
 }

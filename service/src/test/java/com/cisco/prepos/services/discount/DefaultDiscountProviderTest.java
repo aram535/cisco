@@ -1,9 +1,11 @@
-package com.cisco.prepos.services;
+package com.cisco.prepos.services.discount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartBuilder;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
+import com.cisco.prepos.services.discount.DefaultDiscountProvider;
+import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
 import com.cisco.promos.dto.Promo;

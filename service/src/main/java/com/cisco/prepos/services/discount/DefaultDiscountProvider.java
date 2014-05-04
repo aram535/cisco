@@ -1,4 +1,4 @@
-package com.cisco.prepos.services;
+package com.cisco.prepos.services.discount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
@@ -17,7 +17,6 @@ import java.util.Map;
  * Date: 30.04.2014
  * Time: 19:22
  */
-@Component
 public class DefaultDiscountProvider implements DiscountProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

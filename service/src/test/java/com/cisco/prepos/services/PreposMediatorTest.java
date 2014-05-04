@@ -153,6 +153,7 @@ public class PreposMediatorTest {
 
     @Test
     public void thatWhenNoSuitableFirstAndSecondPromoThenPricelistDiscountIsUsed() {
+        mockRelatedServices();
         when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
         when(promosService.getPromosMap()).thenReturn(Maps.<String, Promo>newHashMap());
 
@@ -167,6 +168,9 @@ public class PreposMediatorTest {
 
     @Test
     public void thatSuitableDartsBeingResolvedCorrectly() {
+
+        mockRelatedServices();
+
         List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
         assertThat(preposes).hasSize(1);

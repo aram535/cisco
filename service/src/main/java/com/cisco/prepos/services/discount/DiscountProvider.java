@@ -1,4 +1,4 @@
-package com.cisco.prepos.services;
+package com.cisco.prepos.services.discount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.prepos.dto.Prepos;

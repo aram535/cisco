@@ -18,5 +18,4 @@ public interface PreposMediator {
 
     void updatePreposDiscount(PreposModel preposModel);
 
-    void setPreposModelConstructor(PreposModelConstructor defaultPreposModelConstructor);
 }
