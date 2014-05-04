@@ -2,9 +2,8 @@ package com.cisco.prepos.services;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartBuilder;
+import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
-import com.cisco.prepos.dto.PreposBuilder;
-import com.cisco.prepos.model.PreposModel;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
 import com.cisco.promos.dto.Promo;
@@ -16,6 +15,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
+import static com.cisco.prepos.dto.PreposBuilder.builder;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -24,7 +24,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * Time: 19:23
  */
 
-public class DefaultPromoRecounterTest {
+public class DefaultDiscountProviderTest {
 
     private static final String PART_NUMBER = "part number";
     private static final String SECOND_PROMO = "second promo";
@@ -32,38 +32,45 @@ public class DefaultPromoRecounterTest {
     private static final double DART_DISTI_DISCOUNT = 0.35;
     private static final String OTHER_PROMO = "other promo";
     private static final double PROMO_DISCOUNT = 0.55;
-    public static final double PRICE_LIST_DISCOUNT = 0.21;
+    private static final double PRICE_LIST_DISCOUNT = 0.21;
+    private static final String OTHER_PART_NUMBER = "other part number";
 
-    private PromoRecounter promoRecounter = new DefaultPromoRecounter();
+    private DiscountProvider discountProvider = new DefaultDiscountProvider();
 
     @Test
     public void thatDiscountReturnsFromDartsIfExists() {
-        Prepos prepos = PreposBuilder.builder().secondPromo(SECOND_PROMO).partNumber(PART_NUMBER).build();
-        PreposModel preposModel = new PreposModel(prepos, getSuitableDarts());
+        Prepos prepos = builder().secondPromo(SECOND_PROMO).partNumber(PART_NUMBER).build();
 
-        double distiDiscount = promoRecounter.getDiscount(preposModel, getDartsTable(), getPromosMap(), getPriceMap());
+        double distiDiscount = discountProvider.getDiscount(prepos, getDartsTable(), getPromosMap(), getPriceMap());
 
         assertThat(distiDiscount).isEqualTo(DART_DISTI_DISCOUNT);
     }
 
     @Test
     public void thatDiscountReturnsFromPromosMapIfNoDartFound() {
-        Prepos prepos = PreposBuilder.builder().firstPromo(FIRST_PROMO).secondPromo(OTHER_PROMO).partNumber(PART_NUMBER).build();
-        PreposModel preposModel = new PreposModel(prepos, getSuitableDarts());
+        Prepos prepos = builder().firstPromo(FIRST_PROMO).secondPromo(OTHER_PROMO).partNumber(PART_NUMBER).build();
 
-        double distiDiscount = promoRecounter.getDiscount(preposModel, getDartsTable(), getPromosMap(), getPriceMap());
+
+        double distiDiscount = discountProvider.getDiscount(prepos, getDartsTable(), getPromosMap(), getPriceMap());
 
         assertThat(distiDiscount).isEqualTo(PROMO_DISCOUNT);
     }
 
     @Test
     public void thatDiscountReturnsFromPricelistMapIfNoDartAndPromoFound() {
-        Prepos prepos = PreposBuilder.builder().firstPromo(OTHER_PROMO).secondPromo(OTHER_PROMO).partNumber(PART_NUMBER).build();
-        PreposModel preposModel = new PreposModel(prepos, getSuitableDarts());
+        Prepos prepos = builder().firstPromo(OTHER_PROMO).secondPromo(OTHER_PROMO).partNumber(PART_NUMBER).build();
 
-        double distiDiscount = promoRecounter.getDiscount(preposModel, getDartsTable(), getPromosMap(), getPriceMap());
+        double distiDiscount = discountProvider.getDiscount(prepos, getDartsTable(), getPromosMapWithoutNeededPromo(), getPriceMap());
 
         assertThat(distiDiscount).isEqualTo(PRICE_LIST_DISCOUNT);
+    }
+
+    @Test(expected = CiscoException.class)
+    public void thatThrowsCiscoExceptionIfNoPriceFound() {
+        Prepos prepos = builder().firstPromo(OTHER_PROMO).secondPromo(OTHER_PROMO).partNumber(OTHER_PART_NUMBER).build();
+
+
+        discountProvider.getDiscount(prepos, getDartsTable(), getPromosMap(), getPriceMap());
     }
 
     private Map<String, Pricelist> getPriceMap() {
@@ -85,11 +92,17 @@ public class DefaultPromoRecounterTest {
         return table;
     }
 
+    private Map<String, Promo> getPromosMapWithoutNeededPromo() {
+        Map<String, Promo> map = Maps.newHashMap();
+        Promo promo = PromoBuilder.newPromoBuilder().setDiscount(PROMO_DISCOUNT).build();
+        map.put(OTHER_PART_NUMBER, promo);
+        return map;
+    }
 
     private Map<String, Promo> getPromosMap() {
         Map<String, Promo> map = Maps.newHashMap();
         Promo promo = PromoBuilder.newPromoBuilder().setDiscount(PROMO_DISCOUNT).build();
-        map.put(FIRST_PROMO, promo);
+        map.put(PART_NUMBER, promo);
         return map;
     }
 

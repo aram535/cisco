@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import org.joda.time.DateTime;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -87,6 +87,16 @@ public class PreposMediatorTest {
 
     private Sale firstSale;
 
+    @Before
+    public void mockRelatedServices() {
+
+        when(salesService.getSales(NOT_PROCESSED)).thenReturn(createExpectedSales());
+        when(clientsService.getClientsMap()).thenReturn(createExpectedClients());
+        when(pricelistsService.getPricelistsMap()).thenReturn(createExpectedPriceLists());
+        when(dartsService.getDartsTable()).thenReturn(createExpectedDarts());
+        when(promosService.getPromosMap()).thenReturn(createExpectedPromos());
+    }
+
     @Test
     public void thatGetPreposesReturnsEmptyListIfThereAreNoSales() {
         when(salesService.getSales(NOT_PROCESSED)).thenReturn(Lists.<Sale>newArrayList());
@@ -97,7 +107,6 @@ public class PreposMediatorTest {
     @Test(expected = CiscoException.class)
     public void thatGetPreposesThrowsCiscoExceptionIfNoPriceFound() {
 
-        mockRelatedServices();
         when(pricelistsService.getPricelistsMap()).thenReturn(Maps.<String, Pricelist>newHashMap());
 
         preposMediator.getNewPreposModels();
@@ -105,8 +114,6 @@ public class PreposMediatorTest {
 
     @Test
     public void thatGetPreposesConstructsPreposWithClientNameFromSalesIfNoMatchingByClientNumber() {
-
-        mockRelatedServices();
 
         when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
 
@@ -118,8 +125,6 @@ public class PreposMediatorTest {
 
     @Test
     public void thatGetPreposesCorrectlyMapsSecondPromo() {
-
-        mockRelatedServices();
 
         List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
@@ -136,7 +141,6 @@ public class PreposMediatorTest {
     @Test
     public void thatWhenNoSuitableSecondPromoThenFirstPromoIsUsed() {
 
-        mockRelatedServices();
         when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
 
         List<PreposModel> preposes = preposMediator.getNewPreposModels();
@@ -149,7 +153,6 @@ public class PreposMediatorTest {
 
     @Test
     public void thatWhenNoSuitableFirstAndSecondPromoThenPricelistDiscountIsUsed() {
-        mockRelatedServices();
         when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
         when(promosService.getPromosMap()).thenReturn(Maps.<String, Promo>newHashMap());
 
@@ -164,9 +167,6 @@ public class PreposMediatorTest {
 
     @Test
     public void thatSuitableDartsBeingResolvedCorrectly() {
-
-        mockRelatedServices();
-
         List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
         assertThat(preposes).hasSize(1);
@@ -174,15 +174,6 @@ public class PreposMediatorTest {
         Map<String, Dart> suitableDarts = preposes.get(0).getSuitableDarts();
         assertThat(suitableDarts.size()).isEqualTo(2);
         assertThat(suitableDarts.size());
-    }
-
-    private void mockRelatedServices() {
-
-        when(salesService.getSales(NOT_PROCESSED)).thenReturn(createExpectedSales());
-        when(clientsService.getClientsMap()).thenReturn(createExpectedClients());
-        when(pricelistsService.getPricelistsMap()).thenReturn(createExpectedPriceLists());
-        when(dartsService.getDartsTable()).thenReturn(createExpectedDarts());
-        when(promosService.getPromosMap()).thenReturn(createExpectedPromos());
     }
 
     private List<Sale> createExpectedSales() {

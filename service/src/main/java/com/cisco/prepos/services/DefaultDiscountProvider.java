@@ -1,13 +1,14 @@
 package com.cisco.prepos.services;
 
 import com.cisco.darts.dto.Dart;
+import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
-import com.cisco.prepos.model.PreposModel;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -16,17 +17,19 @@ import java.util.Map;
  * Date: 30.04.2014
  * Time: 19:22
  */
-public class DefaultPromoRecounter implements PromoRecounter {
+@Component
+public class DefaultDiscountProvider implements DiscountProvider {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public double getDiscount(PreposModel preposModel, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap, Map<String, Pricelist> priceMap) {
+    public double getDiscount(Prepos prepos, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap, Map<String, Pricelist> priceMap) {
 
-        Prepos prepos = preposModel.getPrepos();
+        String partNumber = prepos.getPartNumber();
 
         if (prepos.getSecondPromo() != null) {
 
-            Dart dart = dartsTable.get(prepos.getPartNumber(),
+            Dart dart = dartsTable.get(partNumber,
                     prepos.getSecondPromo());
 
             if (dart != null) {
@@ -37,19 +40,19 @@ public class DefaultPromoRecounter implements PromoRecounter {
         String firstPromo = prepos.getFirstPromo();
 
         if (firstPromo != null) {
-            Promo promo = promosMap.get(firstPromo);
+            Promo promo = promosMap.get(partNumber);
             if (promo != null) {
                 return promo.getDiscount();
             }
         }
 
-        Pricelist pricelist = priceMap.get(prepos.getPartNumber());
+        Pricelist pricelist = priceMap.get(partNumber);
         if (pricelist != null) {
             return pricelist.getDiscount();
         }
 
-        logger.debug("NO discount found for prepos {}", prepos);
-        return 0;
+        logger.debug("NO price found for part number {}", partNumber);
+        throw new CiscoException(String.format("NO price found for part number %s", partNumber));
     }
 
 

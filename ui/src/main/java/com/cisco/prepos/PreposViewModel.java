@@ -21,52 +21,52 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
-	private List<PreposModel> preposes;
-	private List<PreposModel> filteredPreposes;
+    private List<PreposModel> preposes;
+    private List<PreposModel> filteredPreposes;
 
-	private PreposFilter preposFilter = new PreposFilter();
+    private PreposFilter preposFilter = new PreposFilter();
 
-	@WireVariable
-	private PreposService preposService;
+    @WireVariable
+    private PreposService preposService;
 
-	public List<PreposModel> getAllPrepos() {
+    public List<PreposModel> getAllPrepos() {
 
-		if (preposes == null) {
-			preposes = preposService.getAllData();
-			filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
-		}
+        if (preposes == null) {
+            preposes = preposService.getAllData();
+            filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
+        }
 
-		return filteredPreposes;
-	}
+        return filteredPreposes;
+    }
 
-	public PreposFilter getFoodFilter() {
-		return preposFilter;
-	}
+    public PreposFilter getFoodFilter() {
+        return preposFilter;
+    }
 
-	@Command("refresh")
-	@NotifyChange("allPrepos")
-	public void refresh() {
-		preposes = preposService.getAllData();
-		filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
-	}
+    @Command("refresh")
+    @NotifyChange("allPrepos")
+    public void refresh() {
+        preposes = preposService.getAllData();
+        filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
+    }
 
-	@Command("save")
-	public void save() {
-		preposService.save(preposes);
-	}
+    @Command("save")
+    public void save() {
+        preposService.save(preposes);
+    }
 
 
-	@Command("promoSelected")
-	public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
+    @Command("promoSelected")
+    public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
 
-		preposService.recountPrepos(preposModel);
-		BindUtils.postNotifyChange(null, null, preposModel, "prepos");
-	}
+        preposService.recountPrepos(preposModel);
+        BindUtils.postNotifyChange(null, null, preposModel, "prepos");
+    }
 
-	@Command
-	@NotifyChange({"allPrepos"})
-	public void changeFilter() {
-		filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, preposes);
-	}
+    @Command
+    @NotifyChange({"allPrepos"})
+    public void changeFilter() {
+        filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, preposes);
+    }
 
 }

@@ -12,11 +12,11 @@ import java.util.List;
 public interface PreposMediator {
     List<PreposModel> getNewPreposModels();
 
-	List<PreposModel> getAllPreposModels();
+    List<PreposModel> getAllPreposModels();
 
-	void save(List<PreposModel> preposModels);
+    void save(List<PreposModel> preposModels);
 
-	void updatePreposDiscount(PreposModel preposModel);
+    void updatePreposDiscount(PreposModel preposModel);
 
-	void setPreposModelConstructor(PreposModelConstructor defaultPreposModelConstructor);
+    void setPreposModelConstructor(PreposModelConstructor defaultPreposModelConstructor);
 }

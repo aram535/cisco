@@ -20,8 +20,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 /**
  * Created by Alf on 03.05.2014.
  */
@@ -29,6 +27,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final DiscountProvider discountProvider = new DefaultDiscountProvider();
 
     @Value("${good.threshold}")
     private double threshold;
@@ -106,24 +106,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
     @Override
     public void recountPreposDiscount(PreposModel preposModel, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable) {
 
-        double buyDiscount;
-
-        if (isNotBlank(preposModel.getPrepos().getSecondPromo())) {
-            buyDiscount = dartsTable.get(preposModel.getPrepos().getPartNumber(),
-                    preposModel.getPrepos().getSecondPromo()).getDistiDiscount();
-        } else if (isNotBlank(preposModel.getPrepos().getFirstPromo())) {
-            Promo promo = promosMap.get(preposModel.getPrepos().getPartNumber());
-            if (promo == null) {
-                throw new CiscoException(String.format("promo for Prepos part number %s not found. Check tables consistence!", preposModel.getPrepos().getPartNumber()));
-            }
-            buyDiscount = promo.getDiscount();
-        } else {
-            Pricelist pricelist = pricelistsMap.get(preposModel.getPrepos().getPartNumber());
-            if (pricelist == null) {
-                throw new CiscoException(String.format("pricelist for Prepos part number %s not found. Check tables consistence!", preposModel.getPrepos().getPartNumber()));
-            }
-            buyDiscount = pricelist.getDiscount();
-        }
+        double buyDiscount = discountProvider.getDiscount(preposModel.getPrepos(), dartsTable, promosMap, pricelistsMap);
 
         preposModel.getPrepos().setBuyDiscount(buyDiscount);
 
@@ -164,15 +147,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
     private void assignBuyDiscount(Prepos prepos, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable) {
 
-        double buyDiscount;
-
-        if (prepos.getSecondPromo() != null) {
-            buyDiscount = dartsTable.get(prepos.getPartNumber(), prepos.getSecondPromo()).getDistiDiscount();
-        } else if (prepos.getFirstPromo() != null) {
-            buyDiscount = promosMap.get(prepos.getPartNumber()).getDiscount();
-        } else {
-            buyDiscount = pricelistsMap.get(prepos.getPartNumber()).getDiscount();
-        }
+        double buyDiscount = discountProvider.getDiscount(prepos, dartsTable, promosMap, pricelistsMap);
 
         prepos.setBuyDiscount(buyDiscount);
     }
