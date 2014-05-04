@@ -51,16 +51,16 @@ public class PreposMediatorTest {
     private static final String CLIENT_NUMBER = "158";
     private static final String CLIENT_NAME = "Client name";
     private static final String PART_NUMBER = "SPA112";
-	private static final String AUTHORIZATION_NUMBER = "MDMF-4526117-1403";
-	private static final String SERIALS = "ASDFEFE321321";
-	private static final String COMMENT = "SOME COMMENT";
-	private static final String BILL_NUMBER = "1267894";
-	private static final String END_USER_NAME = "EndUserName";
-	private static final String PROMO_CODE = "PP-SBFa81137-130126";
+    private static final String AUTHORIZATION_NUMBER = "MDMF-4526117-1403";
+    private static final String SERIALS = "ASDFEFE321321";
+    private static final String COMMENT = "SOME COMMENT";
+    private static final String BILL_NUMBER = "1267894";
+    private static final String END_USER_NAME = "EndUserName";
+    private static final String PROMO_CODE = "PP-SBFa81137-130126";
 
-	private static final int ZIP = 61052;
-	private static final double DISTI_DISCOUNT = 0.5;
-	private static final double PROMO_DISCOUNT = 0.45;
+    private static final int ZIP = 61052;
+    private static final double DISTI_DISCOUNT = 0.5;
+    private static final double PROMO_DISCOUNT = 0.45;
     private static final int QUANTITY = 5;
     private static final double PRICE = 20.83;
     private static final int GPL = 25;
@@ -79,11 +79,11 @@ public class PreposMediatorTest {
     @Mock
     private PricelistsService pricelistsService;
 
-	@Mock
-	private PromosService promosService;
+    @Mock
+    private PromosService promosService;
 
-	@Mock
-	private DartsService dartsService;
+    @Mock
+    private DartsService dartsService;
 
     private Sale firstSale;
 
@@ -94,10 +94,10 @@ public class PreposMediatorTest {
         assertThat(preposes).isNotNull().isEmpty();
     }
 
-	@Test(expected = CiscoException.class)
+    @Test(expected = CiscoException.class)
     public void thatGetPreposesThrowsCiscoExceptionIfNoPriceFound() {
 
-		mockRelatedServices();
+        mockRelatedServices();
         when(pricelistsService.getPricelistsMap()).thenReturn(Maps.<String, Pricelist>newHashMap());
 
         preposMediator.getNewPreposModels();
@@ -106,9 +106,9 @@ public class PreposMediatorTest {
     @Test
     public void thatGetPreposesConstructsPreposWithClientNameFromSalesIfNoMatchingByClientNumber() {
 
-	    mockRelatedServices();
+        mockRelatedServices();
 
-	    when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
+        when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
 
         List<PreposModel> preposes = preposMediator.getNewPreposModels();
         assertThat(preposes).isNotNull().isNotEmpty();
@@ -116,80 +116,74 @@ public class PreposMediatorTest {
         assertThat(preposes).isEqualTo(createExpectedPreposesForCaseWhenNoMatchingByClientNumber());
     }
 
-	@Test
-	public void thatGetPreposesCorrectlyMapsSecondPromo() {
+    @Test
+    public void thatGetPreposesCorrectlyMapsSecondPromo() {
 
-		mockRelatedServices();
+        mockRelatedServices();
 
-		List<PreposModel> preposes = preposMediator.getNewPreposModels();
-		assertThat(preposes).isNotNull().isNotEmpty();
-		assertThat(preposes).hasSize(1);
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
+        assertThat(preposes).isNotNull().isNotEmpty();
+        assertThat(preposes).hasSize(1);
 
 
-		Prepos actualPrepos = preposes.get(0).getPrepos();
-		Prepos expectedPrepos = createExpectedPreposes().get(0).getPrepos();
+        Prepos actualPrepos = preposes.get(0).getPrepos();
+        Prepos expectedPrepos = createExpectedPreposes().get(0).getPrepos();
 
-		assertThat(actualPrepos.getSecondPromo()).isEqualTo(AUTHORIZATION_NUMBER);
-		assertThat(actualPrepos).isEqualTo(expectedPrepos);
-	}
+        assertThat(actualPrepos.getSecondPromo()).isEqualTo(AUTHORIZATION_NUMBER);
+        assertThat(actualPrepos).isEqualTo(expectedPrepos);
+    }
 
-	@Test
-	public void thatWhenNoSuitableSecondPromoThenFirstPromoIsUsed() {
+    @Test
+    public void thatWhenNoSuitableSecondPromoThenFirstPromoIsUsed() {
 
-		mockRelatedServices();
-		when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
+        mockRelatedServices();
+        when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
 
-		List<PreposModel> preposes = preposMediator.getNewPreposModels();
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
 
-		Prepos actualPrepos = preposes.get(0).getPrepos();
-		assertThat(actualPrepos.getSecondPromo()).isNullOrEmpty();
-		assertThat(actualPrepos.getFirstPromo()).isEqualTo(PROMO_CODE);
-		assertThat(actualPrepos.getBuyDiscount()).isEqualTo(PROMO_DISCOUNT);
-	}
+        Prepos actualPrepos = preposes.get(0).getPrepos();
+        assertThat(actualPrepos.getSecondPromo()).isNullOrEmpty();
+        assertThat(actualPrepos.getFirstPromo()).isEqualTo(PROMO_CODE);
+        assertThat(actualPrepos.getBuyDiscount()).isEqualTo(PROMO_DISCOUNT);
+    }
 
-	@Test
-	public void thatWhenNoSuitableFirstAndSecondPromoThenPricelistDiscountIsUsed() {
-		mockRelatedServices();
-		when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
-		when(promosService.getPromosMap()).thenReturn(Maps.<String, Promo>newHashMap());
+    @Test
+    public void thatWhenNoSuitableFirstAndSecondPromoThenPricelistDiscountIsUsed() {
+        mockRelatedServices();
+        when(dartsService.getDartsTable()).thenReturn(createNonSuitableDarts());
+        when(promosService.getPromosMap()).thenReturn(Maps.<String, Promo>newHashMap());
 
-		List<PreposModel> preposes = preposMediator.getNewPreposModels();
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
 
-		Prepos actualPrepos = preposes.get(0).getPrepos();
-		assertThat(actualPrepos.getSecondPromo()).isNullOrEmpty();
-		assertThat(actualPrepos.getFirstPromo()).isNullOrEmpty();
-		assertThat(actualPrepos.getBuyDiscount()).isEqualTo(PRICELIST_DISCOUNT);
-		assertThat(actualPrepos.getBuyPrice()).isEqualTo((1 - PRICELIST_DISCOUNT) * GPL);
-	}
+        Prepos actualPrepos = preposes.get(0).getPrepos();
+        assertThat(actualPrepos.getSecondPromo()).isNullOrEmpty();
+        assertThat(actualPrepos.getFirstPromo()).isNullOrEmpty();
+        assertThat(actualPrepos.getBuyDiscount()).isEqualTo(PRICELIST_DISCOUNT);
+        assertThat(actualPrepos.getBuyPrice()).isEqualTo((1 - PRICELIST_DISCOUNT) * GPL);
+    }
 
-	@Ignore
-	@Test
-	public void thatOkIsBeingCountedCorrectly() {
+    @Test
+    public void thatSuitableDartsBeingResolvedCorrectly() {
 
-	}
+        mockRelatedServices();
 
-	@Test
-	public void thatSuitableDartsBeingResolvedCorrectly() {
+        List<PreposModel> preposes = preposMediator.getNewPreposModels();
+        assertThat(preposes).isNotNull().isNotEmpty();
+        assertThat(preposes).hasSize(1);
 
-		mockRelatedServices();
+        Map<String, Dart> suitableDarts = preposes.get(0).getSuitableDarts();
+        assertThat(suitableDarts.size()).isEqualTo(2);
+        assertThat(suitableDarts.size());
+    }
 
-		List<PreposModel> preposes = preposMediator.getNewPreposModels();
-		assertThat(preposes).isNotNull().isNotEmpty();
-		assertThat(preposes).hasSize(1);
+    private void mockRelatedServices() {
 
-		Map<String, Dart> suitableDarts = preposes.get(0).getSuitableDarts();
-		assertThat(suitableDarts.size()).isEqualTo(2);
-		assertThat(suitableDarts.size());
-	}
-
-	private void mockRelatedServices() {
-
-		when(salesService.getSales(NOT_PROCESSED)).thenReturn(createExpectedSales());
-		when(clientsService.getClientsMap()).thenReturn(createExpectedClients());
-		when(pricelistsService.getPricelistsMap()).thenReturn(createExpectedPriceLists());
-		when(dartsService.getDartsTable()).thenReturn(createExpectedDarts());
-		when(promosService.getPromosMap()).thenReturn(createExpectedPromos());
-	}
+        when(salesService.getSales(NOT_PROCESSED)).thenReturn(createExpectedSales());
+        when(clientsService.getClientsMap()).thenReturn(createExpectedClients());
+        when(pricelistsService.getPricelistsMap()).thenReturn(createExpectedPriceLists());
+        when(dartsService.getDartsTable()).thenReturn(createExpectedDarts());
+        when(promosService.getPromosMap()).thenReturn(createExpectedPromos());
+    }
 
     private List<Sale> createExpectedSales() {
 
@@ -218,119 +212,119 @@ public class PreposMediatorTest {
         return clients;
     }
 
-	private Map<String, Promo> createExpectedPromos() {
-		Map<String, Promo> promos = Maps.newHashMap();
-		Promo promo = new Promo(1L, PART_NUMBER, "2 Port Phone Adapter", PROMO_DISCOUNT, PROMO_CODE, GPL, PROMO_CODE, 5.52, 8, CURRENT_TIME);
-		promos.put(PART_NUMBER, promo);
-		return promos;
-	}
+    private Map<String, Promo> createExpectedPromos() {
+        Map<String, Promo> promos = Maps.newHashMap();
+        Promo promo = new Promo(1L, PART_NUMBER, "2 Port Phone Adapter", PROMO_DISCOUNT, PROMO_CODE, GPL, PROMO_CODE, 5.52, 8, CURRENT_TIME);
+        promos.put(PART_NUMBER, promo);
+        return promos;
+    }
 
-	private Table<String, String, Dart> createExpectedDarts() {
-		Table<String, String, Dart> darts = HashBasedTable.create();
+    private Table<String, String, Dart> createExpectedDarts() {
+        Table<String, String, Dart> darts = HashBasedTable.create();
 
-		Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-				.setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-				.setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
-				.setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
-				.build();
+        Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
+                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
+                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
+                .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
+                .build();
 
-		Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER + 2).setVersion(1)
-				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-				.setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-				.setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-				.setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
-				.setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
+        Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER + 2).setVersion(1)
+                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
+                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
+                .setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
+                .setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
 
-		Dart dart3 = DartBuilder.builder().setId(1).setAuthorizationNumber("UNSUITABLE NUMBER").setVersion(1)
-				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-				.setResellerName("UNSUITABLE NAME").setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-				.setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-				.setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
-				.setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
+        Dart dart3 = DartBuilder.builder().setId(1).setAuthorizationNumber("UNSUITABLE NUMBER").setVersion(1)
+                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
+                .setResellerName("UNSUITABLE NAME").setResellerCountry("Ukraine").setResellerAcct(123)
+                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
+                .setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
+                .setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
 
-		darts.put(dart3.getCiscoSku(), dart3.getAuthorizationNumber(), dart3);
-		darts.put(dart2.getCiscoSku(), dart2.getAuthorizationNumber(), dart2);
-		darts.put(dart1.getCiscoSku(), dart1.getAuthorizationNumber(), dart1);
+        darts.put(dart3.getCiscoSku(), dart3.getAuthorizationNumber(), dart3);
+        darts.put(dart2.getCiscoSku(), dart2.getAuthorizationNumber(), dart2);
+        darts.put(dart1.getCiscoSku(), dart1.getAuthorizationNumber(), dart1);
 
-		return darts;
-	}
+        return darts;
+    }
 
-	private Map<String, Dart> createSuitableDarts() {
-		Map<String, Dart> darts = Maps.newHashMap();
+    private Map<String, Dart> createSuitableDarts() {
+        Map<String, Dart> darts = Maps.newHashMap();
 
-		Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER + 2).setVersion(1)
-				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-				.setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(1)
-				.setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-				.setDistiSku("Disti").setListPrice(1).setClaimUnit(1).setExtCreditAmt(1)
-				.setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1).build();
+        Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER + 2).setVersion(1)
+                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
+                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(1)
+                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
+                .setDistiSku("Disti").setListPrice(1).setClaimUnit(1).setExtCreditAmt(1)
+                .setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1).build();
 
-		Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-				.setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-				.setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-				.setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
-				.setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
+        Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
+                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
+                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
+                .setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
+                .setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
 
-		darts.put(dart1.getAuthorizationNumber(), dart1);
-		darts.put(dart2.getAuthorizationNumber(), dart2);
+        darts.put(dart1.getAuthorizationNumber(), dart1);
+        darts.put(dart2.getAuthorizationNumber(), dart2);
 
-		return darts;
-	}
+        return darts;
+    }
 
-	private Table<String, String, Dart> createNonSuitableDarts() {
-		Table<String, String, Dart> darts = HashBasedTable.create();
+    private Table<String, String, Dart> createNonSuitableDarts() {
+        Table<String, String, Dart> darts = HashBasedTable.create();
 
-		Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-				.setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-				.setResellerName("nonsuitable partner").setResellerCountry("Ukraine").setResellerAcct(123)
-				.setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY+1).setCiscoSku(PART_NUMBER)
-				.setDistiSku("Disti").setListPrice(1).setClaimUnit(1).setExtCreditAmt(1)
-				.setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1).build();
+        Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
+                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
+                .setResellerName("nonsuitable partner").setResellerCountry("Ukraine").setResellerAcct(123)
+                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1).setCiscoSku(PART_NUMBER)
+                .setDistiSku("Disti").setListPrice(1).setClaimUnit(1).setExtCreditAmt(1)
+                .setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1).build();
 
-		darts.put(dart1.getCiscoSku(), dart1.getAuthorizationNumber(), dart1);
+        darts.put(dart1.getCiscoSku(), dart1.getAuthorizationNumber(), dart1);
 
-		return darts;
-	}
+        return darts;
+    }
 
     private List<PreposModel> createExpectedPreposes() {
-	    double buyPrice = (double) Math.round(GPL * (1 -  DISTI_DISCOUNT) * 100) / 100;
+        double buyPrice = (double) Math.round(GPL * (1 - DISTI_DISCOUNT) * 100) / 100;
 
-	    Prepos expectedPrepos = PreposBuilder.builder().type(CISCO_TYPE).partnerName(PARTNER_NAME).
-			    partNumber(PART_NUMBER).quantity(QUANTITY).salePrice(PRICE).saleDiscount(SALE_DISCOUNT).
-			    firstPromo(PROMO_CODE).secondPromo(AUTHORIZATION_NUMBER).buyDiscount(DISTI_DISCOUNT).
-			    buyPrice(buyPrice).clientNumber(CLIENT_NUMBER).endUser(END_USER_NAME).shippedDate(CURRENT_TIME).
-			    shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
-			    .status(Prepos.Status.NOT_PROCESSED).
-			    build();
+        Prepos expectedPrepos = PreposBuilder.builder().type(CISCO_TYPE).partnerName(PARTNER_NAME).
+                partNumber(PART_NUMBER).quantity(QUANTITY).salePrice(PRICE).saleDiscount(SALE_DISCOUNT).
+                firstPromo(PROMO_CODE).secondPromo(AUTHORIZATION_NUMBER).buyDiscount(DISTI_DISCOUNT).
+                buyPrice(buyPrice).clientNumber(CLIENT_NUMBER).endUser(END_USER_NAME).shippedDate(CURRENT_TIME).
+                shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
+                .status(Prepos.Status.NOT_PROCESSED).
+                        build();
 
-	    PreposModel preposModel = new PreposModel();
-	    preposModel.setPrepos(expectedPrepos);
-	    preposModel.setSuitableDarts(createSuitableDarts());
+        PreposModel preposModel = new PreposModel();
+        preposModel.setPrepos(expectedPrepos);
+        preposModel.setSuitableDarts(createSuitableDarts());
 
         return Lists.newArrayList(preposModel);
     }
 
     private List<PreposModel> createExpectedPreposesForCaseWhenNoMatchingByClientNumber() {
-	    double buyPrice = (double) Math.round(GPL * (1 -  PROMO_DISCOUNT) * 100) / 100;
+        double buyPrice = (double) Math.round(GPL * (1 - PROMO_DISCOUNT) * 100) / 100;
 
         Prepos expectedPrepos = PreposBuilder.builder().type(CISCO_TYPE).partnerName(CLIENT_NAME).
                 partNumber(PART_NUMBER).quantity(QUANTITY).salePrice(PRICE).saleDiscount(SALE_DISCOUNT).
-		        firstPromo(PROMO_CODE).buyDiscount(PROMO_DISCOUNT).buyPrice(buyPrice).
-		        clientNumber(CLIENT_NUMBER).shippedDate(CURRENT_TIME).
-		        shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
-		        .status(Prepos.Status.NOT_PROCESSED).
-		        build();
+                firstPromo(PROMO_CODE).buyDiscount(PROMO_DISCOUNT).buyPrice(buyPrice).
+                clientNumber(CLIENT_NUMBER).shippedDate(CURRENT_TIME).
+                shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
+                .status(Prepos.Status.NOT_PROCESSED).
+                        build();
 
-	    PreposModel preposModel = new PreposModel();
-	    preposModel.setPrepos(expectedPrepos);
-	    preposModel.setSuitableDarts(Maps.<String, Dart>newHashMap());
+        PreposModel preposModel = new PreposModel();
+        preposModel.setPrepos(expectedPrepos);
+        preposModel.setSuitableDarts(Maps.<String, Dart>newHashMap());
 
         return Lists.newArrayList(preposModel);
     }

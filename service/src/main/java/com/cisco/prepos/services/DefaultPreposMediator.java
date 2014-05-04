@@ -37,10 +37,10 @@ import static com.cisco.sales.dto.Sale.Status.NOT_PROCESSED;
 @Service
 public class DefaultPreposMediator implements PreposMediator {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private PreposesDao preposesDao;
+    @Autowired
+    private PreposesDao preposesDao;
 
     @Autowired
     private SalesService salesService;
@@ -51,81 +51,80 @@ public class DefaultPreposMediator implements PreposMediator {
     @Autowired
     private PricelistsService pricelistsService;
 
-	@Autowired
-	private PromosService promoService;
+    @Autowired
+    private PromosService promoService;
 
-	@Autowired
-	private DartsService dartsService;
+    @Autowired
+    private DartsService dartsService;
 
-	@Autowired
-	private PreposModelConstructor preposModelConstructor;
+    private PreposModelConstructor preposModelConstructor = new DefaultPreposModelConstructor();
 
-	private Map<String, Client> clientsMap;
-	private Map<String, Pricelist> pricelistsMap;
-	private Map<String, Promo> promosMap;
-	private Table<String, String, Dart> dartsTable;
+    private Map<String, Client> clientsMap;
+    private Map<String, Pricelist> pricelistsMap;
+    private Map<String, Promo> promosMap;
+    private Table<String, String, Dart> dartsTable;
 
-	//@PostConstruct
-	public void initRelatedTablesData() {
+    //@PostConstruct
+    public void initRelatedTablesData() {
 
-		clientsMap = clientsService.getClientsMap();
-		pricelistsMap = pricelistsService.getPricelistsMap();
-		promosMap = promoService.getPromosMap();
-		dartsTable = dartsService.getDartsTable();
-	}
+        clientsMap = clientsService.getClientsMap();
+        pricelistsMap = pricelistsService.getPricelistsMap();
+        promosMap = promoService.getPromosMap();
+        dartsTable = dartsService.getDartsTable();
+    }
 
-	@Transactional
-	@Override
+    @Transactional
+    @Override
     public List<PreposModel> getNewPreposModels() {
 
-		initRelatedTablesData();
+        initRelatedTablesData();
 
         List<Sale> sales = salesService.getSales(NOT_PROCESSED);
 
-		List<PreposModel> preposModels = preposModelConstructor.constructNewPreposModels(sales, clientsMap, pricelistsMap, promosMap, dartsTable);
+        List<PreposModel> preposModels = preposModelConstructor.constructNewPreposModels(sales, clientsMap, pricelistsMap, promosMap, dartsTable);
 
-		updateSalesTable(sales);
+        updateSalesTable(sales);
 
         return preposModels;
     }
 
-	@Override
-	public List<PreposModel> getAllPreposModels() {
+    @Override
+    public List<PreposModel> getAllPreposModels() {
 
-		List<Prepos> allPreposes = preposesDao.getPreposes();
+        List<Prepos> allPreposes = preposesDao.getPreposes();
 
-		List<PreposModel> preposModels = preposModelConstructor.constructPreposModels(allPreposes, dartsTable);
+        List<PreposModel> preposModels = preposModelConstructor.constructPreposModels(allPreposes, dartsTable);
 
-		return preposModels;
-	}
+        return preposModels;
+    }
 
-	@Override
-	public void save(List<PreposModel> preposModels) {
+    @Override
+    public void save(List<PreposModel> preposModels) {
 
-		List<Prepos> preposes = Lists.newArrayList();
-		for (PreposModel model : preposModels) {
-			preposes.add(model.getPrepos());
-		}
+        List<Prepos> preposes = Lists.newArrayList();
+        for (PreposModel model : preposModels) {
+            preposes.add(model.getPrepos());
+        }
 
-		updateDartsTable(dartsTable);
-		preposesDao.save(preposes);
-	}
+        updateDartsTable(dartsTable);
+        preposesDao.save(preposes);
+    }
 
-	@Override
-	public void updatePreposDiscount(PreposModel preposModel) {
+    @Override
+    public void updatePreposDiscount(PreposModel preposModel) {
 
-		preposModelConstructor.recountPreposDiscount(preposModel, pricelistsMap, promosMap, dartsTable);
-	}
+        preposModelConstructor.recountPreposDiscount(preposModel, pricelistsMap, promosMap, dartsTable);
+    }
 
-	private void updateSalesTable(List<Sale> sales) {
-		salesService.update(sales);
-	}
+    private void updateSalesTable(List<Sale> sales) {
+        salesService.update(sales);
+    }
 
-	private void updateDartsTable(Table<String, String, Dart> darts) {
-		dartsService.update(darts.values());
-	}
+    private void updateDartsTable(Table<String, String, Dart> darts) {
+        dartsService.update(darts.values());
+    }
 
-	public void setPreposModelConstructor(PreposModelConstructor preposModelConstructor) {
-		this.preposModelConstructor = preposModelConstructor;
-	}
+    public void setPreposModelConstructor(PreposModelConstructor preposModelConstructor) {
+        this.preposModelConstructor = preposModelConstructor;
+    }
 }
