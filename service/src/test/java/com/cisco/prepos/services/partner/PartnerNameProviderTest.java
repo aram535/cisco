@@ -9,6 +9,8 @@ import org.junit.Test;
 import java.util.Map;
 
 import static com.cisco.sales.dto.SaleBuilder.builder;
+import static com.cisco.testtools.TestObjects.*;
+import static com.cisco.testtools.TestObjects.ClientsFactory.*;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -26,7 +28,7 @@ public class PartnerNameProviderTest {
     @Test
     public void thatReturnsPartnerNameFromClientsMapIfExists() {
         String partnerName = partnerNameProvider.getPartnerName(createSale(), createClientsMap());
-        assertThat(partnerName).isEqualTo(TestObjects.CLIENT_NAME);
+        assertThat(partnerName).isEqualTo(PARTNER_NAME_FROM_PROVIDER);
     }
 
     @Test
@@ -38,14 +40,14 @@ public class PartnerNameProviderTest {
     private Map<String, Client> createClientsMap() {
         Map<String, Client> clients = Maps.newHashMap();
 
-        Client client = TestObjects.ClientsFactory.newClient();
+        Client client = newClient();
 
-        clients.put(TestObjects.CLIENT_NUMBER, client);
+        clients.put(CLIENT_NUMBER, client);
 
         return clients;
     }
 
     private Sale createSale() {
-        return builder().clientNumber(TestObjects.CLIENT_NUMBER).clientName(CLIENT_NAME_FROM_SALE).build();
+        return builder().clientNumber(CLIENT_NUMBER).clientName(CLIENT_NAME_FROM_SALE).build();
     }
 }
