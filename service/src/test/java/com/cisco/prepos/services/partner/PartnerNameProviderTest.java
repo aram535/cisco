@@ -2,6 +2,7 @@ package com.cisco.prepos.services.partner;
 
 import com.cisco.clients.dto.Client;
 import com.cisco.sales.dto.Sale;
+import com.cisco.testtools.TestObjects;
 import com.google.common.collect.Maps;
 import org.junit.Test;
 
@@ -17,15 +18,15 @@ import static org.fest.assertions.api.Assertions.assertThat;
  */
 public class PartnerNameProviderTest {
 
-    private static final String CLIENT_NUMBER = "clientNumber";
-    private static final String CLIENT_NAME = "client name";
+
     private static final String CLIENT_NAME_FROM_SALE = "client name from sale";
+
     private PartnerNameProvider partnerNameProvider = new DefaultPartnerNameProvider();
 
     @Test
     public void thatReturnsPartnerNameFromClientsMapIfExists() {
         String partnerName = partnerNameProvider.getPartnerName(createSale(), createClientsMap());
-        assertThat(partnerName).isEqualTo(CLIENT_NAME);
+        assertThat(partnerName).isEqualTo(TestObjects.CLIENT_NAME);
     }
 
     @Test
@@ -37,15 +38,14 @@ public class PartnerNameProviderTest {
     private Map<String, Client> createClientsMap() {
         Map<String, Client> clients = Maps.newHashMap();
 
-        Client client = new Client();
-        client.setClientNumber(CLIENT_NUMBER);
-        client.setName(CLIENT_NAME);
+        Client client = TestObjects.ClientsFactory.newClient();
 
-        clients.put(CLIENT_NUMBER, client);
+        clients.put(TestObjects.CLIENT_NUMBER, client);
+
         return clients;
     }
 
     private Sale createSale() {
-        return builder().clientNumber(CLIENT_NUMBER).clientName(CLIENT_NAME_FROM_SALE).build();
+        return builder().clientNumber(TestObjects.CLIENT_NUMBER).clientName(CLIENT_NAME_FROM_SALE).build();
     }
 }

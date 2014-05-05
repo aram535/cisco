@@ -7,6 +7,7 @@ import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
 import com.cisco.promos.dto.Promo;
 import com.cisco.promos.dto.PromoBuilder;
+import com.cisco.testtools.TestObjects;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
@@ -25,42 +26,37 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class DefaultDiscountProviderTest {
 
-    private static final String PART_NUMBER = "part number";
-    private static final String SECOND_PROMO = "second promo";
-    private static final String FIRST_PROMO = "first promo";
-    private static final double DART_DISTI_DISCOUNT = 0.35;
-    private static final String OTHER_PROMO = "other promo";
-    private static final double PROMO_DISCOUNT = 0.55;
-    private static final double PRICE_LIST_DISCOUNT = 0.21;
+	private static final String OTHER_PROMO = "other promo";
+
     private static final String OTHER_PART_NUMBER = "other part number";
 
     private DiscountProvider discountProvider = new DefaultDiscountProvider();
 
     @Test
     public void thatDiscountReturnsFromDartsIfExists() {
-        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, null, SECOND_PROMO);
+        Triplet<String, String, String> discountInfo = new Triplet<>(TestObjects.PART_NUMBER, null, TestObjects.SECOND_PROMO);
 
         double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
 
-        assertThat(distiDiscount).isEqualTo(DART_DISTI_DISCOUNT);
+        assertThat(distiDiscount).isEqualTo(TestObjects.DART_DISTI_DISCOUNT);
     }
 
     @Test
     public void thatDiscountReturnsFromPromosMapIfNoDartFound() {
-        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, FIRST_PROMO, OTHER_PROMO);
+        Triplet<String, String, String> discountInfo = new Triplet<>(TestObjects.PART_NUMBER, TestObjects.FIRST_PROMO, OTHER_PROMO);
 
         double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
 
-        assertThat(distiDiscount).isEqualTo(PROMO_DISCOUNT);
+        assertThat(distiDiscount).isEqualTo(TestObjects.PROMO_DISCOUNT);
     }
 
     @Test
     public void thatDiscountReturnsFromPricelistMapIfNoDartAndPromoFound() {
-        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, OTHER_PROMO, OTHER_PROMO);
+        Triplet<String, String, String> discountInfo = new Triplet<>(TestObjects.PART_NUMBER, OTHER_PROMO, OTHER_PROMO);
 
         double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMapWithoutNeededPromo(), getPriceMap());
 
-        assertThat(distiDiscount).isEqualTo(PRICE_LIST_DISCOUNT);
+        assertThat(distiDiscount).isEqualTo(TestObjects.PRICE_LIST_DISCOUNT);
     }
 
     @Test(expected = CiscoException.class)
@@ -73,8 +69,8 @@ public class DefaultDiscountProviderTest {
 
     private Map<String, Pricelist> getPriceMap() {
         Map<String, Pricelist> map = Maps.newHashMap();
-        Pricelist pricelist = PricelistBuilder.newPricelistBuilder().setDiscount(PRICE_LIST_DISCOUNT).build();
-        map.put(PART_NUMBER, pricelist);
+        Pricelist pricelist = PricelistBuilder.newPricelistBuilder().setDiscount(TestObjects.PRICE_LIST_DISCOUNT).build();
+        map.put(TestObjects.PART_NUMBER, pricelist);
         return map;
     }
 
@@ -85,22 +81,22 @@ public class DefaultDiscountProviderTest {
     private Table<String, String, Dart> getDartsTable() {
         Table<String, String, Dart> table = HashBasedTable.create();
 
-        Dart dart = DartBuilder.builder().setDistiDiscount(DART_DISTI_DISCOUNT).build();
-        table.put(PART_NUMBER, SECOND_PROMO, dart);
+        Dart dart = DartBuilder.builder().setDistiDiscount(TestObjects.DART_DISTI_DISCOUNT).build();
+        table.put(TestObjects.PART_NUMBER, TestObjects.SECOND_PROMO, dart);
         return table;
     }
 
     private Map<String, Promo> getPromosMapWithoutNeededPromo() {
         Map<String, Promo> map = Maps.newHashMap();
-        Promo promo = PromoBuilder.newPromoBuilder().setDiscount(PROMO_DISCOUNT).build();
+        Promo promo = PromoBuilder.newPromoBuilder().setDiscount(TestObjects.PROMO_DISCOUNT).build();
         map.put(OTHER_PART_NUMBER, promo);
         return map;
     }
 
     private Map<String, Promo> getPromosMap() {
         Map<String, Promo> map = Maps.newHashMap();
-        Promo promo = PromoBuilder.newPromoBuilder().setDiscount(PROMO_DISCOUNT).build();
-        map.put(PART_NUMBER, promo);
+        Promo promo = PromoBuilder.newPromoBuilder().setDiscount(TestObjects.PROMO_DISCOUNT).build();
+        map.put(TestObjects.PART_NUMBER, promo);
         return map;
     }
 

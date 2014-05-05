@@ -3,24 +3,20 @@ package com.cisco.prepos.services;
 import com.cisco.clients.dto.Client;
 import com.cisco.clients.service.ClientsService;
 import com.cisco.darts.dto.Dart;
-import com.cisco.darts.dto.DartBuilder;
 import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dto.Prepos;
-import com.cisco.prepos.dto.PreposBuilder;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.pricelists.dto.Pricelist;
-import com.cisco.pricelists.dto.PricelistBuilder;
 import com.cisco.pricelists.service.PricelistsService;
 import com.cisco.promos.dto.Promo;
 import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
-import com.cisco.sales.dto.SaleBuilder;
 import com.cisco.sales.service.SalesService;
+import com.cisco.testtools.TestObjects;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -43,28 +38,6 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PreposMediatorTest {
-
-    private static final Timestamp CURRENT_TIME = new Timestamp(DateTime.now().getMillis());
-    private static final String CISCO_TYPE = "CISCO SB";
-    private static final String PARTNER_NAME = "Partner Name";
-    private static final String CLIENT_NUMBER = "158";
-    private static final String CLIENT_NAME = "Client name";
-    private static final String PART_NUMBER = "SPA112";
-    private static final String AUTHORIZATION_NUMBER = "MDMF-4526117-1403";
-    private static final String SERIALS = "ASDFEFE321321";
-    private static final String COMMENT = "SOME COMMENT";
-    private static final String BILL_NUMBER = "1267894";
-    private static final String END_USER_NAME = "EndUserName";
-    private static final String PROMO_CODE = "PP-SBFa81137-130126";
-
-    private static final int ZIP = 61052;
-    private static final double DISTI_DISCOUNT = 0.5;
-    private static final double PROMO_DISCOUNT = 0.45;
-    private static final int QUANTITY = 5;
-    private static final double PRICE = 20.83;
-    private static final int GPL = 25;
-    private static final double SALE_DISCOUNT = 0.17;
-    private static final double PRICELIST_DISCOUNT = 0.3;
 
     @InjectMocks
     private PreposMediator preposMediator = new DefaultPreposMediator();
@@ -87,8 +60,6 @@ public class PreposMediatorTest {
     @Mock
     private PreposModelConstructor preposModelConstructor;
 
-    private Sale firstSale;
-
     @Before
     public void mockRelatedServices() {
 
@@ -108,64 +79,48 @@ public class PreposMediatorTest {
 
     private List<Sale> createExpectedSales() {
 
-        firstSale = SaleBuilder.builder().id(1).shippedDate(CURRENT_TIME).shippedBillNumber(BILL_NUMBER).
-                clientName(CLIENT_NAME).clientNumber(CLIENT_NUMBER).clientZip(ZIP).partNumber(PART_NUMBER).quantity(QUANTITY).
-                serials(SERIALS).price(PRICE).ciscoType(CISCO_TYPE).comment(COMMENT).status(NOT_PROCESSED).build();
-
-        return Lists.newArrayList(firstSale);
+        return TestObjects.SalesFactory.newSaleList();
     }
 
     private Map<String, Pricelist> createExpectedPriceLists() {
 
         Map<String, Pricelist> pricelistsMap = Maps.newHashMap();
 
-        Pricelist pricelist = PricelistBuilder.newPricelistBuilder().setId(2L).setPartNumber(PART_NUMBER).
-                setDescription("description").setDiscount(0.3).setGpl(GPL).setWpl(400).build();
-        pricelistsMap.put(PART_NUMBER, pricelist);
+        Pricelist pricelist = TestObjects.PricelistsFactory.newPricelist();
+
+        pricelistsMap.put(TestObjects.PART_NUMBER, pricelist);
 
         return pricelistsMap;
     }
 
     private Map<String, Client> createExpectedClients() {
         Map<String, Client> clients = Maps.newHashMap();
-        Client client = new Client(1L, CLIENT_NUMBER, PARTNER_NAME, "Kiev", "Bazhana str. 36");
-        clients.put(CLIENT_NUMBER, client);
+
+        Client client = TestObjects.ClientsFactory.newClient();
+
+        clients.put(TestObjects.CLIENT_NUMBER, client);
+
         return clients;
     }
 
     private Map<String, Promo> createExpectedPromos() {
         Map<String, Promo> promos = Maps.newHashMap();
-        Promo promo = new Promo(1L, PART_NUMBER, "2 Port Phone Adapter", PROMO_DISCOUNT, PROMO_CODE, GPL, PROMO_CODE, 5.52, 8, CURRENT_TIME);
-        promos.put(PART_NUMBER, promo);
+
+        Promo promo = TestObjects.PromosFactory.newPromo();
+
+        promos.put(TestObjects.PART_NUMBER, promo);
+
         return promos;
     }
 
     private Table<String, String, Dart> createExpectedDarts() {
         Table<String, String, Dart> darts = HashBasedTable.create();
 
-        Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
-                .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
-                .build();
+        Dart dart1 = TestObjects.DartsFactory.newDart(TestObjects.AUTHORIZATION_NUMBER, TestObjects.QUANTITY + 1);
 
-        Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER + 2).setVersion(1)
-                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-                .setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
-                .setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
+        Dart dart2 = TestObjects.DartsFactory.newDart(TestObjects.AUTHORIZATION_NUMBER + 1, TestObjects.QUANTITY + 1);
 
-        Dart dart3 = DartBuilder.builder().setId(1).setAuthorizationNumber("UNSUITABLE NUMBER").setVersion(1)
-                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-                .setResellerName("UNSUITABLE NAME").setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-                .setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
-                .setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
+        Dart dart3 = TestObjects.DartsFactory.newDart("UNSUITABLE NUMBER", TestObjects.QUANTITY + 1);
 
         darts.put(dart3.getCiscoSku(), dart3.getAuthorizationNumber(), dart3);
         darts.put(dart2.getCiscoSku(), dart2.getAuthorizationNumber(), dart2);
@@ -177,21 +132,9 @@ public class PreposMediatorTest {
     private Map<String, Dart> createSuitableDarts() {
         Map<String, Dart> darts = Maps.newHashMap();
 
-        Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER + 2).setVersion(1)
-                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(1)
-                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-                .setDistiSku("Disti").setListPrice(1).setClaimUnit(1).setExtCreditAmt(1)
-                .setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1).build();
+        Dart dart1 = TestObjects.DartsFactory.newDart(TestObjects.AUTHORIZATION_NUMBER + 1, 1);
 
-        Dart dart2 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-                .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-                .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-                .setDistiSku(PART_NUMBER).setListPrice(12).setClaimUnit(12).setExtCreditAmt(12)
-                .setFastTrackPie(12).setIpNgnPartnerPricingEm(12).setMdmFulfillment(12).build();
+        Dart dart2 = TestObjects.DartsFactory.newDart(TestObjects.AUTHORIZATION_NUMBER, TestObjects.QUANTITY);
 
         darts.put(dart1.getAuthorizationNumber(), dart1);
         darts.put(dart2.getAuthorizationNumber(), dart2);
@@ -202,12 +145,8 @@ public class PreposMediatorTest {
     private Table<String, String, Dart> createNonSuitableDarts() {
         Table<String, String, Dart> darts = HashBasedTable.create();
 
-        Dart dart1 = DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-                .setDistributorInfo("ERC").setDistiDiscount(DISTI_DISCOUNT)
-                .setResellerName("nonsuitable partner").setResellerCountry("Ukraine").setResellerAcct(123)
-                .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1).setCiscoSku(PART_NUMBER)
-                .setDistiSku("Disti").setListPrice(1).setClaimUnit(1).setExtCreditAmt(1)
-                .setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1).build();
+        Dart dart1 = TestObjects.DartsFactory.newDart();
+	    dart1.setResellerName("unsutable reseller name");
 
         darts.put(dart1.getCiscoSku(), dart1.getAuthorizationNumber(), dart1);
 
@@ -215,15 +154,9 @@ public class PreposMediatorTest {
     }
 
     private List<PreposModel> createExpectedPreposes() {
-        double buyPrice = (double) Math.round(GPL * (1 - DISTI_DISCOUNT) * 100) / 100;
 
-        Prepos expectedPrepos = PreposBuilder.builder().type(CISCO_TYPE).partnerName(PARTNER_NAME).
-                partNumber(PART_NUMBER).quantity(QUANTITY).salePrice(PRICE).saleDiscount(SALE_DISCOUNT).
-                firstPromo(PROMO_CODE).secondPromo(AUTHORIZATION_NUMBER).buyDiscount(DISTI_DISCOUNT).
-                buyPrice(buyPrice).clientNumber(CLIENT_NUMBER).endUser(END_USER_NAME).shippedDate(CURRENT_TIME).
-                shippedBillNumber(BILL_NUMBER).comment(COMMENT).serials(SERIALS).zip(ZIP).ok(true)
-                .status(Prepos.Status.NOT_PROCESSED).
-                        build();
+        Prepos expectedPrepos = TestObjects.PreposFactory.newPrepos();
+	    expectedPrepos.setBuyPrice(TestObjects.BUY_PRICE_WITH_DART);
 
         PreposModel preposModel = new PreposModel();
         preposModel.setPrepos(expectedPrepos);
