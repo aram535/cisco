@@ -6,7 +6,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Map;
 
 import static com.cisco.testtools.TestObjects.*;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -19,38 +19,58 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class SuitableDartsProviderTest {
 
     private static final String OTHER_PART_NUMBER = "other part number";
+    private static final String OTHER_RESELLER_NAME = "other reseller name";
     private SuitableDartsProvider suitableDartsProvider = new DefaultSuitableDartsProvider();
 
     @Test
     public void thatReturnsEmptyListIfInputIsEmpty() {
-        List<Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, getEmptyDartsTable());
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, getEmptyDartsTable());
         assertThat(darts).isNotNull().isEmpty();
     }
 
     @Test
     public void thatReturnsEmptyIfPartNumberNotSuits() {
-        List<Dart> darts = suitableDartsProvider.getDarts(OTHER_PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, DartsFactory.getDartsTable());
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(OTHER_PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, DartsFactory.getDartsTable());
         assertThat(darts).isNotNull().isEmpty();
     }
 
     @Test
     public void thatReturnsDartsIfResellerNameAndQuantitySuits() {
-        Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTableWithSuitableDart();
+        Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTable();
         Dart expectedDart = dartsTableWithSuitableDart.get(PART_NUMBER, SECOND_PROMO);
 
-        List<Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, dartsTableWithSuitableDart);
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, dartsTableWithSuitableDart);
 
         assertThat(darts).isNotNull().hasSize(1);
-        assertThat(darts).contains(expectedDart);
+        assertThat(darts).containsKey(AUTHORIZATION_NUMBER).containsValue(expectedDart);
+    }
+
+    @Test
+    public void thatReturnsEmptyListIfResellerNameNotSuits() {
+        Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTable();
+
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, OTHER_RESELLER_NAME, QUANTITY, dartsTableWithSuitableDart);
+
+        assertThat(darts).isNotNull().isEmpty();
+    }
+
+    @Test
+    public void thatReturnsEmptyListIfQuantityNotSuits() {
+        Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTable();
+
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, OTHER_RESELLER_NAME, QUANTITY + 2, dartsTableWithSuitableDart);
+
+        assertThat(darts).isNotNull().isEmpty();
     }
 
     private Table<String, String, Dart> getEmptyDartsTable() {
         return HashBasedTable.create();
     }
 
-    public static Table<String, String, Dart> getDartsTableWithSuitableDart() {
+    private static Table<String, String, Dart> getDartsTable() {
         Table<String, String, Dart> table = HashBasedTable.create();
-        Dart dart = DartBuilder.builder().setResellerName(PARTNER_NAME_FROM_PROVIDER).setQuantity(QUANTITY + 1).build();
+        Dart dart = DartBuilder.builder().setResellerName(PARTNER_NAME_FROM_PROVIDER).setQuantity(QUANTITY + 1).
+                setAuthorizationNumber(AUTHORIZATION_NUMBER).build();
         table.put(PART_NUMBER, SECOND_PROMO, dart);
         return table;
     }

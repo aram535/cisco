@@ -1,27 +1,32 @@
 package com.cisco.prepos.services.dart;
 
 import com.cisco.darts.dto.Dart;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * User: Rost
  * Date: 06.05.2014
  * Time: 0:36
  */
+@Component
 public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
 
     @Override
-    public List<Dart> getDarts(String partNumber, final String partnerName, final int quantity, Table<String, String, Dart> dartsTable) {
+    public Map<String, Dart> getDarts(String partNumber, final String partnerName, final int quantity, Table<String, String, Dart> dartsTable) {
 
-        List<Dart> darts = Lists.newArrayList();
+        Map<String, Dart> darts = Maps.newHashMap();
 
         if (dartsTable == null || dartsTable.isEmpty()) {
             return darts;
@@ -33,7 +38,7 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
             return darts;
         }
 
-        Collection<Dart> filteredDarts = Collections2.filter(suitableByPartNumberDarts, new Predicate<Dart>() {
+        List<Dart> filteredDarts = Lists.newArrayList(Collections2.filter(suitableByPartNumberDarts, new Predicate<Dart>() {
             @Override
             public boolean apply(Dart dart) {
 
@@ -45,9 +50,14 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
 
                 return nameSuits && quantitySuits;
             }
-        });
+        }));
 
-        darts.addAll(filteredDarts);
-        return darts;
+
+        return new TreeMap(Maps.uniqueIndex(filteredDarts, new Function<Dart, String>() {
+            @Override
+            public String apply(Dart dart) {
+                return dart.getAuthorizationNumber();
+            }
+        }));
     }
 }

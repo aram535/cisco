@@ -3,7 +3,7 @@ package com.cisco.prepos.services.dart;
 import com.cisco.darts.dto.Dart;
 import com.google.common.collect.Table;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * User: Rost
@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface SuitableDartsProvider {
 
-    List<Dart> getDarts(String partNumber, String partnerName, int quantity, Table<String, String, Dart> dartsTable);
+    Map<String, Dart> getDarts(String partNumber, String partnerName, int quantity, Table<String, String, Dart> dartsTable);
 
 }

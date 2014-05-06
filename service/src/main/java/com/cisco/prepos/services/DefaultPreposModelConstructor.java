@@ -5,13 +5,13 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
+import com.cisco.prepos.services.dart.SuitableDartsProvider;
 import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.cisco.sales.dto.Sale;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
 import org.javatuples.Triplet;
 import org.slf4j.Logger;
@@ -22,10 +22,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.dto.Prepos.Status.NOT_PROCESSED;
+import static com.cisco.prepos.model.PreposModel.EMPTY_DART;
 import static com.cisco.sales.dto.Sale.Status.PROCESSED;
 
 /**
@@ -42,6 +45,9 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
     @Autowired
     private PartnerNameProvider partnerNameProvider;
+
+    @Autowired
+    private SuitableDartsProvider suitableDartsProvider;
 
     @Value("${good.threshold}")
     private double threshold;
@@ -61,10 +67,23 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             Prepos prepos = new Prepos();
 
             String partNumber = sale.getPartNumber();
+            int quantity = sale.getQuantity();
+            String partnerName = partnerNameProvider.getPartnerName(sale, clientsMap);
+            Map<String, Dart> suitableDarts = suitableDartsProvider.getDarts(partNumber, partnerName, quantity, dartsTable);
+            Dart firstSuitableDart = getFirstSuitableDart(suitableDarts);
+            String firstPromo = getFirstPromo(promosMap, partNumber);
+            String secondPromo = firstSuitableDart.getAuthorizationNumber();
             double gpl = getGpl(partNumber, pricelistsMap);
+            double salePrice = sale.getPrice();
+            double saleDiscount = getSaleDiscount(salePrice, gpl);
+
+            Triplet<String, String, String> discountInfo = new Triplet<>(partNumber, firstPromo, secondPromo);
+            double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
+            double buyPrice = getBuyPrice(buyDiscount, gpl);
+            boolean okStatus = getOkStatus(salePrice, buyPrice, threshold);
 
             prepos.setPartNumber(partNumber);
-            prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
+            prepos.setPartnerName(partnerName);
             prepos.setStatus(NOT_PROCESSED);
             prepos.setClientNumber(sale.getClientNumber());
             prepos.setShippedDate(sale.getShippedDate());
@@ -73,29 +92,24 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
             prepos.setSerials(sale.getSerials());
             prepos.setZip(sale.getClientZip());
             prepos.setType(sale.getCiscoType());
-            prepos.setQuantity(sale.getQuantity());
-            prepos.setSalePrice(sale.getPrice());
-
-            String firstPromo = getFirstPromo(promosMap, prepos);
+            prepos.setQuantity(quantity);
+            prepos.setSalePrice(salePrice);
             prepos.setFirstPromo(firstPromo);
-
-            assignSecondPromo(prepos, preposModel, dartsTable);
-
-
-            double saleDiscount = getSaleDiscount(prepos.getSalePrice(), gpl);
+            prepos.setSecondPromo(secondPromo);
+            prepos.setEndUser(firstSuitableDart.getEndUserName());
             prepos.setSaleDiscount(saleDiscount);
-
-
-            double buyDiscount = discountProvider.getDiscount(getDiscountInfo(prepos), dartsTable, promosMap, pricelistsMap);
             prepos.setBuyDiscount(buyDiscount);
-
-            double buyPrice = getBuyPrice(prepos.getBuyDiscount(), gpl);
+            prepos.setSecondPromo(secondPromo);
             prepos.setBuyPrice(buyPrice);
-
-            boolean okStatus = getOkStatus(prepos.getSalePrice(), prepos.getBuyPrice(), threshold);
             prepos.setOk(okStatus);
 
             preposModel.setPrepos(prepos);
+            preposModel.setSelectedDart(firstSuitableDart);
+            //TODO just hook. Should be refactored
+            if (firstSuitableDart != EMPTY_DART) {
+                firstSuitableDart.setQuantity(firstSuitableDart.getQuantity() - quantity);
+            }
+
             preposes.add(preposModel);
 
             sale.setStatus(PROCESSED);
@@ -153,8 +167,8 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
         return new Triplet<>(prepos.getPartNumber(), prepos.getFirstPromo(), prepos.getSecondPromo());
     }
 
-    private String getFirstPromo(Map<String, Promo> promosMap, Prepos prepos) {
-        Promo firstPromo = promosMap.get(prepos.getPartNumber());
+    private String getFirstPromo(Map<String, Promo> promosMap, String partNumber) {
+        Promo firstPromo = promosMap.get(partNumber);
         if (firstPromo != null) {
             return firstPromo.getCode();
         }
@@ -176,29 +190,14 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
         return buyPrice;
     }
 
-    //TODO refactoring
-    private void assignSecondPromo(Prepos prepos, PreposModel preposModel, Table<String, String, Dart> dartsTable) {
-
-        Map<String, Dart> suitableDarts = Maps.newHashMap();
-
-        Map<String, Dart> suitableAuthNumsDarts = dartsTable.row(prepos.getPartNumber());
-        for (Dart dart : suitableAuthNumsDarts.values()) {
-            if (prepos.getPartnerName().equals(dart.getResellerName()) && dart.getQuantity() >= prepos.getQuantity()) {
-                suitableDarts.put(dart.getAuthorizationNumber(), dart);
-
-                if (prepos.getSecondPromo() == null) {
-                    prepos.setSecondPromo(dart.getAuthorizationNumber());
-                    dart.setQuantity(dart.getQuantity() - prepos.getQuantity());
-                    preposModel.setSelectedDart(dart);
-                    prepos.setEndUser(dart.getEndUserName());
-                }
-            }
+    private Dart getFirstSuitableDart(Map<String, Dart> suitableDarts) {
+        Collection<Dart> darts = suitableDarts.values();
+        Iterator<Dart> dartIterator = darts.iterator();
+        if (dartIterator.hasNext()) {
+            Dart dart = dartIterator.next();
+            return dart;
         }
-
-        if (preposModel.getSelectedDart() == null) {
-            preposModel.setSelectedDart(PreposModel.EMPTY_DART);
-        }
-        preposModel.setSuitableDarts(suitableDarts);
+        return EMPTY_DART;
     }
 
     private double getSaleDiscount(double price, double gpl) {
@@ -220,21 +219,24 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
     private void setSuitableDarts(PreposModel preposModel, Table<String, String, Dart> dartsTable) {
 
-        if (preposModel.getPrepos().getSecondPromo() == null) {
-            assignSecondPromo(preposModel.getPrepos(), preposModel, dartsTable);
-        } else {
-            Map<String, Dart> suitableDarts = Maps.newHashMap();
-            Map<String, Dart> suitableAuthNumsDarts = dartsTable.row(preposModel.getPrepos().getPartNumber());
+        Prepos prepos = preposModel.getPrepos();
+        int quantity = prepos.getQuantity();
+        String partnerName = prepos.getPartnerName();
+        String partNumber = prepos.getPartNumber();
+        String secondPromo = prepos.getSecondPromo();
 
-            preposModel.setSelectedDart(suitableAuthNumsDarts.get(preposModel.getPrepos().getSecondPromo()));
-
-            for (Dart dart : suitableAuthNumsDarts.values()) {
-                if (preposModel.getPrepos().getPartnerName().equals(dart.getResellerName())
-                        && dart.getQuantity() >= preposModel.getPrepos().getQuantity()) {
-                    suitableDarts.put(dart.getAuthorizationNumber(), dart);
-                }
+        Map<String, Dart> suitableDarts = suitableDartsProvider.getDarts(partNumber, partnerName, quantity, dartsTable);
+        Dart firstSuitableDart = getFirstSuitableDart(suitableDarts);
+        if (secondPromo == null) {
+            prepos.setEndUser(firstSuitableDart.getEndUserName());
+            preposModel.setSelectedDart(firstSuitableDart);
+            //TODO just hook. Should be refactored
+            if (firstSuitableDart != EMPTY_DART) {
+                firstSuitableDart.setQuantity(firstSuitableDart.getQuantity() - quantity);
             }
-
+        } else {
+            Dart dart = dartsTable.get(partNumber, secondPromo);
+            preposModel.setSelectedDart(dart);
             preposModel.setSuitableDarts(suitableDarts);
         }
     }
