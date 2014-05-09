@@ -54,7 +54,7 @@ public class SalesViewModel {
 	@Command("add")
 	@NotifyChange("notProcessedSales")
 	public void add() {
-		newSaleModel.setStatus(Sale.Status.NOT_PROCESSED);
+		newSaleModel.setStatus(Sale.Status.NEW);
 		salesService.save(newSaleModel);
 		this.newSaleModel = new Sale();
 	}

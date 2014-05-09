@@ -11,14 +11,15 @@ import java.util.List;
 
 public interface PreposesDao {
 
-	public List<Prepos> getPreposes();
+	List<Prepos> getPreposes();
 
-    public void delete(Prepos prePos);
+    void delete(Prepos prePos);
 
-    public void save(Prepos prePos);
+    void save(Prepos prePos);
 
-    public void update(Prepos prePos);
+    void update(Prepos prePos);
 
-	public void save(List<Prepos> preposList);
+	void save(List<Prepos> preposList);
 
+    void updateAll(List<Prepos> preposList);
 }

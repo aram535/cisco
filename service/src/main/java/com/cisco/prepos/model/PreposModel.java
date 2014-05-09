@@ -2,12 +2,12 @@ package com.cisco.prepos.model;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.prepos.dto.Prepos;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +18,9 @@ public class PreposModel {
 
     private Prepos prepos;
 
-    private Map<String, Dart> suitableDarts;
+    private Map<String, Dart> suitableDarts = ImmutableMap.of("EMPTY DART", EMPTY_DART);
     private Dart selectedDart;
     public static final Dart EMPTY_DART = new Dart("", "");
-
-    public PreposModel() {
-    }
 
     public PreposModel(Prepos prepos, Map<String, Dart> suitableDarts) {
         this.prepos = prepos;
@@ -43,42 +40,13 @@ public class PreposModel {
     }
 
     public List<Dart> getSuitableDartsList() {
-
-        List<Dart> suitableDarts = Lists.newArrayList(this.suitableDarts.values());
-        suitableDarts.add(EMPTY_DART);
-
-        return suitableDarts;
+        List<Dart> dartList = Lists.newArrayList(suitableDarts.values());
+        return dartList;
     }
 
     public void setSelectedDart(Dart selectedDart) {
-
-        if (this.selectedDart == null) {
-
-            this.selectedDart = selectedDart;
-
-        } else if (this.selectedDart != selectedDart) {
-
-            recountDartQuantity(selectedDart);
-            this.prepos.setSecondPromo(selectedDart.getAuthorizationNumber());
-            this.selectedDart = selectedDart;
-        }
+        this.selectedDart = selectedDart;
     }
-
-    public void recountPrepos(double buyDiscount, double buyPrice) {
-        prepos.setBuyDiscount(buyDiscount);
-        prepos.setBuyPrice(buyPrice);
-    }
-
-    private void recountDartQuantity(Dart newDart) {
-
-        this.selectedDart.setQuantity(this.selectedDart.getQuantity() + prepos.getQuantity());
-
-        if (newDart != EMPTY_DART) {
-            newDart.setQuantity(newDart.getQuantity() - prepos.getQuantity());
-            prepos.setSecondPromo(newDart.getAuthorizationNumber());
-        }
-    }
-
 
     public void setPrepos(Prepos prepos) {
         this.prepos = prepos;
@@ -88,22 +56,6 @@ public class PreposModel {
         this.suitableDarts = suitableDarts;
     }
 
-
-    public static List<PreposModel> getFilteredPreposes(PreposFilter foodFilter, List<PreposModel> preposes) {
-        List<PreposModel> filterredPreposes = Lists.newArrayList();
-        String partnerName = foodFilter.getPartnerName().toLowerCase();
-        String billNum = foodFilter.getShippedBillNumber().toLowerCase();
-
-        for (Iterator<PreposModel> i = preposes.iterator(); i.hasNext(); ) {
-            PreposModel tmp = i.next();
-            if (tmp.getPrepos().getPartnerName().toLowerCase().contains(partnerName) &&
-                    tmp.getPrepos().getShippedBillNumber().toLowerCase().contains(billNum)) {
-                filterredPreposes.add(tmp);
-            }
-        }
-
-        return filterredPreposes;
-    }
 
     @Override
     public boolean equals(Object obj) {

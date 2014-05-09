@@ -25,13 +25,11 @@ import static com.cisco.prepos.dto.Prepos.Status.NOT_PROCESSED;
 public class TestObjects {
 
     public static final String PART_NUMBER = "part number";
-    public static final String FIRST_PROMO = "first promo";
-    public static final String SECOND_PROMO = "second promo";
 
-    public static final double DISCOUNT_FROM_PROVIDER = 0.35;
+    public static final double BUY_DISCOUNT = 0.35;
     public static final String CLIENT_NUMBER = "client number";
     public static final String CLIENT_NAME = "client name";
-    public static final String PARTNER_NAME_FROM_PROVIDER = "partner name";
+    public static final String PARTNER_NAME = "partner name";
     public static final Timestamp SHIPPED_DATE = new Timestamp(DateTimeUtils.currentTimeMillis());
     public static final String SHIPPED_BILL_NUMBER = "shipped bill number";
     public static final String COMMENT = "comment";
@@ -56,15 +54,17 @@ public class TestObjects {
 
     public static final String END_USER_NAME = "end user name";
 
-    public static final double BUY_PRICE_WITH_DART = (double) Math.round(GPL * (1 - DART_DISTI_DISCOUNT) * 100) / 100;
+    public static final double SALE_DISCOUNT = 0.15;
+    private static final int BUY_PRICE = 100;
 
     public static class PreposFactory {
 
         public static Prepos newPrepos() {
 
             Prepos prepos = new Prepos();
-            prepos.setPartnerName(PART_NUMBER);
-            prepos.setPartnerName(PARTNER_NAME_FROM_PROVIDER);
+
+            prepos.setPartNumber(PART_NUMBER);
+            prepos.setPartnerName(PARTNER_NAME);
             prepos.setStatus(NOT_PROCESSED);
             prepos.setClientNumber(CLIENT_NUMBER);
             prepos.setShippedDate(SHIPPED_DATE);
@@ -75,6 +75,14 @@ public class TestObjects {
             prepos.setType(CISCO_TYPE);
             prepos.setQuantity(QUANTITY);
             prepos.setSalePrice(SALE_PRICE);
+            prepos.setFirstPromo(PROMO_CODE);
+            prepos.setSecondPromo(AUTHORIZATION_NUMBER);
+            prepos.setEndUser(END_USER_NAME);
+            prepos.setSaleDiscount(SALE_DISCOUNT);
+            prepos.setBuyDiscount(BUY_DISCOUNT);
+            prepos.setBuyPrice(BUY_PRICE);
+            prepos.setOk(true);
+
 
             return prepos;
         }
@@ -86,7 +94,7 @@ public class TestObjects {
 
             Sale sale = SaleBuilder.builder().id(1).shippedDate(SHIPPED_DATE).shippedBillNumber(SHIPPED_BILL_NUMBER).
                     clientName(CLIENT_NAME).clientNumber(CLIENT_NUMBER).clientZip(ZIP).partNumber(PART_NUMBER).quantity(QUANTITY).
-                    serials(SERIALS).price(SALE_PRICE).ciscoType(CISCO_TYPE).comment(COMMENT).status(Sale.Status.NOT_PROCESSED).build();
+                    serials(SERIALS).price(SALE_PRICE).ciscoType(CISCO_TYPE).comment(COMMENT).status(Sale.Status.NEW).build();
 
             return sale;
         }
@@ -113,7 +121,7 @@ public class TestObjects {
 
         public static Client newClient() {
 
-            return new Client(1L, CLIENT_NUMBER, PARTNER_NAME_FROM_PROVIDER, CLIENT_CITY, CLIENT_ADDRESS);
+            return new Client(1L, CLIENT_NUMBER, PARTNER_NAME, CLIENT_CITY, CLIENT_ADDRESS);
         }
     }
 
@@ -129,7 +137,7 @@ public class TestObjects {
         public static Dart newDart() {
             return DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
                     .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
-                    .setResellerName(PARTNER_NAME_FROM_PROVIDER).setResellerCountry("Ukraine").setResellerAcct(123)
+                    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
                     .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
                     .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
                     .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
@@ -140,7 +148,7 @@ public class TestObjects {
 
             return DartBuilder.builder().setId(1).setAuthorizationNumber(authorizationNumber).setVersion(1)
                     .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
-                    .setResellerName(PARTNER_NAME_FROM_PROVIDER).setResellerCountry("Ukraine").setResellerAcct(123)
+                    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
                     .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(quantity)
                     .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
                     .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
@@ -150,7 +158,7 @@ public class TestObjects {
         public static Table<String, String, Dart> getDartsTable() {
             Table<String, String, Dart> table = HashBasedTable.create();
             Dart dart = DartBuilder.builder().setDistiDiscount(DART_DISTI_DISCOUNT).build();
-            table.put(PART_NUMBER, SECOND_PROMO, dart);
+            table.put(PART_NUMBER, AUTHORIZATION_NUMBER, dart);
             return table;
         }
     }

@@ -223,6 +223,6 @@ public class Sale {
 
 
     public enum Status {
-        NOT_PROCESSED, PROCESSED, WAITING;
+        NEW, OLD;
     }
 }

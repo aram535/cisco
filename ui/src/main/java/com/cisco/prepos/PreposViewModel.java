@@ -66,7 +66,7 @@ public class PreposViewModel {
     @Command
     @NotifyChange({"allPrepos"})
     public void changeFilter() {
-        filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, preposes);
+        filteredPreposes = preposes;
     }
 
 }

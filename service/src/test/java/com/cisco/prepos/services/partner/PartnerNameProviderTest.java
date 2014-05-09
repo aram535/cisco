@@ -2,7 +2,6 @@ package com.cisco.prepos.services.partner;
 
 import com.cisco.clients.dto.Client;
 import com.cisco.sales.dto.Sale;
-import com.cisco.testtools.TestObjects;
 import com.google.common.collect.Maps;
 import org.junit.Test;
 
@@ -28,7 +27,7 @@ public class PartnerNameProviderTest {
     @Test
     public void thatReturnsPartnerNameFromClientsMapIfExists() {
         String partnerName = partnerNameProvider.getPartnerName(createSale(), createClientsMap());
-        assertThat(partnerName).isEqualTo(PARTNER_NAME_FROM_PROVIDER);
+        assertThat(partnerName).isEqualTo(PARTNER_NAME);
     }
 
     @Test

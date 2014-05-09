@@ -15,7 +15,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static com.cisco.sales.dto.Sale.Status.*;
+import static com.cisco.sales.dto.Sale.Status.NEW;
+import static com.cisco.sales.dto.Sale.Status.OLD;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -29,11 +30,9 @@ public class SalesServiceTest {
 
     private static final Timestamp CURRENT_TIME = new Timestamp(DateTime.now().getMillis());
 
-    private Sale notProcessedSale;
+    private Sale newSale;
 
-    private Sale processedSale;
-
-    private Sale waitingSale;
+    private Sale oldSale;
 
     @InjectMocks
     private SalesService salesService = new DefaultSalesService();
@@ -44,60 +43,49 @@ public class SalesServiceTest {
     @Before
     public void init() {
         initExpectedSalesListInDb();
-        when(salesDao.getSales()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale, waitingSale));
+        when(salesDao.getSales()).thenReturn(Lists.newArrayList(newSale, oldSale));
     }
 
     @Test
-    public void thatReturnsOnlyNotProcessedSales() {
-        List<Sale> sales = salesService.getSales(NOT_PROCESSED);
+    public void thatReturnsOnlySuitableSales() {
+        List<Sale> sales = salesService.getSales(NEW);
         assertThat(sales).isNotNull().isNotEmpty();
-        assertThat(sales).isEqualTo(Lists.newArrayList(notProcessedSale));
-    }
-
-    @Test
-    public void thatReturnsNotProcessedAndWaitingSales() {
-        List<Sale> sales = salesService.getSales(NOT_PROCESSED, WAITING);
-        assertThat(sales).isNotNull().isNotEmpty();
-        assertThat(sales).hasSize(2);
-        assertThat(sales).contains(notProcessedSale, waitingSale);
+        assertThat(sales).isEqualTo(Lists.newArrayList(newSale));
     }
 
     @Test
     public void thatReturnAllSalesIfNoArgumentsSet() {
         List<Sale> sales = salesService.getSales();
         assertThat(sales).isNotNull().isNotEmpty();
-        assertThat(sales).hasSize(3);
-        assertThat(sales).contains(notProcessedSale, waitingSale, processedSale);
+        assertThat(sales).hasSize(2);
+        assertThat(sales).contains(newSale, oldSale);
     }
 
     @Test
     public void thatReturnAllSalesIfNullIsInput() {
         List<Sale> sales = salesService.getSales(null);
         assertThat(sales).isNotNull().isNotEmpty();
-        assertThat(sales).hasSize(3);
-        assertThat(sales).contains(notProcessedSale, waitingSale, processedSale);
+        assertThat(sales).hasSize(2);
+        assertThat(sales).contains(newSale, oldSale);
     }
 
     @Test
     public void thatReturnsEmptyListIfNoOccurrencesWithInputArguments() {
-        when(salesDao.getSales()).thenReturn(Lists.newArrayList(notProcessedSale, processedSale));
-        List<Sale> sales = salesService.getSales(WAITING);
+        when(salesDao.getSales()).thenReturn(Lists.newArrayList(newSale));
+        List<Sale> sales = salesService.getSales(OLD);
         assertThat(sales).isNotNull().isEmpty();
     }
 
     private void initExpectedSalesListInDb() {
 
-        notProcessedSale = SaleBuilder.builder().id(1).shippedDate(CURRENT_TIME).shippedBillNumber("1267894").
+        newSale = SaleBuilder.builder().id(1).shippedDate(CURRENT_TIME).shippedBillNumber("1267894").
                 clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA112").quantity(5).
-                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(NOT_PROCESSED).build();
+                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(NEW).build();
 
-        processedSale = SaleBuilder.builder().id(2).shippedDate(CURRENT_TIME).shippedBillNumber("1267894").
+        oldSale = SaleBuilder.builder().id(2).shippedDate(CURRENT_TIME).shippedBillNumber("1267894").
                 clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA114").quantity(3).
-                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(PROCESSED).build();
+                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(OLD).build();
 
-        waitingSale = SaleBuilder.builder().id(2).shippedDate(CURRENT_TIME).shippedBillNumber("1267894").
-                clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA114").quantity(3).
-                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(WAITING).build();
 
     }
 

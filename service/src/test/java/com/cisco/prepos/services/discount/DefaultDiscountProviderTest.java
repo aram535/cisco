@@ -34,7 +34,7 @@ public class DefaultDiscountProviderTest {
 
     @Test
     public void thatDiscountReturnsFromDartsIfExists() {
-        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, null, SECOND_PROMO);
+        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, null, AUTHORIZATION_NUMBER);
 
         double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
 
@@ -43,7 +43,7 @@ public class DefaultDiscountProviderTest {
 
     @Test
     public void thatDiscountReturnsFromPromosMapIfNoDartFound() {
-        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, FIRST_PROMO, OTHER_PROMO);
+        Triplet<String, String, String> discountInfo = new Triplet<>(PART_NUMBER, PROMO_CODE, OTHER_PROMO);
 
         double distiDiscount = discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
 
@@ -78,7 +78,7 @@ public class DefaultDiscountProviderTest {
         Table<String, String, Dart> table = HashBasedTable.create();
 
         Dart dart = DartBuilder.builder().setDistiDiscount(DART_DISTI_DISCOUNT).build();
-        table.put(PART_NUMBER, SECOND_PROMO, dart);
+        table.put(PART_NUMBER, AUTHORIZATION_NUMBER, dart);
         return table;
     }
 

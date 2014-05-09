@@ -24,22 +24,22 @@ public class SuitableDartsProviderTest {
 
     @Test
     public void thatReturnsEmptyListIfInputIsEmpty() {
-        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, getEmptyDartsTable());
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, getEmptyDartsTable());
         assertThat(darts).isNotNull().isEmpty();
     }
 
     @Test
     public void thatReturnsEmptyIfPartNumberNotSuits() {
-        Map<String, Dart> darts = suitableDartsProvider.getDarts(OTHER_PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, DartsFactory.getDartsTable());
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(OTHER_PART_NUMBER, PARTNER_NAME, QUANTITY, DartsFactory.getDartsTable());
         assertThat(darts).isNotNull().isEmpty();
     }
 
     @Test
     public void thatReturnsDartsIfResellerNameAndQuantitySuits() {
         Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTable();
-        Dart expectedDart = dartsTableWithSuitableDart.get(PART_NUMBER, SECOND_PROMO);
+        Dart expectedDart = dartsTableWithSuitableDart.get(PART_NUMBER, AUTHORIZATION_NUMBER);
 
-        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, dartsTableWithSuitableDart);
+        Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, dartsTableWithSuitableDart);
 
         assertThat(darts).isNotNull().hasSize(1);
         assertThat(darts).containsKey(AUTHORIZATION_NUMBER).containsValue(expectedDart);
@@ -69,9 +69,9 @@ public class SuitableDartsProviderTest {
 
     private static Table<String, String, Dart> getDartsTable() {
         Table<String, String, Dart> table = HashBasedTable.create();
-        Dart dart = DartBuilder.builder().setResellerName(PARTNER_NAME_FROM_PROVIDER).setQuantity(QUANTITY + 1).
+        Dart dart = DartBuilder.builder().setResellerName(PARTNER_NAME).setQuantity(QUANTITY + 1).
                 setAuthorizationNumber(AUTHORIZATION_NUMBER).build();
-        table.put(PART_NUMBER, SECOND_PROMO, dart);
+        table.put(PART_NUMBER, AUTHORIZATION_NUMBER, dart);
         return table;
     }
 

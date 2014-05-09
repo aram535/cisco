@@ -4,7 +4,6 @@ import com.cisco.clients.dto.Client;
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
-import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.dart.SuitableDartsProvider;
 import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.prepos.services.partner.PartnerNameProvider;
@@ -42,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class PreposModelConstructorTest {
 
     @InjectMocks
-    private PreposModelConstructor preposModelConstructor = new DefaultPreposModelConstructor();
+    private PreposConstructor preposConstructor = new DefaultPreposConstructor();
 
     @Mock
     private DiscountProvider discountProvider;
@@ -67,21 +66,21 @@ public class PreposModelConstructorTest {
         sale.setQuantity(QUANTITY);
         sale.setPartNumber(PART_NUMBER);
 
-        Triplet<String, String, String> discountInfo = new Triplet(PART_NUMBER, FIRST_PROMO, SECOND_PROMO);
-        when(discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap())).thenReturn(DISCOUNT_FROM_PROVIDER);
-        when(partnerNameProvider.getPartnerName(sale, getClientsMap())).thenReturn(PARTNER_NAME_FROM_PROVIDER);
-        when(suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME_FROM_PROVIDER, QUANTITY, getDartsTable())).thenReturn(Maps.<String, Dart>newHashMap());
+        Triplet<String, String, String> discountInfo = new Triplet(PART_NUMBER, PROMO_CODE, AUTHORIZATION_NUMBER);
+        when(discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap())).thenReturn(BUY_DISCOUNT);
+        when(partnerNameProvider.getPartnerName(sale, getClientsMap())).thenReturn(PARTNER_NAME);
+        when(suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, getDartsTable())).thenReturn(Maps.<String, Dart>newHashMap());
     }
 
     @Test
     public void thatConstructNewModelsReturnsEmptyListIfSalesAreEmpty() {
-        List<PreposModel> preposModels = preposModelConstructor.constructNewPreposModels(Lists.<Sale>newArrayList(), getClientsMap(), getPriceMap(), getPromosMap(), getDartsTable());
+        List<Prepos> preposModels = preposConstructor.construct(Lists.<Sale>newArrayList(), getClientsMap(), getPriceMap(), getPromosMap(), getDartsTable());
         assertThat(preposModels).isNotNull().isEmpty();
     }
 
     @Test(expected = CiscoException.class)
     public void thatConstructNewModelsThrowsCiscoExceptionIfPriceNotFoundForSale() {
-        preposModelConstructor.constructNewPreposModels(getSales(), getClientsMap(), Maps.<String, Pricelist>newHashMap(), getPromosMap(), getDartsTable());
+        preposConstructor.construct(getSales(), getClientsMap(), Maps.<String, Pricelist>newHashMap(), getPromosMap(), getDartsTable());
     }
 
     private List<Sale> getSales() {
@@ -97,7 +96,7 @@ public class PreposModelConstructorTest {
     private Table<String, String, Dart> getDartsTable() {
         Table<String, String, Dart> table = HashBasedTable.create();
         Dart dart = builder().build();
-        table.put(PART_NUMBER, SECOND_PROMO, dart);
+        table.put(PART_NUMBER, AUTHORIZATION_NUMBER, dart);
         return table;
     }
 

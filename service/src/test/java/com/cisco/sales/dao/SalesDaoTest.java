@@ -38,11 +38,11 @@ public class SalesDaoTest extends BasicDb {
 
         Sale firstSale = SaleBuilder.builder().id(1).shippedDate(shippedDate).shippedBillNumber("1267894").
                 clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA112").quantity(5).
-                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(Sale.Status.NOT_PROCESSED).build();
+                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(Sale.Status.NEW).build();
 
         Sale secondSale = SaleBuilder.builder().id(2).shippedDate(shippedDate).shippedBillNumber("1267894").
                 clientName("Spec").clientNumber("158").clientZip(61052).partNumber("SPA114").quantity(3).
-                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(Sale.Status.PROCESSED).build();
+                serials("ASDFEFE321321").price(20.83).ciscoType("CISCO SB").comment("comment").status(Sale.Status.OLD).build();
 
         Sale[] sales = new Sale[2];
         sales[0] = firstSale;
