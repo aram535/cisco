@@ -61,7 +61,7 @@
                 <label width="auto" value="@bind(each.prepos.buyDiscount)" />
                 <label width="auto" value="@bind(each.prepos.salePrice)" />
                 <label width="auto" value="@bind(each.prepos.buyPrice)" />
-                <label width="auto" value="@bind(each.prepos.firstPromo)"  tooltip="@bind(each.prepos.shippedDate)"/>
+                <label width="auto" value="@bind(each.prepos.firstPromo)"/>
                 <combobox readonly="true"
                           model="@load(each.suitableDartsList)" selectedItem="@bind(each.selectedDart)"
                           onChange="@command('promoSelected', preposModel=each)"
@@ -85,6 +85,10 @@
         </template>
     </grid>
     <groupbox id="mygrp" vflex="5%">
+        From:
+        <datebox inplace="true" width="auto" value="@bind(vmPrePos.foodFilter.fromDate)" buttonVisible="true" onChange="@command('changeFilter')"/>
+        To:
+        <datebox inplace="true" width="auto" value="@bind(vmPrePos.foodFilter.toDate)" buttonVisible="true" onChange="@command('changeFilter')"/>
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
     </groupbox>

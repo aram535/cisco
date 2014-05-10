@@ -33,7 +33,7 @@ public class PreposViewModel {
 
         if (preposes == null) {
             preposes = preposService.getAllData();
-            filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
+            filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, Lists.newCopyOnWriteArrayList(preposes));
         }
 
         return filteredPreposes;

@@ -71,14 +71,15 @@ public class DefaultPreposService implements PreposService {
 
         if (!CollectionUtils.isEmpty(sales)) {
             Map<String, Client> clientsMap = clientsService.getClientsMap();
-            Map<String, Promo> promosMap = promosService.getPromosMap();
-            Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
-            List<Prepos> newPreposes = preposConstructor.construct(sales, clientsMap, pricelistsMap, promosMap, dartsTable);
+            List<Prepos> newPreposes = preposConstructor.construct(sales, clientsMap);
             preposesDao.save(newPreposes);
             updatedPreposes.addAll(newPreposes);
         }
 
-        return preposModelConstructor.constructPreposModels(updatedPreposes, dartsTable);
+	    Map<String, Promo> promosMap = promosService.getPromosMap();
+	    Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
+
+        return preposModelConstructor.construct(updatedPreposes, pricelistsMap, promosMap, dartsTable);
     }
 
     @Override

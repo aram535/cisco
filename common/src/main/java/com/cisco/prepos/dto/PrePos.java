@@ -37,6 +37,7 @@ public class Prepos {
     private int zip;
 	private Status status;
 
+
 	public Prepos() {
 	}
 

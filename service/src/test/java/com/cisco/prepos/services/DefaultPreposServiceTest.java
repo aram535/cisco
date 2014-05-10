@@ -98,7 +98,8 @@ public class DefaultPreposServiceTest {
         when(preposesDao.getPreposes()).thenReturn(allPreposesWithEmptySerials);
         when(preposUpdater.updatePreposes(allPreposesWithEmptySerials)).thenReturn(allPreposes);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
-        when(preposModelConstructor.constructPreposModels(allPreposes, dartsTable)).thenReturn(allPreposModels);
+	    when(preposModelConstructor.construct(allPreposes, Maps.<String, Pricelist>newHashMap(),
+			    Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(allPreposModels);
 
         List<PreposModel> allData = preposService.getAllData();
 
@@ -123,8 +124,8 @@ public class DefaultPreposServiceTest {
         when(preposUpdater.updatePreposes(allPreposesWithEmptySerials)).thenReturn(allPreposes);
         when(salesService.getSales(NEW)).thenReturn(newSales);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
-        when(preposConstructor.construct(newSales, Maps.<String, Client>newHashMap(), Maps.<String, Pricelist>newHashMap(), Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(newPreposes);
-        when(preposModelConstructor.constructPreposModels(result, dartsTable)).thenReturn(allPreposModels);
+        when(preposConstructor.construct(newSales, Maps.<String, Client>newHashMap())).thenReturn(newPreposes);
+        when(preposModelConstructor.construct(result, Maps.<String, Pricelist>newHashMap(), Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(allPreposModels);
 
         List<PreposModel> allData = preposService.getAllData();
 
@@ -141,7 +142,7 @@ public class DefaultPreposServiceTest {
     private List<PreposModel> getAllPreposModels() {
         Prepos prepos = newPrepos();
         Map<String, Dart> suitableDarts = ImmutableMap.of("", PreposModel.EMPTY_DART);
-        PreposModel preposModel = new PreposModel(prepos, suitableDarts);
+        PreposModel preposModel = new PreposModel(prepos, suitableDarts,PreposModel.EMPTY_DART);
 
         return Lists.newArrayList(preposModel);
     }

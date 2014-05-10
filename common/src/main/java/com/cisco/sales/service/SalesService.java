@@ -1,6 +1,7 @@
 package com.cisco.sales.service;
 
 import com.cisco.sales.dto.Sale;
+import com.google.common.collect.Table;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface SalesService {
 	void update(List<Sale> sales);
 
 	void delete(Sale sale);
+
+	Table<String, String, Sale> getSalesTable();
 }

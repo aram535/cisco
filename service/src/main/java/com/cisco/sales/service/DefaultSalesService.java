@@ -4,7 +4,9 @@ import com.cisco.sales.dao.SalesDao;
 import com.cisco.sales.dto.Sale;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Table;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import static com.cisco.sales.dto.Sale.Status;
  */
 @Service("salesService")
 public class DefaultSalesService implements SalesService {
+
+	private Table<String, String, Sale> salesTable;
 
     @Autowired
     private SalesDao salesDao;
@@ -63,4 +67,26 @@ public class DefaultSalesService implements SalesService {
 	public void delete(Sale sale) {
 		salesDao.delete(sale);
 	}
+
+	@Override
+	public Table<String, String, Sale> getSalesTable() {
+
+		List<Sale> sales = salesDao.getSales();
+
+		return salesListToTable(sales);
+
+
+	}
+
+	private Table<String, String, Sale> salesListToTable(List<Sale> sales) {
+
+		HashBasedTable<String, String, Sale> salesTable = HashBasedTable.create();
+
+		for (Sale sale : sales) {
+			salesTable.put(sale.getPartNumber(), sale.getShippedBillNumber(), sale);
+		}
+
+		return salesTable;
+	}
+
 }
