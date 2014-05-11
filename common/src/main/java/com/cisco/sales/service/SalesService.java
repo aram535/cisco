@@ -24,4 +24,6 @@ public interface SalesService {
 	void delete(Sale sale);
 
 	Table<String, String, Sale> getSalesTable();
+
+	void updateSalesStatuses(List<Sale> sales);
 }

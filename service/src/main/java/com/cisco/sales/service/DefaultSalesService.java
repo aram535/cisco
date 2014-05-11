@@ -78,6 +78,16 @@ public class DefaultSalesService implements SalesService {
 
 	}
 
+	@Override
+	public void updateSalesStatuses(List<Sale> sales) {
+
+		for (Sale sale : sales) {
+			sale.setStatus(Status.OLD);
+		}
+
+		update(sales);
+	}
+
 	private Table<String, String, Sale> salesListToTable(List<Sale> sales) {
 
 		HashBasedTable<String, String, Sale> salesTable = HashBasedTable.create();

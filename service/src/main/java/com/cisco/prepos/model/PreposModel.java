@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +30,8 @@ public class PreposModel {
 
     public PreposModel(Prepos prepos, Map<String, Dart> suitableDarts, Dart selectedDart) {
         this.prepos = prepos;
-        this.suitableDarts = suitableDarts;
-	    this.selectedDart = selectedDart;
+        this.suitableDarts.putAll(suitableDarts);
+	    setSelectedDart(selectedDart);
     }
 
     public Prepos getPrepos() {
@@ -86,21 +87,25 @@ public class PreposModel {
     }
 
 
-    public static List<PreposModel> getFilteredPreposes(PreposFilter foodFilter, List<PreposModel> preposes) {
-        List<PreposModel> filterredPreposes = Lists.newArrayList();
-        String partnerName = foodFilter.getPartnerName().toLowerCase();
-        String billNum = foodFilter.getShippedBillNumber().toLowerCase();
+	public static List<PreposModel> getFilteredPreposes(PreposFilter foodFilter, List<PreposModel> preposes) {
+		List<PreposModel> filterredPreposes = Lists.newArrayList();
+		String partnerName = foodFilter.getPartnerName().toLowerCase();
+		String billNum = foodFilter.getShippedBillNumber().toLowerCase();
+		Timestamp fromDate = foodFilter.getFromDate();
+		Timestamp toDate = foodFilter.getToDate();
 
-        for (Iterator<PreposModel> i = preposes.iterator(); i.hasNext(); ) {
-            PreposModel tmp = i.next();
-            if (tmp.getPrepos().getPartnerName().toLowerCase().contains(partnerName) &&
-                    tmp.getPrepos().getShippedBillNumber().toLowerCase().contains(billNum)) {
-                filterredPreposes.add(tmp);
-            }
-        }
+		for (Iterator<PreposModel> i = preposes.iterator(); i.hasNext(); ) {
+			PreposModel tmp = i.next();
+			if (tmp.getPrepos().getPartnerName().toLowerCase().contains(partnerName) &&
+					tmp.getPrepos().getShippedBillNumber().toLowerCase().contains(billNum) &&
+					tmp.getPrepos().getShippedDate().after(fromDate) &&
+					tmp.getPrepos().getShippedDate().before(toDate)) {
+				filterredPreposes.add(tmp);
+			}
+		}
 
-        return filterredPreposes;
-    }
+		return filterredPreposes;
+	}
 
     @Override
     public boolean equals(Object obj) {

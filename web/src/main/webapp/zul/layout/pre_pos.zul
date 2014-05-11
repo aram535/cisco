@@ -8,7 +8,7 @@
     <style src="/widgets/grid/data_filter/style.css" />
     <!--     <style src="/widgets/grid/inline_editing/style.css" /> -->
     <grid sizedByContent="true"
-          model="@load(vmPrePos.allPrepos)" vflex="95%"> <!-- autopaging="true" mold="paging"-->
+          model="@load(vmPrePos.allPrepos)" vflex="95%" autopaging="true" mold="paging"> <!-- -->
         <auxhead sclass="category-center">
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>

@@ -40,13 +40,17 @@ public class TestObjects {
     public static final int ZIP = 100500;
     public static final String CISCO_TYPE = "cisco type";
     public static final int QUANTITY = 5;
-    public static final double SALE_PRICE = 100.5;
+    public static final double SALE_PRICE = 200.5;
 
-    public static final double DART_DISTI_DISCOUNT = 0.35;
-    public static final double PROMO_DISCOUNT = 0.55;
+    public static final double DART_DISTI_DISCOUNT = 0.55;
+	public static final double DART_DISTI_PRICE = 112.5;
+    public static final double PROMO_DISCOUNT = 0.35;
+	public static final double PROMO_PRICE = 162.5;
     public static final double PRICE_LIST_DISCOUNT = 0.21;
+	public static final double PRICE_LIST_PRICE = 197.5;
 
-    public static final int GPL = 25;
+	//double buyPrice = (double) Math.round(gpl * (1 - buyDiscount) * 100) / 100;
+    public static final int GPL = 250;
 
     public static final String CLIENT_CITY = "client city";
     public static final String CLIENT_ADDRESS = "client address";
@@ -57,8 +61,8 @@ public class TestObjects {
 
     public static final String END_USER_NAME = "end user name";
 
-    public static final double SALE_DISCOUNT = 0.15;
-    private static final int BUY_PRICE = 100;
+    public static final double SALE_DISCOUNT = 0.20;
+    private static final double BUY_PRICE = 162.5;
 
 	public static class PreposFactory {
 
@@ -182,25 +186,39 @@ public class TestObjects {
     public static class DartsFactory {
 
         public static Dart newDart() {
+
             return DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
                     .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
                     .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
                     .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
                     .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
-                    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
+                    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1)
+		            .setMdmFulfillment(1)
                     .build();
         }
 
         public static Dart newDart(String authorizationNumber, int quantity) {
 
-            return DartBuilder.builder().setId(1).setAuthorizationNumber(authorizationNumber).setVersion(1)
-                    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
-                    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-                    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(quantity)
-                    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
-                    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
-                    .build();
-        }
+		    return DartBuilder.builder().setId(1).setAuthorizationNumber(authorizationNumber).setVersion(1)
+				    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
+				    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+				    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(quantity)
+				    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
+				    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
+				    .build();
+	    }
+
+	    public static Dart newDart(Timestamp startDate, Timestamp endDate) {
+
+		    return DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
+				    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
+				    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+				    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+				    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
+				    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1)
+				    .setMdmFulfillment(1).setStartDate(startDate).setEndDate(endDate)
+				    .build();
+	    }
 
         public static Table<String, String, Dart> getDartsTable() {
             Table<String, String, Dart> table = HashBasedTable.create();

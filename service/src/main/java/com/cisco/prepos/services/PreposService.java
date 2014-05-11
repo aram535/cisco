@@ -11,7 +11,7 @@ public interface PreposService {
 
     public List<PreposModel> getAllData();
 
-    public void save(List<PreposModel> prePos);
+    public void update(List<PreposModel> prePos);
 
     public void recountPrepos(PreposModel preposModel);
 

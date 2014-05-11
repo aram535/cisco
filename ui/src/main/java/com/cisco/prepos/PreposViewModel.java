@@ -47,12 +47,12 @@ public class PreposViewModel {
     @NotifyChange("allPrepos")
     public void refresh() {
         preposes = preposService.getAllData();
-        filteredPreposes = Lists.newCopyOnWriteArrayList(preposes);
+	    filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, Lists.newCopyOnWriteArrayList(preposes));
     }
 
     @Command("save")
     public void save() {
-        preposService.save(preposes);
+        preposService.update(preposes);
     }
 
 
@@ -66,7 +66,7 @@ public class PreposViewModel {
     @Command
     @NotifyChange({"allPrepos"})
     public void changeFilter() {
-        filteredPreposes = preposes;
+        filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, preposes);
     }
 
 }

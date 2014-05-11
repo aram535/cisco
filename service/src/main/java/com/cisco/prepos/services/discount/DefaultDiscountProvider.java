@@ -56,4 +56,10 @@ public class DefaultDiscountProvider implements DiscountProvider {
     }
 
 
+	@Override
+	public boolean isRelevant(Promo existingPromo) {
+		return true;
+	}
+
+
 }

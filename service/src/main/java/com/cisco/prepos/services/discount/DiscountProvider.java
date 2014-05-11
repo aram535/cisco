@@ -17,5 +17,5 @@ public interface DiscountProvider {
 
     double getDiscount(Triplet<String, String, String> discountInfo, Table<String, String, Dart> dartsTable, Map<String, Promo> promos, Map<String, Pricelist> priceMap);
 
-
+	boolean isRelevant(Promo existingPromo);
 }

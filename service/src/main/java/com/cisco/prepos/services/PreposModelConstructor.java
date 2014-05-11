@@ -18,4 +18,12 @@ import java.util.Map;
 public interface PreposModelConstructor {
 
     List<PreposModel> construct(List<Prepos> preposes, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable);
+
+	List<Prepos> getPreposesFromPreposModels(List<PreposModel> preposModels);
+
+	void recountPreposPrices(PreposModel preposModel, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable);
+
+	void setTreshhold(double treshhold);
+
+	double getTreshhold();
 }

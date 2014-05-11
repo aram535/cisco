@@ -10,6 +10,7 @@ import com.google.common.collect.Table;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.TreeMap;
 public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
 
     @Override
-    public Map<String, Dart> getDarts(String partNumber, final String partnerName, final int quantity, Table<String, String, Dart> dartsTable) {
+    public Map<String, Dart> getDarts(String partNumber, final String partnerName, final int quantity, final Timestamp saleDate, Table<String, String, Dart> dartsTable) {
 
         Map<String, Dart> darts = Maps.newHashMap();
 
@@ -47,8 +48,9 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
 
                 boolean nameSuits = partnerName.equals(resellerName);
                 boolean quantitySuits = dartQuantity >= quantity;
+				boolean dateSuits = dart.getStartDate().before(saleDate) && dart.getEndDate().after(saleDate);
 
-                return nameSuits && quantitySuits;
+                return nameSuits && quantitySuits && dateSuits;
             }
         }));
 

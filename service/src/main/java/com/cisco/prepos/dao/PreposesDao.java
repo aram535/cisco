@@ -19,6 +19,8 @@ public interface PreposesDao {
 
     void update(Prepos prePos);
 
+	void update(List<Prepos> prePos);
+
 	void save(List<Prepos> preposList);
 
     void updateAll(List<Prepos> preposList);

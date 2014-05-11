@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -133,13 +134,48 @@ public class DefaultPreposServiceTest {
         assertThat(allData).isEqualTo(allPreposModels);
     }
 
+	@Test
+	public void thatSaveCallsPreposesDaoSaveMethod() {
+
+		List<PreposModel> preposModels = getAllPreposModels();
+
+		List<Prepos> preposes = newPreposes();
+		when(preposModelConstructor.getPreposesFromPreposModels(preposModels)).thenReturn(preposes);
+
+		preposService.update(preposModels);
+
+		verify(preposesDao).update(preposes);
+	}
+
+	@Test
+	public void thatRecountsPreposesForChangedDart() {
+
+		PreposModel preposModel = Iterables.getOnlyElement(getAllPreposModels());
+
+		Table<String, String, Dart> dartsTable = HashBasedTable.create();
+		HashMap<String, Pricelist> pricelistsMap = Maps.newHashMap();
+		HashMap<String, Promo> promosMap = Maps.newHashMap();
+
+
+		when(pricelistsService.getPricelistsMap()).thenReturn(pricelistsMap);
+		when(promosService.getPromosMap()).thenReturn(promosMap);
+		when(dartsService.getDartsTable()).thenReturn(dartsTable);
+
+		preposService.recountPrepos(preposModel);
+
+		verify(preposModelConstructor).recountPreposPrices(preposModel, pricelistsMap, promosMap, dartsTable);
+
+	}
+
     private List<Prepos> newPreposes() {
+
         Prepos prepos = newPrepos();
         prepos.setPartnerName("new partner name");
         return Lists.newArrayList(prepos);
     }
 
     private List<PreposModel> getAllPreposModels() {
+
         Prepos prepos = newPrepos();
         Map<String, Dart> suitableDarts = ImmutableMap.of("", PreposModel.EMPTY_DART);
         PreposModel preposModel = new PreposModel(prepos, suitableDarts,PreposModel.EMPTY_DART);

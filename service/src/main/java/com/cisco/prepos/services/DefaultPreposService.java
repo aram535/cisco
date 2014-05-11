@@ -16,6 +16,7 @@ import com.cisco.sales.service.SalesService;
 import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -56,6 +57,7 @@ public class DefaultPreposService implements PreposService {
     @Autowired
     private ClientsService clientsService;
 
+	@Transactional
     @Override
     public List<PreposModel> getAllData() {
 
@@ -73,6 +75,7 @@ public class DefaultPreposService implements PreposService {
             Map<String, Client> clientsMap = clientsService.getClientsMap();
             List<Prepos> newPreposes = preposConstructor.construct(sales, clientsMap);
             preposesDao.save(newPreposes);
+	        salesService.updateSalesStatuses(sales);
             updatedPreposes.addAll(newPreposes);
         }
 
@@ -85,11 +88,15 @@ public class DefaultPreposService implements PreposService {
     @Override
     public void recountPrepos(PreposModel preposModel) {
 
+	    preposModelConstructor.recountPreposPrices(preposModel, pricelistsService.getPricelistsMap(), promosService.getPromosMap(), dartsService.getDartsTable());
     }
 
     @Override
-    public void save(List<PreposModel> prePos) {
+    public void update(List<PreposModel> preposModels) {
 
+	    List<Prepos> preposes = preposModelConstructor.getPreposesFromPreposModels(preposModels);
+
+	    preposesDao.update(preposes);
     }
 
 }

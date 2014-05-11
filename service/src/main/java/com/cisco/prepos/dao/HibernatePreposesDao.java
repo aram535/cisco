@@ -55,6 +55,14 @@ public class HibernatePreposesDao implements PreposesDao {
 		currentSession.update(prepos);
 	}
 
+	@Transactional
+	@Override
+	public void update(List<Prepos> preposList) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		for (Prepos prepos : preposList) {
+			currentSession.update(prepos);
+		}
+	}
 
 
 	@Transactional
