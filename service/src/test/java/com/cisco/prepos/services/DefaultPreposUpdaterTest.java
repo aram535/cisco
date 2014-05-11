@@ -3,8 +3,6 @@ package com.cisco.prepos.services;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
-import com.cisco.testtools.TestObjects;
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import org.junit.Test;
@@ -16,7 +14,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 
 import static com.cisco.testtools.TestObjects.*;
+import static com.cisco.testtools.TestObjects.PreposFactory.newPrepos;
+import static com.cisco.testtools.TestObjects.PreposFactory.newPreposList;
 import static com.cisco.testtools.TestObjects.SalesFactory.newSale;
+import static com.google.common.collect.HashBasedTable.create;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -26,31 +27,60 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPreposUpdaterTest {
 
-	@InjectMocks
-	DefaultPreposUpdater preposUpdater = new DefaultPreposUpdater();
+    private static final String EMPTY_SERIALS = "";
+    private static final String OTHER_SERIALS = "OTHER_SERIALS";
 
-	@Mock
-	private SalesService salesService;
+    @InjectMocks
+    private DefaultPreposUpdater preposUpdater = new DefaultPreposUpdater();
 
-	@Test
-	public void thatPreposUpdater() throws Exception {
+    @Mock
+    private SalesService salesService;
 
-		Table<String, String, Sale> salesTable = HashBasedTable.create();
-		Sale sale = newSale();
-		sale.setSerials(SERIALS);
-		salesTable.put(PART_NUMBER, SHIPPED_BILL_NUMBER, sale);
+    @Test
+    public void thatUpdatesPreposesWithEmptySerials() throws Exception {
 
-		Prepos notUpdatedPrepos = TestObjects.PreposFactory.newPrepos();
-		notUpdatedPrepos.setSerials("");
+        Table<String, String, Sale> salesTable = create();
+        Sale sale = newSale();
+        sale.setSerials(SERIALS);
+        salesTable.put(PART_NUMBER, SHIPPED_BILL_NUMBER, sale);
 
-		when(salesService.getSalesTable()).thenReturn(salesTable);
+        Prepos notUpdatedPrepos = newPrepos();
+        notUpdatedPrepos.setSerials(EMPTY_SERIALS);
 
-		List<Prepos> updatedPreposes = preposUpdater.updatePreposes(Lists.newArrayList(notUpdatedPrepos));
+        when(salesService.getSalesTable()).thenReturn(salesTable);
 
-		assertThat(updatedPreposes).isEqualTo(createExpectedPreposes());
-	}
+        List<Prepos> updatedPreposes = preposUpdater.update(Lists.newArrayList(notUpdatedPrepos));
 
-	private List<Prepos> createExpectedPreposes() {
-		return TestObjects.PreposFactory.newPreposList();
-	}
+        assertThat(updatedPreposes).isEqualTo(createExpectedUpdatedPreposes());
+    }
+
+    @Test
+    public void thatNotUpdatesPreposesWithNonEmptySerials() throws Exception {
+
+        Table<String, String, Sale> salesTable = create();
+        Sale sale = newSale();
+        sale.setSerials(SERIALS);
+        salesTable.put(PART_NUMBER, SHIPPED_BILL_NUMBER, sale);
+
+        Prepos notUpdatedPrepos = newPrepos();
+        notUpdatedPrepos.setSerials(OTHER_SERIALS);
+
+        when(salesService.getSalesTable()).thenReturn(salesTable);
+
+        List<Prepos> updatedPreposes = preposUpdater.update(Lists.newArrayList(notUpdatedPrepos));
+
+        assertThat(updatedPreposes).isEqualTo(createExpectedNotUpdatedPreposes());
+    }
+
+    private List<Prepos> createExpectedUpdatedPreposes() {
+        return newPreposList();
+    }
+
+    private List<Prepos> createExpectedNotUpdatedPreposes() {
+
+        Prepos prepos = newPrepos();
+        prepos.setSerials(OTHER_SERIALS);
+        return Lists.newArrayList(prepos);
+    }
+
 }

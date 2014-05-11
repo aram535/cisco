@@ -96,10 +96,10 @@ public class DefaultPreposServiceTest {
         List<PreposModel> allPreposModels = getAllPreposModels();
 
         when(preposesDao.getPreposes()).thenReturn(allPreposesWithEmptySerials);
-        when(preposUpdater.updatePreposes(allPreposesWithEmptySerials)).thenReturn(allPreposes);
+        when(preposUpdater.update(allPreposesWithEmptySerials)).thenReturn(allPreposes);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
 	    when(preposModelConstructor.construct(allPreposes, Maps.<String, Pricelist>newHashMap(),
-			    Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(allPreposModels);
+                Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(allPreposModels);
 
         List<PreposModel> allData = preposService.getAllData();
 
@@ -121,7 +121,7 @@ public class DefaultPreposServiceTest {
         result.addAll(newPreposes);
 
         when(preposesDao.getPreposes()).thenReturn(allPreposesWithEmptySerials);
-        when(preposUpdater.updatePreposes(allPreposesWithEmptySerials)).thenReturn(allPreposes);
+        when(preposUpdater.update(allPreposesWithEmptySerials)).thenReturn(allPreposes);
         when(salesService.getSales(NEW)).thenReturn(newSales);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
         when(preposConstructor.construct(newSales, Maps.<String, Client>newHashMap())).thenReturn(newPreposes);

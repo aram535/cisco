@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface PreposUpdater {
 
-    List<Prepos> updatePreposes(List<Prepos> preposes);
+    List<Prepos> update(List<Prepos> preposes);
 
 }

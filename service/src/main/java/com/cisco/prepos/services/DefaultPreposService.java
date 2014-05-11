@@ -61,7 +61,7 @@ public class DefaultPreposService implements PreposService {
 
         List<Prepos> preposes = preposesDao.getPreposes();
 
-        List<Prepos> updatedPreposes = preposUpdater.updatePreposes(preposes);
+        List<Prepos> updatedPreposes = preposUpdater.update(preposes);
 
         preposesDao.updateAll(updatedPreposes);
 
