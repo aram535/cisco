@@ -135,16 +135,19 @@ public class DefaultPreposServiceTest {
     }
 
 	@Test
-	public void thatSaveCallsPreposesDaoSaveMethod() {
+	public void thatUpdateCallsPreposesDaoAndDartsServiceUpdateMethod() {
 
 		List<PreposModel> preposModels = getAllPreposModels();
+		List<Dart> darts = Lists.newArrayList();
 
 		List<Prepos> preposes = newPreposes();
 		when(preposModelConstructor.getPreposesFromPreposModels(preposModels)).thenReturn(preposes);
+		when(dartsService.getLatestDarts()).thenReturn(darts);
 
 		preposService.update(preposModels);
 
 		verify(preposesDao).update(preposes);
+		verify(dartsService).update(darts);
 	}
 
 	@Test

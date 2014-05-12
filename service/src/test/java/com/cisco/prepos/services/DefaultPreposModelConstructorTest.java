@@ -64,7 +64,6 @@ public class DefaultPreposModelConstructorTest {
         when(suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, SHIPPED_DATE, getDartsTable())).thenReturn(getDartsTable().row(PART_NUMBER));
     }
 
-
 	@Test
 	public void thatConstructsModelWithEmptySelectedDartIfThereIsNoSuitable() {
 
@@ -96,7 +95,7 @@ public class DefaultPreposModelConstructorTest {
 		Prepos expectedPrepos = newPrepos();
 		expectedPrepos.setBuyDiscount(DART_DISTI_DISCOUNT);
 		expectedPrepos.setBuyPrice(DART_DISTI_PRICE);
-
+		expectedPrepos.setPosSum((double) Math.round(DART_DISTI_PRICE * expectedPrepos.getQuantity() * 100) / 100);
 
 		assertThat(Iterables.getOnlyElement(preposModels).getPrepos()).isEqualTo(expectedPrepos);
 		assertThat(Iterables.getOnlyElement(preposModels).getSuitableDarts().size()).isEqualTo(3);

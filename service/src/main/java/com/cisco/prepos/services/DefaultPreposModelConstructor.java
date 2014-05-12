@@ -60,7 +60,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 				    prepos.getPartNumber(), prepos.getPartnerName(), prepos.getQuantity(), prepos.getShippedDate(), dartsTable);
 
 		    String secondPromo = prepos.getSecondPromo();
-		    Dart selectedSuitableDart = getSelectedSuitableDart(suitableDarts, secondPromo);
+		    Dart selectedSuitableDart = getSelectedSuitableDart(suitableDarts, secondPromo, prepos.getQuantity());
 		    prepos.setSecondPromo(selectedSuitableDart.getAuthorizationNumber());
 
 			String firstPromo = getFirstPromo(promosMap, prepos.getPartNumber());
@@ -77,6 +77,8 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 		    prepos.setSaleDiscount(saleDiscount);
 		    prepos.setBuyDiscount(buyDiscount);
 		    prepos.setBuyPrice(buyPrice);
+		    double posSum = (double) Math.round(prepos.getBuyPrice() * prepos.getQuantity() * 100) / 100;
+		    prepos.setPosSum(posSum);
 		    prepos.setOk(okStatus);
 
 		    PreposModel preposModel = new PreposModel(prepos, suitableDarts, selectedSuitableDart);
@@ -142,7 +144,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 		return buyPrice;
 	}
 
-	private Dart getSelectedSuitableDart(Map<String, Dart> suitableDarts, String secondPromo) {
+	private Dart getSelectedSuitableDart(Map<String, Dart> suitableDarts, String secondPromo, int saleQuantity) {
 
 		if("".equals(secondPromo)) {
 			return EMPTY_DART;
@@ -156,6 +158,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 		Iterator<Dart> dartIterator = darts.iterator();
 		if (dartIterator.hasNext()) {
 			Dart dart = dartIterator.next();
+			dart.setQuantity(dart.getQuantity() - saleQuantity);
 			return dart;
 		}
 

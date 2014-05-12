@@ -13,6 +13,8 @@ public interface DartsService {
 
 	List<Dart> getDarts();
 
+	List<Dart> getLatestDarts();
+
 	void save(Dart dart);
 
 	void update(Dart dart);

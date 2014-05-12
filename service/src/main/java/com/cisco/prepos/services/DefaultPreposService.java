@@ -91,12 +91,15 @@ public class DefaultPreposService implements PreposService {
 	    preposModelConstructor.recountPreposPrices(preposModel, pricelistsService.getPricelistsMap(), promosService.getPromosMap(), dartsService.getDartsTable());
     }
 
+	@Transactional
     @Override
     public void update(List<PreposModel> preposModels) {
 
 	    List<Prepos> preposes = preposModelConstructor.getPreposesFromPreposModels(preposModels);
 
 	    preposesDao.update(preposes);
+
+	    dartsService.update(dartsService.getDarts());
     }
 
 }

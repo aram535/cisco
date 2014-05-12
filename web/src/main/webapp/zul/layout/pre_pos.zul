@@ -27,14 +27,15 @@
         </auxhead>
 
         <columns  hflex="min" sizable="true">
+            <column/>
             <column label="Status"/>
             <column label="Type"/>
             <column label="Part name" sort="auto(prepos.partnerName)"/>
-            <column label="Part n"/>
-            <column label="Inv date"/>
-            <column label="Inv num"/>
-            <column label="S dis"/>
-            <column label="B dis"/>
+            <column label="Part №"/>
+            <column label="Inv Date"/>
+            <column label="Inv №"/>
+            <column label="S dis(%)"/>
+            <column label="B dis(%)"/>
             <column label="S pr"/>
             <column label="B pr"/>
             <column label="Promo1"/>
@@ -44,21 +45,22 @@
             <column label="Quantity"/>
             <column label="Good" sort="auto(prepos.ok)"/>
             <column label="Delta"/>
-            <column label="Client N"/>
+            <column label="Client №"/>
             <column label="Comment"/>
             <column label="Serials"/>
             <column label="Zip"/>
         </columns>
         <template name="model">
             <row>
+                <checkbox width="auto" checked="@bind(each.checked)" onCheck="@command('preposChecked', preposModel=each)"/>
                 <label width="auto" value="@bind(each.prepos.status)"/>
                 <label width="auto" value="@bind(each.prepos.type)"/>
                 <label width="auto" value="@bind(each.prepos.partnerName)" />
                 <label width="auto" value="@bind(each.prepos.partNumber)" />
                 <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
                 <label width="auto" value="@bind(each.prepos.shippedBillNumber)" />
-                <label width="auto" value="@bind(each.prepos.saleDiscount)" />
-                <label width="auto" value="@bind(each.prepos.buyDiscount)" />
+                <label width="auto" value="@bind(each.saleDiscount)" />
+                <label width="auto" value="@bind(each.buyDiscount)" />
                 <label width="auto" value="@bind(each.prepos.salePrice)" />
                 <label width="auto" value="@bind(each.prepos.buyPrice)" />
                 <label width="auto" value="@bind(each.prepos.firstPromo)"/>
@@ -91,5 +93,7 @@
         <datebox inplace="true" width="auto" value="@bind(vmPrePos.foodFilter.toDate)" buttonVisible="true" onChange="@command('changeFilter')"/>
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
+        Total Pos sum:
+        <label width="auto" value="@bind(vmPrePos.totalPosSum)"/>
     </groupbox>
 </window>

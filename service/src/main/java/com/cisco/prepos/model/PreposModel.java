@@ -22,6 +22,7 @@ public class PreposModel {
 
 	private Prepos prepos;
 	private Dart selectedDart = EMPTY_DART;
+	private boolean checked = false;
 
 	private Map<String, Dart> suitableDarts = Maps.newHashMap();
 	{
@@ -31,7 +32,7 @@ public class PreposModel {
     public PreposModel(Prepos prepos, Map<String, Dart> suitableDarts, Dart selectedDart) {
         this.prepos = prepos;
         this.suitableDarts.putAll(suitableDarts);
-	    setSelectedDart(selectedDart);
+	    this.selectedDart = selectedDart;
     }
 
     public Prepos getPrepos() {
@@ -51,7 +52,19 @@ public class PreposModel {
         return dartList;
     }
 
-    public void setSelectedDart(Dart selectedDart) {
+	public boolean getChecked() {
+		return checked;
+	}
+
+	public int getBuyDiscount() {
+		return (int)(prepos.getBuyDiscount() * 100);
+	}
+
+	public int getSaleDiscount() {
+		return (int)(prepos.getSaleDiscount() * 100);
+	}
+
+	public void setSelectedDart(Dart selectedDart) {
 
 		if (this.selectedDart != selectedDart) {
 
@@ -77,7 +90,6 @@ public class PreposModel {
         }
     }
 
-
     public void setPrepos(Prepos prepos) {
         this.prepos = prepos;
     }
@@ -86,6 +98,9 @@ public class PreposModel {
         this.suitableDarts = suitableDarts;
     }
 
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
 
 	public static List<PreposModel> getFilteredPreposes(PreposFilter foodFilter, List<PreposModel> preposes) {
 		List<PreposModel> filterredPreposes = Lists.newArrayList();

@@ -108,6 +108,8 @@ public class TestObjects {
 			prepos.setSaleDiscount(SALE_DISCOUNT);
 			prepos.setBuyDiscount(BUY_DISCOUNT);
 			prepos.setBuyPrice(BUY_PRICE);
+			double posSum = (double) Math.round(BUY_PRICE * QUANTITY * 100) / 100;
+			prepos.setPosSum(posSum);
 			prepos.setOk(true);
 
 

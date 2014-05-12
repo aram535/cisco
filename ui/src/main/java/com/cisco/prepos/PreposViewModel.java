@@ -23,7 +23,7 @@ public class PreposViewModel {
 
     private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
-
+	private double totalPosSum = 0;
     private PreposFilter preposFilter = new PreposFilter();
 
     @WireVariable
@@ -43,7 +43,11 @@ public class PreposViewModel {
         return preposFilter;
     }
 
-    @Command("refresh")
+	public double getTotalPosSum() {
+		return totalPosSum;
+	}
+
+	@Command("refresh")
     @NotifyChange("allPrepos")
     public void refresh() {
         preposes = preposService.getAllData();
@@ -62,6 +66,16 @@ public class PreposViewModel {
         preposService.recountPrepos(preposModel);
         BindUtils.postNotifyChange(null, null, preposModel, "prepos");
     }
+
+	@Command("preposChecked")
+	@NotifyChange({"totalPosSum"})
+	public void preposChecked(@BindingParam("preposModel") PreposModel preposModel) {
+		if(preposModel.getChecked()) {
+			totalPosSum += preposModel.getPrepos().getPosSum();
+		} else {
+			totalPosSum -= preposModel.getPrepos().getPosSum();
+		}
+	}
 
     @Command
     @NotifyChange({"allPrepos"})
