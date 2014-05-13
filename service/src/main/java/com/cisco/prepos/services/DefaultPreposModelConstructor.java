@@ -70,6 +70,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 		    Triplet<String, String, String> discountInfo = new Triplet<>(prepos.getPartNumber(), firstPromo, prepos.getSecondPromo());
 		    double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
 		    double buyPrice = getBuyPrice(buyDiscount, gpl);
+		    double posSum = (double) Math.round(prepos.getBuyPrice() * prepos.getQuantity() * 100) / 100;
 		    boolean okStatus = getOkStatus(prepos.getSalePrice(), buyPrice, threshold);
 
 		    prepos.setFirstPromo(firstPromo);
@@ -77,7 +78,6 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 		    prepos.setSaleDiscount(saleDiscount);
 		    prepos.setBuyDiscount(buyDiscount);
 		    prepos.setBuyPrice(buyPrice);
-		    double posSum = (double) Math.round(prepos.getBuyPrice() * prepos.getQuantity() * 100) / 100;
 		    prepos.setPosSum(posSum);
 		    prepos.setOk(okStatus);
 
@@ -103,21 +103,24 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 	@Override
 	public void recountPreposPrices(PreposModel preposModel, Map<String, Pricelist> pricelistsMap, Map<String, Promo> promosMap, Table<String, String, Dart> dartsTable) {
 
-		String firstPromo = preposModel.getPrepos().getFirstPromo();
-		String partNumber = preposModel.getPrepos().getPartNumber();
-		String secondPromo = preposModel.getPrepos().getSecondPromo();
+		Prepos prepos = preposModel.getPrepos();
+		String firstPromo = prepos.getFirstPromo();
+		String partNumber = prepos.getPartNumber();
+		String secondPromo = prepos.getSecondPromo();
 
 		double gpl = getGpl(partNumber, pricelistsMap);
-		double salePrice = preposModel.getPrepos().getSalePrice();
+		double salePrice = prepos.getSalePrice();
 
 		Triplet<String, String, String> discountInfo = new Triplet<>(partNumber, firstPromo, secondPromo);
 		double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
 		double buyPrice = getBuyPrice(buyDiscount, gpl);
+		double posSum = (double) Math.round(buyPrice * prepos.getQuantity() * 100) / 100;
 		boolean okStatus = getOkStatus(salePrice, buyPrice, threshold);
 
-		preposModel.getPrepos().setBuyDiscount(buyDiscount);
-		preposModel.getPrepos().setBuyPrice(buyPrice);
-		preposModel.getPrepos().setOk(okStatus);
+		prepos.setBuyDiscount(buyDiscount);
+		prepos.setBuyPrice(buyPrice);
+		prepos.setPosSum(posSum);
+		prepos.setOk(okStatus);
 
 	}
 
@@ -150,7 +153,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 			return EMPTY_DART;
 		}
 
-		if(secondPromo != null || suitableDarts.get(secondPromo) != null) {
+		if(secondPromo != null && suitableDarts.get(secondPromo) != null) {
 			return suitableDarts.get(secondPromo);
 		}
 

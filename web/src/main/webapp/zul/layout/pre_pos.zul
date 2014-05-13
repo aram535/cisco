@@ -12,6 +12,7 @@
         <auxhead sclass="category-center">
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->
                 <textbox hflex="100%" instant="true"

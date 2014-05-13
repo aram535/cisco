@@ -4,6 +4,7 @@ import com.cisco.prepos.model.PreposFilter;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.PreposService;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -13,6 +14,7 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alf on 05.04.14.
@@ -23,6 +25,7 @@ public class PreposViewModel {
 
     private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
+	private Map<Long, PreposModel> checkedPreposes = Maps.newHashMap();
 	private double totalPosSum = 0;
     private PreposFilter preposFilter = new PreposFilter();
 
@@ -44,6 +47,18 @@ public class PreposViewModel {
     }
 
 	public double getTotalPosSum() {
+		totalPosSum = countTotalPosSum();
+		return totalPosSum;
+	}
+
+	private double countTotalPosSum() {
+
+		totalPosSum = 0;
+
+		for (PreposModel preposModel : checkedPreposes.values()) {
+			totalPosSum += preposModel.getPrepos().getPosSum();
+		}
+		totalPosSum = (double) Math.round(totalPosSum * 100) / 100;
 		return totalPosSum;
 	}
 
@@ -64,6 +79,10 @@ public class PreposViewModel {
     public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
 
         preposService.recountPrepos(preposModel);
+	    if(preposModel.getChecked()) {
+		    BindUtils.postNotifyChange(null, null, this, "totalPosSum");
+	    }
+
         BindUtils.postNotifyChange(null, null, preposModel, "prepos");
     }
 
@@ -71,9 +90,9 @@ public class PreposViewModel {
 	@NotifyChange({"totalPosSum"})
 	public void preposChecked(@BindingParam("preposModel") PreposModel preposModel) {
 		if(preposModel.getChecked()) {
-			totalPosSum += preposModel.getPrepos().getPosSum();
+			checkedPreposes.put(preposModel.getPrepos().getId(), preposModel);
 		} else {
-			totalPosSum -= preposModel.getPrepos().getPosSum();
+			checkedPreposes.remove(preposModel.getPrepos().getId());
 		}
 	}
 
