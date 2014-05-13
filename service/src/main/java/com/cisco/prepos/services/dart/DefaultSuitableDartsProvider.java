@@ -3,10 +3,7 @@ package com.cisco.prepos.services.dart;
 import com.cisco.darts.dto.Dart;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -15,6 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
+import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
 
 /**
  * User: Rost
@@ -27,16 +27,16 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
     @Override
     public Map<String, Dart> getDarts(String partNumber, final String partnerName, final int quantity, final Timestamp saleDate, Table<String, String, Dart> dartsTable) {
 
-        Map<String, Dart> darts = Maps.newHashMap();
+        Map<String, Dart> dartsMapWitEmptyDart = ImmutableMap.of(BLANK_AUTHORIZATION_NUMBER, EMPTY_DART);
 
         if (dartsTable == null || dartsTable.isEmpty()) {
-            return darts;
+            return dartsMapWitEmptyDart;
         }
 
         Map<String, Dart> suitableByPartNumberDartsMap = dartsTable.row(partNumber);
         Collection<Dart> suitableByPartNumberDarts = suitableByPartNumberDartsMap.values();
         if (CollectionUtils.isEmpty(suitableByPartNumberDarts)) {
-            return darts;
+            return dartsMapWitEmptyDart;
         }
 
         List<Dart> filteredDarts = Lists.newArrayList(Collections2.filter(suitableByPartNumberDarts, new Predicate<Dart>() {
@@ -48,18 +48,23 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
 
                 boolean nameSuits = partnerName.equals(resellerName);
                 boolean quantitySuits = dartQuantity >= quantity;
-				boolean dateSuits = dart.getStartDate().before(saleDate) && dart.getEndDate().after(saleDate);
+                boolean dateSuits = dart.getStartDate().before(saleDate) && dart.getEndDate().after(saleDate);
 
                 return nameSuits && quantitySuits && dateSuits;
             }
         }));
 
 
-        return new TreeMap(Maps.uniqueIndex(filteredDarts, new Function<Dart, String>() {
+        TreeMap filteredDartsMap = new TreeMap(Maps.uniqueIndex(filteredDarts, new Function<Dart, String>() {
             @Override
             public String apply(Dart dart) {
                 return dart.getAuthorizationNumber();
             }
         }));
+
+        filteredDartsMap.putAll(dartsMapWitEmptyDart);
+
+        return filteredDartsMap;
     }
+
 }

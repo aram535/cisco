@@ -1,9 +1,9 @@
 package com.cisco.prepos.model;
 
 import com.cisco.darts.dto.Dart;
+import com.cisco.darts.dto.DartConstants;
 import com.cisco.prepos.dto.Prepos;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -18,21 +18,16 @@ import java.util.Map;
  */
 public class PreposModel {
 
-	public static final Dart EMPTY_DART = new Dart("", "");
+    private Prepos prepos;
+    private Dart selectedDart;
+    private boolean checked = false;
 
-	private Prepos prepos;
-	private Dart selectedDart = EMPTY_DART;
-	private boolean checked = false;
-
-	private Map<String, Dart> suitableDarts = Maps.newHashMap();
-	{
-		suitableDarts.put("", EMPTY_DART);
-	}
+    private Map<String, Dart> suitableDarts;
 
     public PreposModel(Prepos prepos, Map<String, Dart> suitableDarts, Dart selectedDart) {
         this.prepos = prepos;
-        this.suitableDarts.putAll(suitableDarts);
-	    this.selectedDart = selectedDart;
+        this.suitableDarts = suitableDarts;
+        this.selectedDart = selectedDart;
     }
 
     public Prepos getPrepos() {
@@ -52,21 +47,22 @@ public class PreposModel {
         return dartList;
     }
 
-	public boolean getChecked() {
-		return checked;
-	}
+    public boolean getChecked() {
+        return checked;
+    }
 
-	public int getBuyDiscount() {
-		return (int)(prepos.getBuyDiscount() * 100);
-	}
+    public int getBuyDiscount() {
+        return (int) (prepos.getBuyDiscount() * 100);
+    }
 
-	public int getSaleDiscount() {
-		return (int)(prepos.getSaleDiscount() * 100);
-	}
+    public int getSaleDiscount() {
+        return (int) (prepos.getSaleDiscount() * 100);
+    }
 
-	public void setSelectedDart(Dart selectedDart) {
+    //TODO Please, remove from model recounts and other stuff. We use model only for view. Now we can just remove recounting of darts according to discusses.
+    public void setSelectedDart(Dart selectedDart) {
 
-		if (this.selectedDart != selectedDart) {
+        if (this.selectedDart != selectedDart) {
 
             recountDartQuantity(selectedDart);
             this.prepos.setSecondPromo(selectedDart.getAuthorizationNumber());
@@ -81,12 +77,12 @@ public class PreposModel {
 
     private void recountDartQuantity(Dart newDart) {
 
-	    if(this.selectedDart != EMPTY_DART) {
-		    this.selectedDart.setQuantity(this.selectedDart.getQuantity() + prepos.getQuantity());
-	    }
-        if (newDart != EMPTY_DART) {
-	        newDart.setQuantity(newDart.getQuantity() - prepos.getQuantity());
-	        prepos.setSecondPromo(newDart.getAuthorizationNumber());
+        if (this.selectedDart != DartConstants.EMPTY_DART) {
+            this.selectedDart.setQuantity(this.selectedDart.getQuantity() + prepos.getQuantity());
+        }
+        if (newDart != DartConstants.EMPTY_DART) {
+            newDart.setQuantity(newDart.getQuantity() - prepos.getQuantity());
+            prepos.setSecondPromo(newDart.getAuthorizationNumber());
         }
     }
 
@@ -98,30 +94,32 @@ public class PreposModel {
         this.suitableDarts = suitableDarts;
     }
 
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 
-	public static List<PreposModel> getFilteredPreposes(PreposFilter foodFilter, List<PreposModel> preposes) {
-		List<PreposModel> filterredPreposes = Lists.newArrayList();
-		String partnerName = foodFilter.getPartnerName().toLowerCase();
-		String billNum = foodFilter.getShippedBillNumber().toLowerCase();
-		Timestamp fromDate = foodFilter.getFromDate();
-		Timestamp toDate = foodFilter.getToDate();
+    //TODO move it to separate entity PreposFilter. Why static? Why here? Use guava filters and provide tests.
+    public static List<PreposModel> getFilteredPreposes(PreposRestrictions foodFilter, List<PreposModel> preposes) {
+        List<PreposModel> filterredPreposes = Lists.newArrayList();
+        String partnerName = foodFilter.getPartnerName().toLowerCase();
+        String billNum = foodFilter.getShippedBillNumber().toLowerCase();
+        Timestamp fromDate = foodFilter.getFromDate();
+        Timestamp toDate = foodFilter.getToDate();
 
-		for (Iterator<PreposModel> i = preposes.iterator(); i.hasNext(); ) {
-			PreposModel tmp = i.next();
-			if (tmp.getPrepos().getPartnerName().toLowerCase().contains(partnerName) &&
-					tmp.getPrepos().getShippedBillNumber().toLowerCase().contains(billNum) &&
-					tmp.getPrepos().getShippedDate().after(fromDate) &&
-					tmp.getPrepos().getShippedDate().before(toDate)) {
-				filterredPreposes.add(tmp);
-			}
-		}
+        for (Iterator<PreposModel> i = preposes.iterator(); i.hasNext(); ) {
+            PreposModel tmp = i.next();
+            if (tmp.getPrepos().getPartnerName().toLowerCase().contains(partnerName) &&
+                    tmp.getPrepos().getShippedBillNumber().toLowerCase().contains(billNum) &&
+                    tmp.getPrepos().getShippedDate().after(fromDate) &&
+                    tmp.getPrepos().getShippedDate().before(toDate)) {
+                filterredPreposes.add(tmp);
+            }
+        }
 
-		return filterredPreposes;
-	}
+        return filterredPreposes;
+    }
 
+    //TODO Not sure that we need equals and hash code for model. But if we need - why only few fields included?
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

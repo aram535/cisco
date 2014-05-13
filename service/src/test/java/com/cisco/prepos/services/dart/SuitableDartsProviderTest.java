@@ -3,6 +3,7 @@ package com.cisco.prepos.services.dart;
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartBuilder;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import org.junit.Test;
 
@@ -10,8 +11,11 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
+import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.*;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.entry;
 
 /**
  * User: Rost
@@ -25,17 +29,17 @@ public class SuitableDartsProviderTest {
     private SuitableDartsProvider suitableDartsProvider = new DefaultSuitableDartsProvider();
 
     @Test
-    public void thatReturnsEmptyListIfInputIsEmpty() {
+    public void thatReturnsMapWithEmptyDartIfInputIsEmpty() {
 
         Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, SHIPPED_DATE, getEmptyDartsTable());
-        assertThat(darts).isNotNull().isEmpty();
+        assertThat(darts).isNotNull().isEqualTo(mapWithEmptyDart());
     }
 
     @Test
-    public void thatReturnsEmptyIfPartNumberNotSuits() {
+    public void thatReturnsMapWithEmptyDartIfPartNumberNotSuits() {
 
         Map<String, Dart> darts = suitableDartsProvider.getDarts(OTHER_PART_NUMBER, PARTNER_NAME, QUANTITY, SHIPPED_DATE, DartsFactory.getDartsTable());
-        assertThat(darts).isNotNull().isEmpty();
+        assertThat(darts).isNotNull().isEqualTo(mapWithEmptyDart());
     }
 
     @Test
@@ -46,28 +50,28 @@ public class SuitableDartsProviderTest {
 
         Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, SHIPPED_DATE, dartsTableWithSuitableDart);
 
-        assertThat(darts).isNotNull().hasSize(1);
-        assertThat(darts).containsKey(AUTHORIZATION_NUMBER).containsValue(expectedDart);
+        assertThat(darts).isNotNull().hasSize(2);
+        assertThat(darts).contains(entry(AUTHORIZATION_NUMBER, expectedDart), entry(BLANK_AUTHORIZATION_NUMBER, EMPTY_DART));
     }
 
     @Test
-    public void thatReturnsEmptyListIfResellerNameNotSuits() {
+    public void thatReturnsMapWithEmptyDartListIfResellerNameNotSuits() {
 
         Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTable();
 
         Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, OTHER_RESELLER_NAME, QUANTITY, SHIPPED_DATE, dartsTableWithSuitableDart);
 
-        assertThat(darts).isNotNull().isEmpty();
+        assertThat(darts).isNotNull().isEqualTo(mapWithEmptyDart());
     }
 
     @Test
-    public void thatReturnsEmptyListIfQuantityNotSuits() {
+    public void thatReturnsMapWithEmptyDartIfQuantityNotSuits() {
 
         Table<String, String, Dart> dartsTableWithSuitableDart = getDartsTable();
 
         Map<String, Dart> darts = suitableDartsProvider.getDarts(PART_NUMBER, OTHER_RESELLER_NAME, QUANTITY + 2, SHIPPED_DATE, dartsTableWithSuitableDart);
 
-        assertThat(darts).isNotNull().isEmpty();
+        assertThat(darts).isNotNull().isEqualTo(mapWithEmptyDart());
     }
 
     private Table<String, String, Dart> getEmptyDartsTable() {
@@ -75,16 +79,20 @@ public class SuitableDartsProviderTest {
         return HashBasedTable.create();
     }
 
-    private static Table<String, String, Dart> getDartsTable() {
+    private Map<String, Dart> mapWithEmptyDart() {
+        return ImmutableMap.of(BLANK_AUTHORIZATION_NUMBER, EMPTY_DART);
+    }
 
-	    Calendar cal = Calendar.getInstance();
-	    cal.setTime(SHIPPED_DATE);
-	    cal.add(Calendar.DAY_OF_WEEK, 1);
+    private Table<String, String, Dart> getDartsTable() {
 
-	    Timestamp endDate = new Timestamp(cal.getTime().getTime());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(SHIPPED_DATE);
+        cal.add(Calendar.DAY_OF_WEEK, 1);
 
-	    cal.add(Calendar.DAY_OF_WEEK, -2);
-	    Timestamp startDate = new Timestamp(cal.getTime().getTime());
+        Timestamp endDate = new Timestamp(cal.getTime().getTime());
+
+        cal.add(Calendar.DAY_OF_WEEK, -2);
+        Timestamp startDate = new Timestamp(cal.getTime().getTime());
 
         Table<String, String, Dart> table = HashBasedTable.create();
         Dart dart = DartBuilder.builder().setResellerName(PARTNER_NAME).setQuantity(QUANTITY + 1).

@@ -8,7 +8,8 @@ import java.util.Calendar;
 /**
  * Created by Alf on 01.05.2014.
  */
-public class PreposFilter {
+//TODO Refactor please
+public class PreposRestrictions {
 
 	private String partnerName = "";
 	private String shippedBillNumber = "";

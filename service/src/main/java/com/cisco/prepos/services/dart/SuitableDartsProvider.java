@@ -15,4 +15,5 @@ public interface SuitableDartsProvider {
 
     Map<String, Dart> getDarts(String partNumber, String partnerName, int quantity, Timestamp saleDate, Table<String, String, Dart> dartsTable);
 
+
 }

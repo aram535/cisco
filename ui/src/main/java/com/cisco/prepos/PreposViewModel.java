@@ -1,6 +1,6 @@
 package com.cisco.prepos;
 
-import com.cisco.prepos.model.PreposFilter;
+import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.PreposService;
 import com.google.common.collect.Lists;
@@ -27,7 +27,7 @@ public class PreposViewModel {
     private List<PreposModel> filteredPreposes;
 	private Map<Long, PreposModel> checkedPreposes = Maps.newHashMap();
 	private double totalPosSum = 0;
-    private PreposFilter preposFilter = new PreposFilter();
+    private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
     @WireVariable
     private PreposService preposService;
@@ -36,14 +36,14 @@ public class PreposViewModel {
 
         if (preposes == null) {
             preposes = preposService.getAllData();
-            filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, Lists.newCopyOnWriteArrayList(preposes));
+            filteredPreposes = PreposModel.getFilteredPreposes(preposRestrictions, Lists.newCopyOnWriteArrayList(preposes));
         }
 
         return filteredPreposes;
     }
 
-    public PreposFilter getFoodFilter() {
-        return preposFilter;
+    public PreposRestrictions getFoodFilter() {
+        return preposRestrictions;
     }
 
 	public double getTotalPosSum() {
@@ -66,7 +66,7 @@ public class PreposViewModel {
     @NotifyChange("allPrepos")
     public void refresh() {
         preposes = preposService.getAllData();
-	    filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, Lists.newCopyOnWriteArrayList(preposes));
+	    filteredPreposes = PreposModel.getFilteredPreposes(preposRestrictions, Lists.newCopyOnWriteArrayList(preposes));
     }
 
     @Command("save")
@@ -99,7 +99,7 @@ public class PreposViewModel {
     @Command
     @NotifyChange({"allPrepos"})
     public void changeFilter() {
-        filteredPreposes = PreposModel.getFilteredPreposes(preposFilter, preposes);
+        filteredPreposes = PreposModel.getFilteredPreposes(preposRestrictions, preposes);
     }
 
 }
