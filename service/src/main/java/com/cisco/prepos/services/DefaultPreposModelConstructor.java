@@ -70,7 +70,7 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
 		    Triplet<String, String, String> discountInfo = new Triplet<>(prepos.getPartNumber(), firstPromo, prepos.getSecondPromo());
 		    double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
 		    double buyPrice = getBuyPrice(buyDiscount, gpl);
-		    double posSum = (double) Math.round(prepos.getBuyPrice() * prepos.getQuantity() * 100) / 100;
+		    double posSum = (double) Math.round(buyPrice * prepos.getQuantity() * 100) / 100;
 		    boolean okStatus = getOkStatus(prepos.getSalePrice(), buyPrice, threshold);
 
 		    prepos.setFirstPromo(firstPromo);
