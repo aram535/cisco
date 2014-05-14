@@ -43,13 +43,13 @@ public class TestObjects {
     public static final double SALE_PRICE = 200.5;
 
     public static final double DART_DISTI_DISCOUNT = 0.55;
-	public static final double DART_DISTI_PRICE = 112.5;
+    public static final double DART_DISTI_PRICE = 112.5;
     public static final double PROMO_DISCOUNT = 0.35;
-	public static final double PROMO_PRICE = 162.5;
+    public static final double PROMO_PRICE = 162.5;
     public static final double PRICE_LIST_DISCOUNT = 0.21;
-	public static final double PRICE_LIST_PRICE = 197.5;
+    public static final double PRICE_LIST_PRICE = 197.5;
 
-	//double buyPrice = (double) Math.round(gpl * (1 - buyDiscount) * 100) / 100;
+    //double buyPrice = (double) Math.round(gpl * (1 - buyDiscount) * 100) / 100;
     public static final int GPL = 250;
 
     public static final String CLIENT_CITY = "client city";
@@ -64,67 +64,67 @@ public class TestObjects {
     public static final double SALE_DISCOUNT = 0.20;
     private static final double BUY_PRICE = 162.5;
 
-	public static class PreposFactory {
+    public static class PreposFactory {
 
-		public static Prepos newSimplePrepos() {
+        public static Prepos newSimplePrepos() {
 
-			Prepos prepos = new Prepos();
+            Prepos prepos = new Prepos();
 
-			prepos.setPartNumber(PART_NUMBER);
-			prepos.setPartnerName(PARTNER_NAME);
-			prepos.setStatus(NOT_PROCESSED);
-			prepos.setClientNumber(CLIENT_NUMBER);
-			prepos.setShippedDate(SHIPPED_DATE);
-			prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
-			prepos.setComment(COMMENT);
-			prepos.setSerials(SERIALS);
-			prepos.setZip(ZIP);
-			prepos.setType(CISCO_TYPE);
-			prepos.setQuantity(QUANTITY);
-			prepos.setSalePrice(SALE_PRICE);
+            prepos.setPartNumber(PART_NUMBER);
+            prepos.setPartnerName(PARTNER_NAME);
+            prepos.setStatus(NOT_PROCESSED);
+            prepos.setClientNumber(CLIENT_NUMBER);
+            prepos.setShippedDate(SHIPPED_DATE);
+            prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
+            prepos.setComment(COMMENT);
+            prepos.setSerials(SERIALS);
+            prepos.setZip(ZIP);
+            prepos.setType(CISCO_TYPE);
+            prepos.setQuantity(QUANTITY);
+            prepos.setSalePrice(SALE_PRICE);
 
-			return prepos;
-		}
+            return prepos;
+        }
 
-		public static Prepos newPrepos() {
+        public static Prepos newPrepos() {
 
-			Prepos prepos = new Prepos();
+            Prepos prepos = new Prepos();
 
-			prepos.setPartNumber(PART_NUMBER);
-			prepos.setPartnerName(PARTNER_NAME);
-			prepos.setStatus(NOT_PROCESSED);
-			prepos.setClientNumber(CLIENT_NUMBER);
-			prepos.setShippedDate(SHIPPED_DATE);
-			prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
-			prepos.setComment(COMMENT);
-			prepos.setSerials(SERIALS);
-			prepos.setZip(ZIP);
-			prepos.setType(CISCO_TYPE);
-			prepos.setQuantity(QUANTITY);
-			prepos.setSalePrice(SALE_PRICE);
-			prepos.setFirstPromo(PROMO_CODE);
-			prepos.setSecondPromo(AUTHORIZATION_NUMBER);
-			prepos.setEndUser(END_USER_NAME);
-			prepos.setSaleDiscount(SALE_DISCOUNT);
-			prepos.setBuyDiscount(BUY_DISCOUNT);
-			prepos.setBuyPrice(BUY_PRICE);
-			double posSum = (double) Math.round(BUY_PRICE * QUANTITY * 100) / 100;
-			prepos.setPosSum(posSum);
-			prepos.setOk(true);
+            prepos.setPartNumber(PART_NUMBER);
+            prepos.setPartnerName(PARTNER_NAME);
+            prepos.setStatus(NOT_PROCESSED);
+            prepos.setClientNumber(CLIENT_NUMBER);
+            prepos.setShippedDate(SHIPPED_DATE);
+            prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
+            prepos.setComment(COMMENT);
+            prepos.setSerials(SERIALS);
+            prepos.setZip(ZIP);
+            prepos.setType(CISCO_TYPE);
+            prepos.setQuantity(QUANTITY);
+            prepos.setSalePrice(SALE_PRICE);
+            prepos.setFirstPromo(PROMO_CODE);
+            prepos.setSecondPromo(AUTHORIZATION_NUMBER);
+            prepos.setEndUser(END_USER_NAME);
+            prepos.setSaleDiscount(SALE_DISCOUNT);
+            prepos.setBuyDiscount(BUY_DISCOUNT);
+            prepos.setBuyPrice(BUY_PRICE);
+            double posSum = (double) Math.round(BUY_PRICE * QUANTITY * 100) / 100;
+            prepos.setPosSum(posSum);
+            prepos.setOk(true);
 
 
-			return prepos;
-		}
+            return prepos;
+        }
 
-		public static List<Prepos> newPreposList() {
+        public static List<Prepos> newPreposList() {
 
-			Prepos firstPrepos = newPrepos();
+            Prepos firstPrepos = newPrepos();
 
-			return Lists.newArrayList(firstPrepos);
-		}
-	}
+            return Lists.newArrayList(firstPrepos);
+        }
+    }
 
-	public static class SalesFactory {
+    public static class SalesFactory {
 
         public static Sale newSale() {
 
@@ -151,6 +151,12 @@ public class TestObjects {
             return PricelistBuilder.newPricelistBuilder().setId(2L).setPartNumber(PART_NUMBER).
                     setDescription("description").setDiscount(0.3).setGpl(GPL).setWpl(400).build();
         }
+
+        public static Pricelist newPricelist(int gpl) {
+
+            return PricelistBuilder.newPricelistBuilder().setId(2L).setPartNumber(PART_NUMBER).
+                    setDescription("description").setDiscount(0.3).setGpl(gpl).setWpl(400).build();
+        }
     }
 
     public static class ClientsFactory {
@@ -160,22 +166,22 @@ public class TestObjects {
             return new Client(1L, CLIENT_NUMBER, PARTNER_NAME, CLIENT_CITY, CLIENT_ADDRESS);
         }
 
-	    public static List<Client> newClientList() {
+        public static List<Client> newClientList() {
 
-		    Client firstClient = new Client(1L, CLIENT_NUMBER, PARTNER_NAME, CLIENT_CITY, CLIENT_ADDRESS);
+            Client firstClient = new Client(1L, CLIENT_NUMBER, PARTNER_NAME, CLIENT_CITY, CLIENT_ADDRESS);
 
-		    return Lists.newArrayList(firstClient);
-	    }
+            return Lists.newArrayList(firstClient);
+        }
 
-	    public static Map<String, Client> newClientMap() {
+        public static Map<String, Client> newClientMap() {
 
-		    return Maps.uniqueIndex(newClientList(), new Function<Client, String>() {
-			    @Override
-			    public String apply(Client client) {
-				    return client.getClientNumber();
-			    }
-		    });
-	    }
+            return Maps.uniqueIndex(newClientList(), new Function<Client, String>() {
+                @Override
+                public String apply(Client client) {
+                    return client.getClientNumber();
+                }
+            });
+        }
     }
 
     public static class PromosFactory {
@@ -195,32 +201,44 @@ public class TestObjects {
                     .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
                     .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
                     .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1)
-		            .setMdmFulfillment(1)
+                    .setMdmFulfillment(1)
+                    .build();
+        }
+
+        public static Dart newDart(String authorizationNumber, String endUserName) {
+
+            return DartBuilder.builder().setId(1).setAuthorizationNumber(authorizationNumber).setVersion(1)
+                    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
+                    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                    .setEndUserName(endUserName).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+                    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
+                    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1)
+                    .setMdmFulfillment(1)
                     .build();
         }
 
         public static Dart newDart(String authorizationNumber, int quantity) {
 
-		    return DartBuilder.builder().setId(1).setAuthorizationNumber(authorizationNumber).setVersion(1)
-				    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
-				    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(quantity)
-				    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
-				    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
-				    .build();
-	    }
+            return DartBuilder.builder().setId(1).setAuthorizationNumber(authorizationNumber).setVersion(1)
+                    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
+                    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(quantity)
+                    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
+                    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1).setMdmFulfillment(1)
+                    .build();
+        }
 
-	    public static Dart newDart(Timestamp startDate, Timestamp endDate) {
+        public static Dart newDart(Timestamp startDate, Timestamp endDate) {
 
-		    return DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
-				    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
-				    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
-				    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
-				    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
-				    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1)
-				    .setMdmFulfillment(1).setStartDate(startDate).setEndDate(endDate)
-				    .build();
-	    }
+            return DartBuilder.builder().setId(1).setAuthorizationNumber(AUTHORIZATION_NUMBER).setVersion(1)
+                    .setDistributorInfo(DISTRIBUTOR_INFO).setDistiDiscount(DART_DISTI_DISCOUNT)
+                    .setResellerName(PARTNER_NAME).setResellerCountry("Ukraine").setResellerAcct(123)
+                    .setEndUserName(END_USER_NAME).setEndUserCountry("Country").setQuantity(QUANTITY + 1)
+                    .setQuantityInitial(QUANTITY + 1).setCiscoSku(PART_NUMBER).setDistiSku("Disti").setListPrice(1)
+                    .setClaimUnit(1).setExtCreditAmt(1).setFastTrackPie(1).setIpNgnPartnerPricingEm(1)
+                    .setMdmFulfillment(1).setStartDate(startDate).setEndDate(endDate)
+                    .build();
+        }
 
         public static Table<String, String, Dart> getDartsTable() {
             Table<String, String, Dart> table = HashBasedTable.create();

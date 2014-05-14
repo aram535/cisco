@@ -2,6 +2,8 @@ package com.cisco.prepos.dto;
 
 import java.sql.Timestamp;
 
+import static com.cisco.prepos.dto.Prepos.Status;
+
 /**
  * User: Rost
  * Date: 06.04.2014
@@ -30,7 +32,7 @@ public class PreposBuilder {
     private String comment;
     private String serials;
     private int zip;
-	private Prepos.Status status;
+    private Status status;
 
     private PreposBuilder() {
     }
@@ -145,100 +147,39 @@ public class PreposBuilder {
         return this;
     }
 
-	public PreposBuilder status(Prepos.Status status) {
-		this.status = status;
-		return this;
-	}
+    public PreposBuilder status(Status status) {
+        this.status = status;
+        return this;
+    }
 
-	public long getId() {
-		return id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public String getPartnerName() {
-		return partnerName;
-	}
-
-	public String getPartNumber() {
-		return partNumber;
-	}
-
-	public double getPosSum() {
-		return posSum;
-	}
-
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public boolean isOk() {
-		return ok;
-	}
-
-	public int getDelta() {
-		return delta;
-	}
-
-	public double getSaleDiscount() {
-		return saleDiscount;
-	}
-
-	public double getBuyDiscount() {
-		return buyDiscount;
-	}
-
-	public double getSalePrice() {
-		return salePrice;
-	}
-
-	public double getBuyPrice() {
-		return buyPrice;
-	}
-
-	public String getFirstPromo() {
-		return firstPromo;
-	}
-
-	public String getSecondPromo() {
-		return secondPromo;
-	}
-
-	public String getEndUser() {
-		return endUser;
-	}
-
-	public String getClientNumber() {
-		return clientNumber;
-	}
-
-	public Timestamp getShippedDate() {
-		return shippedDate;
-	}
-
-	public String getShippedBillNumber() {
-		return shippedBillNumber;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public String getSerials() {
-		return serials;
-	}
-
-	public int getZip() {
-		return zip;
-	}
-
-	public Prepos.Status getStatus() {
-		return status;
-	}
-	public Prepos build() {
+    public Prepos build() {
         Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip, status);
         return prepos;
+    }
+
+    public PreposBuilder prepos(Prepos prepos) {
+        this.id = prepos.getId();
+        this.type = prepos.getType();
+        this.partnerName = prepos.getPartnerName();
+        this.partNumber = prepos.getPartNumber();
+        this.posSum = prepos.getPosSum();
+        this.quantity = prepos.getQuantity();
+        this.ok = prepos.getOk();
+        this.delta = prepos.getDelta();
+        this.saleDiscount = prepos.getSaleDiscount();
+        this.buyDiscount = prepos.getBuyDiscount();
+        this.salePrice = prepos.getSalePrice();
+        this.buyPrice = prepos.getBuyPrice();
+        this.firstPromo = prepos.getFirstPromo();
+        this.secondPromo = prepos.getSecondPromo();
+        this.endUser = prepos.getEndUser();
+        this.clientNumber = prepos.getClientNumber();
+        this.shippedDate = prepos.getShippedDate();
+        this.shippedBillNumber = prepos.getShippedBillNumber();
+        this.comment = prepos.getComment();
+        this.serials = prepos.getSerials();
+        this.zip = prepos.getZip();
+        this.status = prepos.getStatus();
+        return this;
     }
 }

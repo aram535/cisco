@@ -43,6 +43,7 @@ import static org.mockito.Mockito.when;
 public class DefaultPreposModelConstructorTest {
 
     private static final Prepos NEW_SIMPLE_PREPOS = newSimplePrepos();
+
     @InjectMocks
     private PreposModelConstructor preposModelConstructor = new DefaultPreposModelConstructor();
 

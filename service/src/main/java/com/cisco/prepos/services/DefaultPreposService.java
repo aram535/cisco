@@ -57,7 +57,7 @@ public class DefaultPreposService implements PreposService {
     @Autowired
     private ClientsService clientsService;
 
-	@Transactional
+    @Transactional
     @Override
     public List<PreposModel> getAllData() {
 
@@ -75,12 +75,12 @@ public class DefaultPreposService implements PreposService {
             Map<String, Client> clientsMap = clientsService.getClientsMap();
             List<Prepos> newPreposes = preposConstructor.construct(sales, clientsMap);
             preposesDao.save(newPreposes);
-	        salesService.updateSalesStatuses(sales);
+            salesService.updateSalesStatuses(sales);
             updatedPreposes.addAll(newPreposes);
         }
 
-	    Map<String, Promo> promosMap = promosService.getPromosMap();
-	    Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
+        Map<String, Promo> promosMap = promosService.getPromosMap();
+        Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
 
         return preposModelConstructor.construct(updatedPreposes, pricelistsMap, promosMap, dartsTable);
     }
@@ -88,18 +88,18 @@ public class DefaultPreposService implements PreposService {
     @Override
     public void recountPrepos(PreposModel preposModel) {
 
-	    preposModelConstructor.recountPreposPrices(preposModel, pricelistsService.getPricelistsMap(), promosService.getPromosMap(), dartsService.getDartsTable());
+        preposModelConstructor.recountPreposPrices(preposModel, pricelistsService.getPricelistsMap(), promosService.getPromosMap(), dartsService.getDartsTable());
     }
 
-	@Transactional
+    @Transactional
     @Override
     public void update(List<PreposModel> preposModels) {
 
-	    List<Prepos> preposes = preposModelConstructor.getPreposesFromPreposModels(preposModels);
+        List<Prepos> preposes = preposModelConstructor.getPreposesFromPreposModels(preposModels);
 
-	    preposesDao.update(preposes);
+        preposesDao.update(preposes);
 
-	    dartsService.update(dartsService.getDarts());
+        dartsService.update(dartsService.getDarts());
     }
 
 }
