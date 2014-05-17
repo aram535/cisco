@@ -8,10 +8,6 @@ import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
-import com.cisco.pricelists.dto.Pricelist;
-import com.cisco.pricelists.service.PricelistsService;
-import com.cisco.promos.dto.Promo;
-import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.collect.*;
@@ -22,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,31 +46,23 @@ public class DefaultPreposServiceTest {
     private SalesService salesService;
 
     @Mock
-    private PreposModelConstructor preposModelConstructor;
-
-    @Mock
     private DartsService dartsService;
-
-    @Mock
-    private PreposUpdater preposUpdater;
 
     @Mock
     private PreposConstructor preposConstructor;
 
     @Mock
+    private PreposModelConstructor preposModelConstructor;
+
+    @Mock
+    private PreposUpdater preposUpdater;
+
+    @Mock
     private ClientsService clientsService;
-
-    @Mock
-    private PromosService promosService;
-
-    @Mock
-    private PricelistsService pricelistsService;
 
     @Before
     public void init() {
         when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
-        when(promosService.getPromosMap()).thenReturn(Maps.<String, Promo>newHashMap());
-        when(pricelistsService.getPricelistsMap()).thenReturn(Maps.<String, Pricelist>newHashMap());
     }
 
     @Test
@@ -101,8 +88,7 @@ public class DefaultPreposServiceTest {
         when(preposesDao.getPreposes()).thenReturn(allPreposesWithEmptySerials);
         when(preposUpdater.update(allPreposesWithEmptySerials)).thenReturn(allPreposes);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
-	    when(preposModelConstructor.construct(allPreposes, Maps.<String, Pricelist>newHashMap(),
-                Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(allPreposModels);
+        when(preposModelConstructor.construct(allPreposes)).thenReturn(allPreposModels);
 
         List<PreposModel> allData = preposService.getAllData();
 
@@ -128,7 +114,7 @@ public class DefaultPreposServiceTest {
         when(salesService.getSales(NEW)).thenReturn(newSales);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
         when(preposConstructor.construct(newSales, Maps.<String, Client>newHashMap())).thenReturn(newPreposes);
-        when(preposModelConstructor.construct(result, Maps.<String, Pricelist>newHashMap(), Maps.<String, Promo>newHashMap(), dartsTable)).thenReturn(allPreposModels);
+        when(preposModelConstructor.construct(result)).thenReturn(allPreposModels);
 
         List<PreposModel> allData = preposService.getAllData();
 
@@ -136,41 +122,21 @@ public class DefaultPreposServiceTest {
         assertThat(allData).isEqualTo(allPreposModels);
     }
 
-	@Test
-	public void thatUpdateCallsPreposesDaoAndDartsServiceUpdateMethod() {
+    @Test
+    public void thatUpdateCallsPreposesDaoAndDartsServiceUpdateMethod() {
 
-		List<PreposModel> preposModels = getAllPreposModels();
-		List<Dart> darts = Lists.newArrayList();
+        List<PreposModel> preposModels = getAllPreposModels();
+        List<Dart> darts = Lists.newArrayList();
 
-		List<Prepos> preposes = newPreposes();
-		when(preposModelConstructor.getPreposesFromPreposModels(preposModels)).thenReturn(preposes);
-		when(dartsService.getLatestDarts()).thenReturn(darts);
+        List<Prepos> preposes = newPreposes();
+        when(preposModelConstructor.getPreposesFromPreposModels(preposModels)).thenReturn(preposes);
+        when(dartsService.getLatestDarts()).thenReturn(darts);
 
-		preposService.update(preposModels);
+        preposService.update(preposModels);
 
-		verify(preposesDao).update(preposes);
-		verify(dartsService).update(darts);
-	}
-
-	@Test
-	public void thatRecountsPreposesForChangedDart() {
-
-		PreposModel preposModel = Iterables.getOnlyElement(getAllPreposModels());
-
-		Table<String, String, Dart> dartsTable = HashBasedTable.create();
-		HashMap<String, Pricelist> pricelistsMap = Maps.newHashMap();
-		HashMap<String, Promo> promosMap = Maps.newHashMap();
-
-
-		when(pricelistsService.getPricelistsMap()).thenReturn(pricelistsMap);
-		when(promosService.getPromosMap()).thenReturn(promosMap);
-		when(dartsService.getDartsTable()).thenReturn(dartsTable);
-
-		preposService.recountPrepos(preposModel);
-
-		verify(preposModelConstructor).recountPreposPrices(preposModel, pricelistsMap, promosMap, dartsTable);
-
-	}
+        verify(preposesDao).update(preposes);
+        verify(dartsService).update(darts);
+    }
 
     private List<Prepos> newPreposes() {
 

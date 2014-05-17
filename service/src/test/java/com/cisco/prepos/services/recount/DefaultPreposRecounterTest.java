@@ -24,6 +24,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Map;
 
+import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 import static com.cisco.testtools.TestObjects.*;
 import static com.cisco.testtools.TestObjects.DartsFactory.getDartsTable;
 import static com.cisco.testtools.TestObjects.PreposFactory.newPrepos;
@@ -44,6 +45,8 @@ public class DefaultPreposRecounterTest {
     private static final int OTHER_GPL = 270;
     private static final double SALE_DISCOUNT_FROM_PROVIDER = 0.26;
     private static final double BUY_DISCOUNT_FROM_PROVIDER = 0.38;
+    private static final double BUY_PRICE = 167.4;
+    private static final double THRESHOLD = 1.27;
 
     @InjectMocks
     private DefaultPreposRecounter defaultPreposRecounter = new DefaultPreposRecounter();
@@ -61,6 +64,7 @@ public class DefaultPreposRecounterTest {
     private DiscountProvider discountProvider;
     @Mock
     private PromosService promosService;
+
     private final Prepos prepos = newPrepos();
 
 
@@ -72,15 +76,16 @@ public class DefaultPreposRecounterTest {
 
     @Before
     public void init() {
-        ImmutableMap<String, Pricelist> pricelistMap = ImmutableMap.of(prepos.getPartNumber(), newPricelist);
+        Map<String, Pricelist> pricelistMap = ImmutableMap.of(prepos.getPartNumber(), newPricelist);
         Triplet<String, String, String> discountInfo = new Triplet(prepos.getPartNumber(), prepos.getFirstPromo(), SELECTED_DART_AUTHORIZATION_NUMBER);
+        defaultPreposRecounter.setThreshold(THRESHOLD);
 
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
         when(promosService.getPromosMap()).thenReturn(promosMap);
         when(suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, SHIPPED_DATE, createDartsTable())).thenReturn(suitableDarts);
         when(dartSelector.selectDart(suitableDarts, prepos.getSecondPromo())).thenReturn(selectedDart);
         when(pricelistsService.getPricelistsMap()).thenReturn(pricelistMap);
-        when(discountProvider.getSaleDiscount(PART_NUMBER, pricelistMap, prepos.getSalePrice())).thenReturn(SALE_DISCOUNT_FROM_PROVIDER);
+        when(discountProvider.getGpl(PART_NUMBER, pricelistMap)).thenReturn(OTHER_GPL);
         when(discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistMap)).thenReturn(BUY_DISCOUNT_FROM_PROVIDER);
     }
 
@@ -114,6 +119,12 @@ public class DefaultPreposRecounterTest {
         expectedPrepos.setEndUser(SELECTED_DART_END_USER_NAME);
         expectedPrepos.setSaleDiscount(SALE_DISCOUNT_FROM_PROVIDER);
         expectedPrepos.setBuyDiscount(BUY_DISCOUNT_FROM_PROVIDER);
+        expectedPrepos.setBuyPrice(BUY_PRICE);
+        expectedPrepos.setPosSum(getRoundedDouble(BUY_PRICE * prepos.getQuantity()));
+
+        boolean isOk = prepos.getSalePrice() / prepos.getBuyPrice() > THRESHOLD;
+        expectedPrepos.setOk(isOk);
+
         return new Triplet(expectedPrepos, suitableDarts, selectedDart);
     }
 

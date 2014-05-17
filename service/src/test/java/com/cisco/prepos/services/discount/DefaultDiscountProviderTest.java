@@ -29,9 +29,8 @@ public class DefaultDiscountProviderTest {
     private static final String OTHER_PROMO = "other promo";
 
     private static final String OTHER_PART_NUMBER = "other part number";
-    private static final double SALE_PRICE = 200.5;
     private static final int GPL = 270;
-    private static final double SALE_DISCOUNT_BY_NEW_PRICELIST = 0.26;
+
 
 
     private DiscountProvider discountProvider = new DefaultDiscountProvider();
@@ -72,14 +71,14 @@ public class DefaultDiscountProviderTest {
     }
 
     @Test(expected = CiscoException.class)
-    public void thatOnGetSaleDiscountThrowsCiscoExceptionIfNoPriceFound() {
-        discountProvider.getSaleDiscount(OTHER_PART_NUMBER, getPriceMap(), SALE_PRICE);
+    public void thatOnGetGplThrowsCiscoExceptionIfNoPriceFound() {
+        discountProvider.getGpl(OTHER_PART_NUMBER, getPriceMap());
     }
 
     @Test
-    public void thatOnGetSaleDiscountReturnsSaleDiscountAccordingToPricelist() {
-        double saleDiscount = discountProvider.getSaleDiscount(PART_NUMBER, getPriceMap(), SALE_PRICE);
-        assertThat(saleDiscount).isEqualTo(SALE_DISCOUNT_BY_NEW_PRICELIST);
+    public void thatOnGetGplReturnsGplAccordingToPricelist() {
+        double gpl = discountProvider.getGpl(PART_NUMBER, getPriceMap());
+        assertThat(gpl).isEqualTo(GPL);
     }
 
     private Map<String, Pricelist> getPriceMap() {

@@ -4,7 +4,11 @@ public class DiscountPartCounter {
     public DiscountPartCounter() {
     }
 
-    public double getDiscountPart(double first, int second) {
-        return (double) Math.round((1 - (first / second)) * 100) / 100;
+    public static double getDiscountPart(double first, int second) {
+        return getRoundedDouble(1 - (first / second));
+    }
+
+    public static double getRoundedDouble(double value) {
+        return (double) Math.round(value * 100) /100;
     }
 }

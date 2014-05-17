@@ -17,7 +17,7 @@ public interface DiscountProvider {
 
     double getDiscount(Triplet<String, String, String> discountInfo, Table<String, String, Dart> dartsTable, Map<String, Promo> promos, Map<String, Pricelist> priceMap);
 
-    double getSaleDiscount(String partNumber, Map<String, Pricelist> pricelistsMap, double salePrice);
+    int getGpl(String partNumber, Map<String, Pricelist> pricelistsMap);
 
     boolean isRelevant(Promo existingPromo);
 }

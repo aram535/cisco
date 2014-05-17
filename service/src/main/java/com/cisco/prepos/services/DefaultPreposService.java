@@ -2,18 +2,12 @@ package com.cisco.prepos.services;
 
 import com.cisco.clients.dto.Client;
 import com.cisco.clients.service.ClientsService;
-import com.cisco.darts.dto.Dart;
 import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
-import com.cisco.pricelists.dto.Pricelist;
-import com.cisco.pricelists.service.PricelistsService;
-import com.cisco.promos.dto.Promo;
-import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
-import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,12 +43,6 @@ public class DefaultPreposService implements PreposService {
     private PreposUpdater preposUpdater;
 
     @Autowired
-    private PricelistsService pricelistsService;
-
-    @Autowired
-    private PromosService promosService;
-
-    @Autowired
     private ClientsService clientsService;
 
     @Transactional
@@ -69,8 +57,6 @@ public class DefaultPreposService implements PreposService {
 
         List<Sale> sales = salesService.getSales(NEW);
 
-        Table<String, String, Dart> dartsTable = dartsService.getDartsTable();
-
         if (!CollectionUtils.isEmpty(sales)) {
             Map<String, Client> clientsMap = clientsService.getClientsMap();
             List<Prepos> newPreposes = preposConstructor.construct(sales, clientsMap);
@@ -79,16 +65,12 @@ public class DefaultPreposService implements PreposService {
             updatedPreposes.addAll(newPreposes);
         }
 
-        Map<String, Promo> promosMap = promosService.getPromosMap();
-        Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
-
-        return preposModelConstructor.construct(updatedPreposes, pricelistsMap, promosMap, dartsTable);
+        return preposModelConstructor.construct(updatedPreposes);
     }
 
     @Override
     public void recountPrepos(PreposModel preposModel) {
 
-        preposModelConstructor.recountPreposPrices(preposModel, pricelistsService.getPricelistsMap(), promosService.getPromosMap(), dartsService.getDartsTable());
     }
 
     @Transactional
