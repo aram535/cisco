@@ -5,6 +5,7 @@ import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.dart.DartSelector;
 import com.cisco.prepos.services.dart.SuitableDartsProvider;
+import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.service.PricelistsService;
 import com.google.common.collect.ImmutableMap;
@@ -52,6 +53,8 @@ public class DefaultPreposRecounterTest {
     private DartsService dartsService;
     @Mock
     private PricelistsService pricelistsService;
+    @Mock
+    private DiscountProvider discountProvider;
 
 
     private final Prepos prepos = newPrepos();
@@ -62,10 +65,13 @@ public class DefaultPreposRecounterTest {
 
     @Before
     public void init() {
+        ImmutableMap<String, Pricelist> pricelistMap = ImmutableMap.of(prepos.getPartNumber(), newPricelist);
+
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
         when(suitableDartsProvider.getDarts(PART_NUMBER, PARTNER_NAME, QUANTITY, SHIPPED_DATE, createDartsTable())).thenReturn(suitableDarts);
         when(dartSelector.selectDart(suitableDarts, prepos.getSecondPromo())).thenReturn(selectedDart);
-        when(pricelistsService.getPricelistsMap()).thenReturn(ImmutableMap.of(prepos.getPartNumber(), newPricelist));
+        when(pricelistsService.getPricelistsMap()).thenReturn(pricelistMap);
+        when(discountProvider.getSaleDiscount(PART_NUMBER, pricelistMap, prepos.getSalePrice())).thenReturn(SALE_DISCOUNT_BY_NEW_PRICELIST);
     }
 
     private Map<String, Dart> createDarts() {

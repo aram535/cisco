@@ -55,11 +55,25 @@ public class DefaultDiscountProvider implements DiscountProvider {
         throw new CiscoException(String.format("NO price found for part number %s", partNumber));
     }
 
+    @Override
+    public double getSaleDiscount(String partNumber, Map<String, Pricelist> pricelistsMap, double salePrice) {
+        Pricelist pricelist = pricelistsMap.get(partNumber);
 
-	@Override
-	public boolean isRelevant(Promo existingPromo) {
-		return true;
-	}
+        if (pricelist == null) {
+            throw new CiscoException(String.format("NO price found for part number %s", partNumber));
+        }
+
+        int gpl = pricelist.getGpl();
+        double saleDiscount = (double) Math.round((1 - (salePrice / gpl)) * 100) / 100;
+
+        return saleDiscount;
+    }
+
+
+    @Override
+    public boolean isRelevant(Promo existingPromo) {
+        return true;
+    }
 
 
 }

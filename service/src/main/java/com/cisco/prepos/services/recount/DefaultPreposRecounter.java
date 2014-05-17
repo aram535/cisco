@@ -2,11 +2,11 @@ package com.cisco.prepos.services.recount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.service.DartsService;
-import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.dto.PreposBuilder;
 import com.cisco.prepos.services.dart.DartSelector;
 import com.cisco.prepos.services.dart.SuitableDartsProvider;
+import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.service.PricelistsService;
 import com.google.common.base.Function;
@@ -41,6 +41,9 @@ public class DefaultPreposRecounter implements PreposRecounter {
     @Autowired
     private PricelistsService pricelistsService;
 
+    @Autowired
+    private DiscountProvider discountProvider;
+
     @Override
     public List<Triplet<Prepos, Map<String, Dart>, Dart>> recount(List<Prepos> preposes) {
         if (CollectionUtils.isEmpty(preposes)) {
@@ -65,8 +68,7 @@ public class DefaultPreposRecounter implements PreposRecounter {
                 preposBuilder.secondPromo(selectedDart.getAuthorizationNumber());
                 preposBuilder.endUser(selectedDart.getEndUserName());
 
-                double gpl = getGpl(partNumber, pricelistsMap);
-                double saleDiscount = getSaleDiscount(salePrice, gpl);
+                double saleDiscount = discountProvider.getSaleDiscount(partNumber, pricelistsMap, salePrice);
                 preposBuilder.saleDiscount(saleDiscount);
 
                 Prepos prepos = preposBuilder.build();
@@ -75,24 +77,5 @@ public class DefaultPreposRecounter implements PreposRecounter {
         }));
 
         return recountedPreposes;
-    }
-
-    //TODO have a sense to make smth like SaleDiscountProvider with method 'getSaleDiscount' or put it to DiscountProvider
-    private double getGpl(String partNumber, Map<String, Pricelist> pricelistsMap) {
-
-        Pricelist pricelist = pricelistsMap.get(partNumber);
-
-        if (pricelist == null) {
-            throw new CiscoException(String.format("price for sale part number %s not found", partNumber));
-        }
-
-        return pricelist.getGpl();
-    }
-
-    private double getSaleDiscount(double price, double gpl) {
-
-        double saleDiscount = (double) Math.round((1 - (price / gpl)) * 100) / 100;
-
-        return saleDiscount;
     }
 }

@@ -29,6 +29,10 @@ public class DefaultDiscountProviderTest {
     private static final String OTHER_PROMO = "other promo";
 
     private static final String OTHER_PART_NUMBER = "other part number";
+    private static final double SALE_PRICE = 200.5;
+    private static final int GPL = 270;
+    private static final double SALE_DISCOUNT_BY_NEW_PRICELIST = 0.26;
+
 
     private DiscountProvider discountProvider = new DefaultDiscountProvider();
 
@@ -67,9 +71,20 @@ public class DefaultDiscountProviderTest {
         discountProvider.getDiscount(discountInfo, getDartsTable(), getPromosMap(), getPriceMap());
     }
 
+    @Test(expected = CiscoException.class)
+    public void thatOnGetSaleDiscountThrowsCiscoExceptionIfNoPriceFound() {
+        discountProvider.getSaleDiscount(OTHER_PART_NUMBER, getPriceMap(), SALE_PRICE);
+    }
+
+    @Test
+    public void thatOnGetSaleDiscountReturnsSaleDiscountAccordingToPricelist() {
+        double saleDiscount = discountProvider.getSaleDiscount(PART_NUMBER, getPriceMap(), SALE_PRICE);
+        assertThat(saleDiscount).isEqualTo(SALE_DISCOUNT_BY_NEW_PRICELIST);
+    }
+
     private Map<String, Pricelist> getPriceMap() {
         Map<String, Pricelist> map = Maps.newHashMap();
-        Pricelist pricelist = PricelistBuilder.newPricelistBuilder().setDiscount(PRICE_LIST_DISCOUNT).build();
+        Pricelist pricelist = PricelistBuilder.newPricelistBuilder().setDiscount(PRICE_LIST_DISCOUNT).setGpl(GPL).build();
         map.put(PART_NUMBER, pricelist);
         return map;
     }
