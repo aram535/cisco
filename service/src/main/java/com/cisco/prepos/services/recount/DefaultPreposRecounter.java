@@ -9,6 +9,8 @@ import com.cisco.prepos.services.dart.SuitableDartsProvider;
 import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.service.PricelistsService;
+import com.cisco.promos.dto.Promo;
+import com.cisco.promos.service.PromosService;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
@@ -33,13 +35,16 @@ public class DefaultPreposRecounter implements PreposRecounter {
     private DartsService dartsService;
 
     @Autowired
+    private PricelistsService pricelistsService;
+
+    @Autowired
+    private PromosService promosService;
+
+    @Autowired
     private SuitableDartsProvider suitableDartsProvider;
 
     @Autowired
     private DartSelector dartSelector;
-
-    @Autowired
-    private PricelistsService pricelistsService;
 
     @Autowired
     private DiscountProvider discountProvider;
@@ -51,6 +56,7 @@ public class DefaultPreposRecounter implements PreposRecounter {
         }
         final Table<String, String, Dart> dartsTable = dartsService.getDartsTable();
         final Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
+        final Map<String, Promo> promosMap = promosService.getPromosMap();
         List<Triplet<Prepos, Map<String, Dart>, Dart>> recountedPreposes = Lists.newArrayList(Lists.transform(preposes, new Function<Prepos, Triplet<Prepos, Map<String, Dart>, Dart>>() {
             @Override
             public Triplet<Prepos, Map<String, Dart>, Dart> apply(Prepos input) {
@@ -61,15 +67,21 @@ public class DefaultPreposRecounter implements PreposRecounter {
                 String secondPromo = input.getSecondPromo();
                 Timestamp shippedDate = input.getShippedDate();
                 double salePrice = input.getSalePrice();
+                String firstPromo = input.getFirstPromo();
 
                 Map<String, Dart> suitableDarts = suitableDartsProvider.getDarts(partNumber, partnerName, quantity, shippedDate, dartsTable);
                 Dart selectedDart = dartSelector.selectDart(suitableDarts, secondPromo);
 
-                preposBuilder.secondPromo(selectedDart.getAuthorizationNumber());
+                String newSecondPromo = selectedDart.getAuthorizationNumber();
+                preposBuilder.secondPromo(newSecondPromo);
                 preposBuilder.endUser(selectedDart.getEndUserName());
 
                 double saleDiscount = discountProvider.getSaleDiscount(partNumber, pricelistsMap, salePrice);
                 preposBuilder.saleDiscount(saleDiscount);
+
+                Triplet<String, String, String> discountInfo = new Triplet(partNumber, firstPromo, newSecondPromo);
+                double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
+                preposBuilder.buyDiscount(buyDiscount);
 
                 Prepos prepos = preposBuilder.build();
                 return new Triplet(prepos, suitableDarts, selectedDart);

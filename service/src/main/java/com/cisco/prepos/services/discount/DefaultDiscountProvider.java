@@ -2,6 +2,7 @@ package com.cisco.prepos.services.discount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
+import com.cisco.prepos.services.discount.utils.DiscountPartCounter;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Table;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class DefaultDiscountProvider implements DiscountProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DiscountPartCounter discountPartCounter = new DiscountPartCounter();
 
     @Override
     public double getDiscount(Triplet<String, String, String> discountInfo, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap, Map<String, Pricelist> priceMap) {
@@ -64,7 +66,7 @@ public class DefaultDiscountProvider implements DiscountProvider {
         }
 
         int gpl = pricelist.getGpl();
-        double saleDiscount = (double) Math.round((1 - (salePrice / gpl)) * 100) / 100;
+        double saleDiscount = discountPartCounter.getDiscountPart(salePrice, gpl);
 
         return saleDiscount;
     }
