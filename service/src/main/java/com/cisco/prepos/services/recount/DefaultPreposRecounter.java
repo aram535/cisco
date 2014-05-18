@@ -7,7 +7,6 @@ import com.cisco.prepos.dto.PreposBuilder;
 import com.cisco.prepos.services.dart.DartSelector;
 import com.cisco.prepos.services.dart.SuitableDartsProvider;
 import com.cisco.prepos.services.discount.DiscountProvider;
-import com.cisco.prepos.services.discount.utils.DiscountPartCounter;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.service.PricelistsService;
 import com.cisco.promos.dto.Promo;
@@ -85,22 +84,23 @@ public class DefaultPreposRecounter implements PreposRecounter {
                 Dart selectedDart = dartSelector.selectDart(suitableDarts, secondPromo);
 
                 String newSecondPromo = selectedDart.getAuthorizationNumber();
-                preposBuilder.secondPromo(newSecondPromo);
-                preposBuilder.endUser(selectedDart.getEndUserName());
 
                 int gpl = discountProvider.getGpl(partNumber, pricelistsMap);
                 double saleDiscount = getDiscountPart(salePrice, gpl);
-                preposBuilder.saleDiscount(saleDiscount);
 
 
                 Triplet<String, String, String> discountInfo = new Triplet(partNumber, firstPromo, newSecondPromo);
                 double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
-                preposBuilder.buyDiscount(buyDiscount);
                 double buyPrice = getBuyPrice(buyDiscount, gpl);
-                preposBuilder.buyPrice(buyPrice);
                 double posSum = getRoundedDouble(buyPrice * quantity);
-                preposBuilder.posSum(posSum);
                 boolean isOk = (salePrice / buyPrice) > threshold;
+
+                preposBuilder.secondPromo(newSecondPromo);
+                preposBuilder.endUser(selectedDart.getEndUserName());
+                preposBuilder.saleDiscount(saleDiscount);
+                preposBuilder.buyDiscount(buyDiscount);
+                preposBuilder.buyPrice(buyPrice);
+                preposBuilder.posSum(posSum);
                 preposBuilder.ok(isOk);
 
                 Prepos prepos = preposBuilder.build();

@@ -68,6 +68,7 @@ public class PreposViewModel {
     public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
 
         preposService.recountPrepos(preposModel);
+
         if (preposModel.getChecked()) {
             BindUtils.postNotifyChange(null, null, this, "totalPosSum");
         }
