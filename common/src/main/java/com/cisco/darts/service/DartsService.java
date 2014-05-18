@@ -11,17 +11,15 @@ import java.util.List;
  */
 public interface DartsService {
 
-	List<Dart> getDarts();
+    List<Dart> getDarts();
 
-	List<Dart> getLatestDarts();
+    void save(Dart dart);
 
-	void save(Dart dart);
+    void update(Dart dart);
 
-	void update(Dart dart);
+    void update(Collection<Dart> darts);
 
-	void update(Collection<Dart> darts);
+    void delete(Dart dart);
 
-	void delete(Dart dart);
-
-	Table<String, String, Dart> getDartsTable();
+    Table<String, String, Dart> getDartsTable();
 }

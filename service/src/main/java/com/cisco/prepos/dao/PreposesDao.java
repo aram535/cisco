@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface PreposesDao {
 
-	List<Prepos> getPreposes();
+    List<Prepos> getPreposes();
 
     void delete(Prepos prePos);
 
@@ -19,9 +19,8 @@ public interface PreposesDao {
 
     void update(Prepos prePos);
 
-	void update(List<Prepos> prePos);
+    void update(List<Prepos> prePos);
 
-	void save(List<Prepos> preposList);
+    void save(List<Prepos> preposList);
 
-    void updateAll(List<Prepos> preposList);
 }

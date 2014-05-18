@@ -1,6 +1,7 @@
 package com.cisco.prepos.services;
 
 import com.cisco.clients.dto.Client;
+import com.cisco.clients.service.ClientsService;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.sales.dto.Sale;
@@ -28,8 +29,13 @@ public class DefaultPreposConstructor implements PreposConstructor {
     @Autowired
     private PartnerNameProvider partnerNameProvider;
 
+    @Autowired
+    private ClientsService clientsService;
+
     @Override
-    public List<Prepos> construct(List<Sale> sales, Map<String, Client> clientsMap) {
+    public List<Prepos> construct(List<Sale> sales) {
+
+        Map<String, Client> clientsMap = clientsService.getClientsMap();
 
         List<Prepos> preposes = Lists.newArrayList();
 
@@ -37,7 +43,7 @@ public class DefaultPreposConstructor implements PreposConstructor {
 
             Prepos prepos = new Prepos();
 
-	        prepos.setSalePrice(sale.getPrice());
+            prepos.setSalePrice(sale.getPrice());
             prepos.setPartNumber(sale.getPartNumber());
             prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
             prepos.setStatus(NOT_PROCESSED);

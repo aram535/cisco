@@ -1,7 +1,5 @@
 package com.cisco.prepos.services;
 
-import com.cisco.clients.dto.Client;
-import com.cisco.clients.service.ClientsService;
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartConstants;
 import com.cisco.darts.service.DartsService;
@@ -10,8 +8,10 @@ import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
-import com.google.common.collect.*;
-import org.junit.Before;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Table;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -57,21 +57,16 @@ public class DefaultPreposServiceTest {
     @Mock
     private PreposUpdater preposUpdater;
 
-    @Mock
-    private ClientsService clientsService;
-
-    @Before
-    public void init() {
-        when(clientsService.getClientsMap()).thenReturn(Maps.<String, Client>newHashMap());
-    }
 
     @Test
     public void thatIfAllPreposAreEmptyAndNoNewSalesReturnEmptyList() {
         List<PreposModel> allData = preposService.getAllData();
 
         verify(preposesDao).getPreposes();
-        verify(preposesDao).updateAll(anyList());
+        verify(preposesDao).update(anyList());
+        verify(preposesDao).save(anyList());
         verify(salesService).getSales(NEW);
+        verify(salesService).updateSalesStatuses(anyList());
         verifyNoMoreInteractions(preposesDao, salesService);
 
         assertThat(allData).isNotNull().isEmpty();
@@ -92,7 +87,7 @@ public class DefaultPreposServiceTest {
 
         List<PreposModel> allData = preposService.getAllData();
 
-        verify(preposesDao).updateAll(allPreposes);
+        verify(preposesDao).update(allPreposes);
         assertThat(allData).isEqualTo(allPreposModels);
     }
 
@@ -113,12 +108,12 @@ public class DefaultPreposServiceTest {
         when(preposUpdater.update(allPreposesWithEmptySerials)).thenReturn(allPreposes);
         when(salesService.getSales(NEW)).thenReturn(newSales);
         when(dartsService.getDartsTable()).thenReturn(dartsTable);
-        when(preposConstructor.construct(newSales, Maps.<String, Client>newHashMap())).thenReturn(newPreposes);
+        when(preposConstructor.construct(newSales)).thenReturn(newPreposes);
         when(preposModelConstructor.construct(result)).thenReturn(allPreposModels);
 
         List<PreposModel> allData = preposService.getAllData();
 
-        verify(preposesDao).updateAll(allPreposes);
+        verify(preposesDao).update(allPreposes);
         assertThat(allData).isEqualTo(allPreposModels);
     }
 
@@ -130,7 +125,7 @@ public class DefaultPreposServiceTest {
 
         List<Prepos> preposes = newPreposes();
         when(preposModelConstructor.getPreposesFromPreposModels(preposModels)).thenReturn(preposes);
-        when(dartsService.getLatestDarts()).thenReturn(darts);
+        when(dartsService.getDarts()).thenReturn(darts);
 
         preposService.update(preposModels);
 

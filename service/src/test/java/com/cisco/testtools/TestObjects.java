@@ -43,13 +43,9 @@ public class TestObjects {
     public static final double SALE_PRICE = 200.5;
 
     public static final double DART_DISTI_DISCOUNT = 0.55;
-    public static final double DART_DISTI_PRICE = 112.5;
     public static final double PROMO_DISCOUNT = 0.35;
-    public static final double PROMO_PRICE = 162.5;
     public static final double PRICE_LIST_DISCOUNT = 0.21;
-    public static final double PRICE_LIST_PRICE = 197.5;
 
-    //double buyPrice = (double) Math.round(gpl * (1 - buyDiscount) * 100) / 100;
     public static final int GPL = 250;
 
     public static final String CLIENT_CITY = "client city";

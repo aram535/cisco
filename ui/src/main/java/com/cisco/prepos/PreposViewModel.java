@@ -1,9 +1,9 @@
 package com.cisco.prepos;
 
-import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.model.PreposModel;
+import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.services.PreposService;
-import com.google.common.collect.Lists;
+import com.cisco.prepos.services.filter.PreposFilter;
 import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -23,83 +23,86 @@ import java.util.Map;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
+    private static final String ALL_PREPOS_NOTIFY = "allPrepos";
+    private static final String FILTER_CHANGED_COMMAND = "filterChanged";
+    private static final String SAVE_COMMAND = "save";
+    private static final String REFRESH_COMMAND = "refresh";
+    private static final String PROMO_SELECTED_COMMAND = "promoSelected";
+    private static final String PREPOS_CHECKED_COMMAND = "preposChecked";
+    private static final String RECOUNT_TOTAL_POS_SUM_NOTIFY = "totalPosSum";
+
     private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
-	private Map<Long, PreposModel> checkedPreposes = Maps.newHashMap();
-	private double totalPosSum = 0;
+    private Map<Long, PreposModel> checkedPreposes = Maps.newHashMap();
+
     private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
     @WireVariable
     private PreposService preposService;
 
-    public List<PreposModel> getAllPrepos() {
+    @WireVariable
+    private PreposFilter preposFilter;
 
+    @Command(FILTER_CHANGED_COMMAND)
+    public List<PreposModel> getAllPrepos() {
         if (preposes == null) {
             preposes = preposService.getAllData();
-            filteredPreposes = PreposModel.getFilteredPreposes(preposRestrictions, Lists.newCopyOnWriteArrayList(preposes));
         }
-
+        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
         return filteredPreposes;
     }
 
-    public PreposRestrictions getFoodFilter() {
-        return preposRestrictions;
-    }
-
-	public double getTotalPosSum() {
-		totalPosSum = countTotalPosSum();
-		return totalPosSum;
-	}
-
-	private double countTotalPosSum() {
-
-		totalPosSum = 0;
-
-		for (PreposModel preposModel : checkedPreposes.values()) {
-			totalPosSum += preposModel.getPrepos().getPosSum();
-		}
-		totalPosSum = (double) Math.round(totalPosSum * 100) / 100;
-		return totalPosSum;
-	}
-
-	@Command("refresh")
-    @NotifyChange("allPrepos")
+    @Command(REFRESH_COMMAND)
+    @NotifyChange(ALL_PREPOS_NOTIFY)
     public void refresh() {
         preposes = preposService.getAllData();
-	    filteredPreposes = PreposModel.getFilteredPreposes(preposRestrictions, Lists.newCopyOnWriteArrayList(preposes));
+        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
     }
 
-    @Command("save")
+    @Command(SAVE_COMMAND)
     public void save() {
         preposService.update(preposes);
     }
 
-
-    @Command("promoSelected")
+    @Command(PROMO_SELECTED_COMMAND)
     public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
 
         preposService.recountPrepos(preposModel);
-	    if(preposModel.getChecked()) {
-		    BindUtils.postNotifyChange(null, null, this, "totalPosSum");
-	    }
+        if (preposModel.getChecked()) {
+            BindUtils.postNotifyChange(null, null, this, "totalPosSum");
+        }
 
         BindUtils.postNotifyChange(null, null, preposModel, "prepos");
     }
 
-	@Command("preposChecked")
-	@NotifyChange({"totalPosSum"})
-	public void preposChecked(@BindingParam("preposModel") PreposModel preposModel) {
-		if(preposModel.getChecked()) {
-			checkedPreposes.put(preposModel.getPrepos().getId(), preposModel);
-		} else {
-			checkedPreposes.remove(preposModel.getPrepos().getId());
-		}
-	}
+    @Command(PREPOS_CHECKED_COMMAND)
+    @NotifyChange({RECOUNT_TOTAL_POS_SUM_NOTIFY})
+    public void preposChecked(@BindingParam("preposModel") PreposModel preposModel) {
+        if (preposModel.getChecked()) {
+            checkedPreposes.put(preposModel.getPrepos().getId(), preposModel);
+        } else {
+            checkedPreposes.remove(preposModel.getPrepos().getId());
+        }
+    }
 
-    @Command
-    @NotifyChange({"allPrepos"})
-    public void changeFilter() {
-        filteredPreposes = PreposModel.getFilteredPreposes(preposRestrictions, preposes);
+    public PreposRestrictions getPreposRestrictions() {
+        return preposRestrictions;
+    }
+
+
+    public double getTotalPosSum() {
+        return countTotalPosSum();
+    }
+
+    //TODO move to separate entity TotalPosSumCounter
+    private double countTotalPosSum() {
+
+        double totalPosSum = 0;
+        for (PreposModel preposModel : checkedPreposes.values()) {
+            totalPosSum += preposModel.getPrepos().getPosSum();
+        }
+        totalPosSum = (double) Math.round(totalPosSum * 100) / 100;
+        return totalPosSum;
     }
 
 }

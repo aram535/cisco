@@ -17,65 +17,63 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class DartsViewModel {
 
-	private Dart selectedDartModel;
-	private Dart newDartModel = new Dart();
+    private Dart selectedDartModel;
+    private Dart newDartModel = new Dart();
 
-	@WireVariable
-	private DartsService dartsService;
+    @WireVariable
+    private DartsService dartsService;
 
-	private List<Dart> allDarts;
+    private List<Dart> allDarts;
 
-	public Dart getSelectedDartModel() {
-		return selectedDartModel;
-	}
+    public Dart getSelectedDartModel() {
+        return selectedDartModel;
+    }
 
-	public Dart getNewDartModel() {
-		return newDartModel;
-	}
+    public Dart getNewDartModel() {
+        return newDartModel;
+    }
 
-	public void setSelectedDartModel(Dart selectedDartModel) {
-		this.selectedDartModel = selectedDartModel;
-	}
+    public void setSelectedDartModel(Dart selectedDartModel) {
+        this.selectedDartModel = selectedDartModel;
+    }
 
-	public void setNewDartModel(Dart newDartModel) {
-		this.newDartModel = newDartModel;
-	}
+    public void setNewDartModel(Dart newDartModel) {
+        this.newDartModel = newDartModel;
+    }
 
-	public void setDartsService(DartsService DartsService) {
-		this.dartsService = DartsService;
-	}
+    public void setDartsService(DartsService DartsService) {
+        this.dartsService = DartsService;
+    }
 
-	public List<Dart> getAllDarts() {
-		allDarts = dartsService.getLatestDarts();
-		return allDarts;
-	}
+    public List<Dart> getAllDarts() {
+        allDarts = dartsService.getDarts();
+        return allDarts;
+    }
 
-	@Command("add")
-	@NotifyChange("allDarts")
-	public void add() {
+    @Command("add")
+    @NotifyChange("allDarts")
+    public void add() {
 
-		newDartModel.setQuantityInitial(newDartModel.getQuantity());
-		dartsService.save(newDartModel);
-		this.newDartModel = new Dart();
+        newDartModel.setQuantityInitial(newDartModel.getQuantity());
+        dartsService.save(newDartModel);
+        this.newDartModel = new Dart();
 
-	}
+    }
 
-	@Command("update")
-	@NotifyChange("allDarts")
-	public void update() {
-		dartsService.update(selectedDartModel);
-	}
+    @Command("update")
+    @NotifyChange("allDarts")
+    public void update() {
+        dartsService.update(selectedDartModel);
+    }
 
-	@Command("delete")
-	@NotifyChange({"allDarts", "selectedEvent"})
-	public void delete() {
-		//shouldn't be able to delete with selectedEvent being null anyway
-		//unless trying to hack the system, so just ignore the request
-		if(this.selectedDartModel != null) {
-			dartsService.delete(this.selectedDartModel);
-			this.selectedDartModel = null;
-		}
-	}
+    @Command("delete")
+    @NotifyChange({"allDarts", "selectedEvent"})
+    public void delete() {
+        if (this.selectedDartModel != null) {
+            dartsService.delete(this.selectedDartModel);
+            this.selectedDartModel = null;
+        }
+    }
 
 
 }

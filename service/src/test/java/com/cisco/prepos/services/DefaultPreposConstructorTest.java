@@ -1,11 +1,13 @@
 package com.cisco.prepos.services;
 
 import com.cisco.clients.dto.Client;
+import com.cisco.clients.service.ClientsService;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.sales.dto.Sale;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,38 +30,46 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPreposConstructorTest {
 
-	@InjectMocks
-	private DefaultPreposConstructor preposConstructor = new DefaultPreposConstructor();
+    @InjectMocks
+    private DefaultPreposConstructor preposConstructor = new DefaultPreposConstructor();
 
-	@Mock
-	private PartnerNameProvider partnerNameProvider;
+    @Mock
+    private PartnerNameProvider partnerNameProvider;
 
-	@Test
-	public void thatConstructReturnsEmptyPreposListIfNoNewSales() throws Exception {
+    @Mock
+    private ClientsService clientsService;
 
-		List<Sale> sales = Lists.newArrayList();
-		Map<String, Client> clientMap = newClientMap();
+    private Map<String, Client> clientsMap = newClientMap();
 
-		List<Prepos> expectedPreposes = Lists.newArrayList();
-		List<Prepos> actualPreposes = preposConstructor.construct(sales, clientMap);
+    @Before
+    public void init() {
+        when(clientsService.getClientsMap()).thenReturn(clientsMap);
+    }
 
-		assertThat(expectedPreposes).isEqualTo(actualPreposes);
+    @Test
+    public void thatConstructReturnsEmptyPreposListIfNoNewSales() throws Exception {
 
-	}
+        List<Sale> sales = Lists.newArrayList();
 
-	@Test
-	public void thatConstructReturnsCorrectlyBuiltPreposFromNewSales() throws Exception {
+        List<Prepos> expectedPreposes = Lists.newArrayList();
+        List<Prepos> actualPreposes = preposConstructor.construct(sales);
 
-		List<Sale> sales = newSaleList();
-		Map<String, Client> clientMap = newClientMap();
+        assertThat(expectedPreposes).isEqualTo(actualPreposes);
 
-		when(partnerNameProvider.getPartnerName(Iterables.getOnlyElement(sales),clientMap)).thenReturn(PARTNER_NAME);
+    }
 
-		List<Prepos> expectedPreposes = Lists.newArrayList(newSimplePrepos());
-		List<Prepos> actualPreposes = preposConstructor.construct(sales, clientMap);
+    @Test
+    public void thatConstructReturnsCorrectlyBuiltPreposFromNewSales() throws Exception {
 
-		assertThat(expectedPreposes).isEqualTo(actualPreposes);
+        List<Sale> sales = newSaleList();
 
-	}
+        when(partnerNameProvider.getPartnerName(Iterables.getOnlyElement(sales), clientsMap)).thenReturn(PARTNER_NAME);
+
+        List<Prepos> expectedPreposes = Lists.newArrayList(newSimplePrepos());
+        List<Prepos> actualPreposes = preposConstructor.construct(sales);
+
+        assertThat(expectedPreposes).isEqualTo(actualPreposes);
+
+    }
 
 }

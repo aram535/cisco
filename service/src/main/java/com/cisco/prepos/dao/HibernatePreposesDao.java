@@ -16,59 +16,54 @@ import java.util.List;
 public class HibernatePreposesDao implements PreposesDao {
 
 
-	@Autowired
-	private SessionFactory sessionFactory;
+    @Autowired
+    private SessionFactory sessionFactory;
 
-	@Transactional
-	@Override
-	public List<Prepos> getPreposes() {
-		Session currentSession = sessionFactory.getCurrentSession();
-		List<Prepos> preposesList = currentSession.createCriteria(Prepos.class).list();
-		return preposesList;
-	}
-
-	@Transactional
-	@Override
-	public void save(Prepos prepos) {
-		Session currentSession = sessionFactory.getCurrentSession();
-		currentSession.save(prepos);
-	}
-
-	@Transactional
-	@Override
-	public void save(List<Prepos> preposList) {
-		Session currentSession = sessionFactory.getCurrentSession();
-		for (Prepos prepos : preposList) {
-			currentSession.save(prepos);
-		}
-	}
-
+    @Transactional
     @Override
-    public void updateAll(List<Prepos> preposList) {
-
+    public List<Prepos> getPreposes() {
+        Session currentSession = sessionFactory.getCurrentSession();
+        List<Prepos> preposesList = currentSession.createCriteria(Prepos.class).list();
+        return preposesList;
     }
 
     @Transactional
-	@Override
-	public void update(Prepos prepos) {
-		Session currentSession = sessionFactory.getCurrentSession();
-		currentSession.update(prepos);
-	}
+    @Override
+    public void save(Prepos prepos) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.save(prepos);
+    }
 
-	@Transactional
-	@Override
-	public void update(List<Prepos> preposList) {
-		Session currentSession = sessionFactory.getCurrentSession();
-		for (Prepos prepos : preposList) {
-			currentSession.update(prepos);
-		}
-	}
+    @Transactional
+    @Override
+    public void save(List<Prepos> preposList) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        for (Prepos prepos : preposList) {
+            currentSession.save(prepos);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void update(Prepos prepos) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.update(prepos);
+    }
+
+    @Transactional
+    @Override
+    public void update(List<Prepos> preposList) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        for (Prepos prepos : preposList) {
+            currentSession.update(prepos);
+        }
+    }
 
 
-	@Transactional
-	@Override
-	public void delete(Prepos prepos) {
-		Session currentSession = sessionFactory.getCurrentSession();
-		currentSession.delete(prepos);
-	}
+    @Transactional
+    @Override
+    public void delete(Prepos prepos) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.delete(prepos);
+    }
 }

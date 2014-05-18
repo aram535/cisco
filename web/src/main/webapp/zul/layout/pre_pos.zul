@@ -5,7 +5,7 @@
         .z-intbox-disd { color: #2B3856 !important;}
         .z-doublebox-disd { color: #2B3856 !important;}
     </style>
-    <style src="/widgets/grid/data_filter/style.css" />
+    <style src="/widgets/grid/data_filter/style.css"/>
     <!--     <style src="/widgets/grid/inline_editing/style.css" /> -->
     <grid sizedByContent="true"
           model="@load(vmPrePos.allPrepos)" vflex="95%" autopaging="true" mold="paging"> <!-- -->
@@ -16,18 +16,19 @@
             <auxheader colspan="1">
                 <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->
                 <textbox hflex="100%" instant="true"
-                         value="@bind(vmPrePos.foodFilter.partnerName)" onChange="@command('changeFilter')" />
+                         value="@bind(vmPrePos.preposRestrictions.partnerName)" onChange="@command('changeFilter')"/>
             </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
-            <auxheader colspan="1" >
+            <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
-                         value="@bind(vmPrePos.foodFilter.shippedBillNumber)" onChange="@command('changeFilter')"/>
+                         value="@bind(vmPrePos.preposRestrictions.shippedBillNumber)"
+                         onChange="@command('changeFilter')"/>
             </auxheader>
             <auxheader colspan="1"/>
         </auxhead>
 
-        <columns  hflex="min" sizable="true">
+        <columns hflex="min" sizable="true">
             <column/>
             <column label="Status"/>
             <column label="Type"/>
@@ -53,17 +54,18 @@
         </columns>
         <template name="model">
             <row>
-                <checkbox width="auto" checked="@bind(each.checked)" onCheck="@command('preposChecked', preposModel=each)"/>
+                <checkbox width="auto" checked="@bind(each.checked)"
+                          onCheck="@command('preposChecked', preposModel=each)"/>
                 <label width="auto" value="@bind(each.prepos.status)"/>
                 <label width="auto" value="@bind(each.prepos.type)"/>
-                <label width="auto" value="@bind(each.prepos.partnerName)" />
-                <label width="auto" value="@bind(each.prepos.partNumber)" />
+                <label width="auto" value="@bind(each.prepos.partnerName)"/>
+                <label width="auto" value="@bind(each.prepos.partNumber)"/>
                 <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
-                <label width="auto" value="@bind(each.prepos.shippedBillNumber)" />
-                <label width="auto" value="@bind(each.saleDiscount)" />
-                <label width="auto" value="@bind(each.buyDiscount)" />
-                <label width="auto" value="@bind(each.prepos.salePrice)" />
-                <label width="auto" value="@bind(each.prepos.buyPrice)" />
+                <label width="auto" value="@bind(each.prepos.shippedBillNumber)"/>
+                <label width="auto" value="@bind(each.saleDiscount)"/>
+                <label width="auto" value="@bind(each.buyDiscount)"/>
+                <label width="auto" value="@bind(each.prepos.salePrice)"/>
+                <label width="auto" value="@bind(each.prepos.buyPrice)"/>
                 <label width="auto" value="@bind(each.prepos.firstPromo)"/>
                 <combobox readonly="true"
                           model="@load(each.suitableDartsList)" selectedItem="@bind(each.selectedDart)"
@@ -74,24 +76,26 @@
                                    description="@load(each.endUserName)"/>
                     </template>
                 </combobox>
-                <label width="auto" value="@bind(each.prepos.endUser)" />
-                <label width="auto" value="@bind(each.prepos.posSum)" />
-                <label width="auto" value="@bind(each.prepos.quantity)" />
+                <label width="auto" value="@bind(each.prepos.endUser)"/>
+                <label width="auto" value="@bind(each.prepos.posSum)"/>
+                <label width="auto" value="@bind(each.prepos.quantity)"/>
                 <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
-                <label width="auto" value="@bind(each.prepos.delta)" />
-                <label width="auto" value="@bind(each.prepos.clientNumber)" />
-                <label width="auto" value="@bind(each.prepos.comment)" />
-                <label width="auto" value="@bind(each.prepos.serials)" />
-                <label width="auto" value="@bind(each.prepos.zip)" />
+                <label width="auto" value="@bind(each.prepos.delta)"/>
+                <label width="auto" value="@bind(each.prepos.clientNumber)"/>
+                <label width="auto" value="@bind(each.prepos.comment)"/>
+                <label width="auto" value="@bind(each.prepos.serials)"/>
+                <label width="auto" value="@bind(each.prepos.zip)"/>
 
             </row>
         </template>
     </grid>
     <groupbox id="mygrp" vflex="5%">
         From:
-        <datebox inplace="true" width="auto" value="@bind(vmPrePos.foodFilter.fromDate)" buttonVisible="true" onChange="@command('changeFilter')"/>
+        <datebox inplace="true" width="auto" value="@bind(vmPrePos.preposRestrictions.fromDate)" buttonVisible="true"
+                 onChange="@command('changeFilter')"/>
         To:
-        <datebox inplace="true" width="auto" value="@bind(vmPrePos.foodFilter.toDate)" buttonVisible="true" onChange="@command('changeFilter')"/>
+        <datebox inplace="true" width="auto" value="@bind(vmPrePos.preposRestrictions.toDate)" buttonVisible="true"
+                 onChange="@command('changeFilter')"/>
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
         Total Pos sum:

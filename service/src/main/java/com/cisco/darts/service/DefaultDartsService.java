@@ -16,24 +16,12 @@ import java.util.List;
 @Service("dartsService")
 public class DefaultDartsService implements DartsService {
 
-	private List<Dart> darts;
-
     @Autowired
     private DartsDao dartsDao;
 
-	@Override
-	public List<Dart> getDarts() {
-		if(darts == null) {
-			return getLatestDarts();
-		} else {
-			return darts;
-		}
-	}
-
-	@Override
-    public List<Dart> getLatestDarts() {
-	    darts = dartsDao.getDarts();
-	    return darts;
+    @Override
+    public List<Dart> getDarts() {
+        return dartsDao.getDarts();
     }
 
     @Override

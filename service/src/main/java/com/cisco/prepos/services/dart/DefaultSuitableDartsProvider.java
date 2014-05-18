@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
 import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
@@ -23,6 +20,22 @@ import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
  */
 @Component
 public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
+
+    private final Comparator<String> emptyLastComparator = new Comparator<String>() {
+        @Override
+        public int compare(String left, String right) {
+            if (left == right) {
+                return 0;
+            }
+            if (left == null) {
+                return -1;
+            }
+            if (right == null) {
+                return 1;
+            }
+            return left.compareTo(right);
+        }
+    };
 
     @Override
     public Map<String, Dart> getDarts(String partNumber, final String partnerName, final int quantity, final Timestamp saleDate, Table<String, String, Dart> dartsTable) {
@@ -54,13 +67,14 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
             }
         }));
 
+        TreeMap<String, Dart> filteredDartsMap = new TreeMap(emptyLastComparator);
 
-        TreeMap filteredDartsMap = new TreeMap(Maps.uniqueIndex(filteredDarts, new Function<Dart, String>() {
+        filteredDartsMap.putAll(new TreeMap(Maps.uniqueIndex(filteredDarts, new Function<Dart, String>() {
             @Override
             public String apply(Dart dart) {
                 return dart.getAuthorizationNumber();
             }
-        }));
+        })));
 
         filteredDartsMap.putAll(dartsMapWitEmptyDart);
 
