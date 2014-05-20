@@ -51,4 +51,5 @@
     </groupbox>
     <button id="importPricelist" label="import" upload="true"
             onUpload="@command('importPricelist',upload=event)"/>
+    <button id="deleteAllPricelists" label="deleteAll" onClick="@command('deleteAll')"/>
 </window>

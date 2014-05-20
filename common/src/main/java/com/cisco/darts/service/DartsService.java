@@ -22,4 +22,6 @@ public interface DartsService {
     void delete(Dart dart);
 
     Table<String, String, Dart> getDartsTable();
+
+	public void deleteAll();
 }

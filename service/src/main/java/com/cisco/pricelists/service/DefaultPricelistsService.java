@@ -37,7 +37,7 @@ public class DefaultPricelistsService implements PricelistsService {
         });
     }
 
-    @Override
+	@Override
     public void save(Pricelist pricelist) {
         pricelistsDao.save(pricelist);
     }
@@ -51,4 +51,9 @@ public class DefaultPricelistsService implements PricelistsService {
     public void delete(Pricelist pricelist) {
         pricelistsDao.delete(pricelist);
     }
+
+	@Override
+	public void deleteAll() {
+		pricelistsDao.deleteAll();
+	}
 }

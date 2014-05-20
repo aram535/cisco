@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.darts.DartsViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)" vflex="85%" autopaging="true" mold="paging">
+    <listbox id="box" multiple="true" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)" vflex="80%" autopaging="true" mold="paging">
         <listhead sizable="true" menupopup="auto">
             <listheader hflex="min" label="Authorization number" sort="auto(authorizationNumber)"/>
             <listheader hflex="min" label="Version"  sort="auto(version)" />
@@ -53,7 +53,7 @@
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" vflex="15%" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
+    <groupbox id="mygrp" vflex="20%" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
         <caption label="DART`s info" />
         AuthorizationNumber:
         <textbox value="@bind(darts.authorizationNumber)" />
@@ -101,7 +101,9 @@
                 disabled="@load(empty vm.selectedDartModel)" />
         <button id="delete" label="Delete" onClick="@command('delete')"
                 disabled="@load(empty vm.selectedDartModel)" />
-
+        <button id="deleteAll" label="Delete All" onClick="@command('deleteAll')" />
+        <button id="importDarts" label="Import" upload="true"
+                onUpload="@command('importDarts',upload=event)"/>
         <hlayout>
             <label style="color:red" value="@load(vmsgs['authorizationNumber'])" />
             <label style="color:red" value="@load(vmsgs['version'])" />

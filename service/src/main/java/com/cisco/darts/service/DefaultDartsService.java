@@ -51,7 +51,12 @@ public class DefaultDartsService implements DartsService {
         return dartsListToTable(darts);
     }
 
-    private Table<String, String, Dart> dartsListToTable(List<Dart> darts) {
+	@Override
+	public void deleteAll() {
+		dartsDao.deleteAll();
+	}
+
+	private Table<String, String, Dart> dartsListToTable(List<Dart> darts) {
 
         HashBasedTable<String, String, Dart> dartsTable = HashBasedTable.create();
 

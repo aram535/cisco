@@ -5,7 +5,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -39,12 +38,16 @@ public class DefaultFieldsExtractorTest {
         when(row.getCell(anyInt(), eq(Row.CREATE_NULL_AS_BLANK))).thenReturn(cell);
     }
 
-	@Ignore("String value can be read as int with current logic")
-    @Test(expected = CiscoException.class)
-    public void thatExtractIntValueThrowsCiscoExceptionIfValueIsNotNumeric() {
+    @Test
+    public void thatExtractIntValueWhenCellTypeIsString() {
         when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
-        fieldsExtractor.extractIntValue(row, 1);
-    }
+		when(cell.getStringCellValue()).thenReturn("20");
+
+		int value = fieldsExtractor.extractIntValue(row, 1);
+
+		assertThat(value).isEqualTo(20);
+
+	}
 
     @Test(expected = CiscoException.class)
     public void thatExtractIntValueThrowsCiscoExceptionIfCellIsNull() {
@@ -63,12 +66,15 @@ public class DefaultFieldsExtractorTest {
         assertThat(expectedResult).isEqualTo(result);
     }
 
-	@Ignore("String value can be read as double with current logic")
-    @Test(expected = CiscoException.class)
-    public void thatExtractDoubleValueThrowsCiscoExceptionIfValueIsNotNumeric() {
+    @Test
+    public void thatExtractDoubleValueWhenCellTypeIsString() {
         when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
-        fieldsExtractor.extractDoubleValue(row, 1);
-    }
+		when(cell.getStringCellValue()).thenReturn("20.0");
+
+		double value = fieldsExtractor.extractDoubleValue(row, 1);
+
+		assertThat(value).isEqualTo(20d);
+	}
 
     @Test(expected = CiscoException.class)
     public void thatExtractDoubleValueThrowsCiscoExceptionIfCellIsNull() {
@@ -126,5 +132,21 @@ public class DefaultFieldsExtractorTest {
         Timestamp result = fieldsExtractor.extractTimestamp(row, 1);
         assertThat(result).isNull();
     }
+
+	@Test(expected = CiscoException.class)
+	public void thatExtractIntThrowsExceptionWhenCellTypeIsStringAndValueNonNumeric() {
+		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
+		when(cell.getStringCellValue()).thenReturn("20text");
+
+		fieldsExtractor.extractIntValue(row, 1);
+	}
+
+	@Test(expected = CiscoException.class)
+	public void thatExtractDoubleThrowsExceptionWhenCellTypeIsStringAndValueNonNumeric() {
+		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
+		when(cell.getStringCellValue()).thenReturn("some text");
+
+		fieldsExtractor.extractDoubleValue(row, 1);
+	}
 
 }

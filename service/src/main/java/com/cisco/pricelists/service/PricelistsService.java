@@ -19,4 +19,6 @@ public interface PricelistsService {
 	public void delete(Pricelist pricelist);
 
     Map<String,Pricelist> getPricelistsMap();
+
+	public void deleteAll();
 }

@@ -57,7 +57,8 @@
                 disabled="@load(empty vm.selectedPromoModel)"/>
         <button id="delete" label="Delete" onClick="@command('delete')"
                 disabled="@load(empty vm.selectedPromoModel)"/>
+        <button id="deleteAll" label="Delete All" onClick="@command('deleteAll')"/>
+        <button id="importPromos" label="import" upload="true"
+                onUpload="@command('importPromos',upload=event)"/>
     </groupbox>
-    <button id="importPromos" label="import" upload="true"
-            onUpload="@command('importPromos',upload=event)"/>
 </window>

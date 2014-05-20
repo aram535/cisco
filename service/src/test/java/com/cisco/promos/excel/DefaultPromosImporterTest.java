@@ -61,7 +61,24 @@ public class DefaultPromosImporterTest {
         verifyNoMoreInteractions(promosExtractor, promosDao);
     }
 
-    private List<Promo> createExpectedPromos() {
+	@Test
+	public void thatImportedPricelistsContainNoClones() {
+		when(promosExtractor.extract(inputStream)).thenReturn(createExpectedPromosWtihClones());
+		promosImporter.importPromos(inputStream);
+
+		verify(promosDao).saveAll(createExpectedPromos());
+	}
+
+	private List<Promo> createExpectedPromosWtihClones() {
+		List<Promo> expectedPromos = createExpectedPromos();
+		List<Promo> clonedPromos = createExpectedPromos();
+
+		expectedPromos.addAll(clonedPromos);
+
+		return expectedPromos;
+	}
+
+	private List<Promo> createExpectedPromos() {
         Promo firstPromo = PromoBuilder.newPromoBuilder().setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display, PoE and PC Port").
                 setDiscount(0.42).setName("PP-SBFa81137-130126").setGpl(189).setCode("PP-SBFa81137-130126").setClaimPerUnit(9.45).setVersion(8).build();
         Promo secondPromo = PromoBuilder.newPromoBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter").

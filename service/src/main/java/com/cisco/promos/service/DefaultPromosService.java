@@ -52,4 +52,9 @@ public class DefaultPromosService implements PromosService {
 			}
 		});
 	}
+
+	@Override
+	public void deleteAll() {
+		promosDao.deleteAll();
+	}
 }

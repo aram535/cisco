@@ -19,4 +19,6 @@ public interface PromosService {
 	public void delete(Promo promo);
 
 	Map<String,Promo> getPromosMap();
+
+	void deleteAll();
 }

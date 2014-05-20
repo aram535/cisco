@@ -87,6 +87,14 @@ public class PricelistsViewModel {
         }
     }
 
+	@Command("deleteAll")
+	@NotifyChange({ALL_PRICELISTS_CHANGE, SELECTED_EVENT_CHANGE})
+	public void deleteAll() {
+
+		pricelistsService.deleteAll();
+		this.selectedPricelistModel = null;
+	}
+
     @Command
     @NotifyChange({ALL_PRICELISTS_CHANGE})
     public void importPricelist(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {

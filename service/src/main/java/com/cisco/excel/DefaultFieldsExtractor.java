@@ -12,6 +12,8 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -74,7 +76,13 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
 			    return cell.getNumericCellValue();
 		    }
 		    case Cell.CELL_TYPE_STRING: {
-			    return Integer.valueOf(cell.getStringCellValue());
+			    try {
+				    NumberFormat format = NumberFormat.getInstance(Locale.US);
+				    Number number = format.parse(cell.getStringCellValue());
+				    return number.doubleValue();
+			    } catch (ParseException e) {
+				    throw new CiscoException(String.format("string representation of column number %s value should have numeric format", column));
+			    }
 		    }
 		    case Cell.CELL_TYPE_BLANK: {
 			    return 0;
@@ -108,7 +116,12 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
 			    return (int) cell.getNumericCellValue();
 		    }
 		    case Cell.CELL_TYPE_STRING: {
-			    return Integer.valueOf(cell.getStringCellValue());
+			    try {
+				    return Integer.valueOf(cell.getStringCellValue());
+			    }
+			    catch(NumberFormatException e) {
+				    throw new CiscoException(String.format("string representation of column number %s value should have numeric format", column));
+			    }
 		    }
 		    case Cell.CELL_TYPE_BLANK: {
 			    return 0;

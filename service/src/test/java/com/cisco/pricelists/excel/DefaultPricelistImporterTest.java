@@ -44,23 +44,43 @@ public class DefaultPricelistImporterTest {
     }
 
     @Test(expected = CiscoException.class)
-    public void thatImportPromosThrowsCiscoExceptionIfExportedDataIsEmptyOrNull() {
+    public void thatImportPricelistsThrowsCiscoExceptionIfExportedDataIsEmptyOrNull() {
         when(pricelistExtractor.extract(inputStream)).thenReturn(null);
         pricelistImporter.importPricelist(inputStream);
     }
 
     @Test
-    public void thatImportPromosJustReplacedAllData() {
-        when(pricelistsDao.deleteAll()).thenReturn(2);
+    public void thatImportPricelistsJustReplacedAllData() {
+
         pricelistImporter.importPricelist(inputStream);
 
         verify(pricelistExtractor).extract(inputStream);
         verify(pricelistsDao).deleteAll();
         verify(pricelistsDao).saveAll(createExpectedPricelist());
+
         verifyNoMoreInteractions(pricelistExtractor, pricelistsDao);
     }
 
-    private List<Pricelist> createExpectedPricelist() {
+	@Test
+	public void thatImportedPricelistsContainNoClones() {
+		when(pricelistExtractor.extract(inputStream)).thenReturn(createExpectedPricelistWtihClones());
+		pricelistImporter.importPricelist(inputStream);
+
+		verify(pricelistsDao).saveAll(createExpectedPricelist());
+	}
+
+	private List<Pricelist> createExpectedPricelistWtihClones() {
+
+		List<Pricelist> expectedPricelist = createExpectedPricelist();
+
+		List<Pricelist> clonedPricelist = createExpectedPricelist();
+
+		expectedPricelist.addAll(clonedPricelist);
+
+		return expectedPricelist;
+	}
+
+	private List<Pricelist> createExpectedPricelist() {
 
         Pricelist firstPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
                 .setWpl(43.47).setGpl(69).setDiscount(37).build();

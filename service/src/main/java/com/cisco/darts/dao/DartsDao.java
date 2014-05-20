@@ -18,4 +18,8 @@ public interface DartsDao {
 	void update(Collection<Dart> darts);
 
 	void delete(Dart dart);
+
+	int deleteAll();
+
+	void saveAll(List<Dart> darts);
 }

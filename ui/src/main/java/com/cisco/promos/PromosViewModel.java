@@ -85,6 +85,14 @@ public class PromosViewModel {
         }
     }
 
+	@Command("delete")
+	@NotifyChange({ALL_PROMOS_CHANGE, SELECTED_EVENT_CHANGE})
+	public void deleteAll() {
+
+			promosService.deleteAll();
+			selectedPromoModel = null;
+	}
+
     @Command
     @NotifyChange({ALL_PROMOS_CHANGE})
     public void importPromos(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
