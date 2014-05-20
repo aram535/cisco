@@ -1,5 +1,7 @@
 package com.cisco.prepos;
 
+import com.cisco.darts.dto.Dart;
+import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.services.PreposService;
@@ -30,6 +32,8 @@ public class PreposViewModel {
     private static final String PROMO_SELECTED_COMMAND = "promoSelected";
     private static final String PREPOS_CHECKED_COMMAND = "preposChecked";
     private static final String RECOUNT_TOTAL_POS_SUM_NOTIFY = "totalPosSum";
+    private static final String PREPOS_IN_MODEL_NOTIFY = "prepos";
+    private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
 
     private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
@@ -65,20 +69,23 @@ public class PreposViewModel {
     }
 
     @Command(PROMO_SELECTED_COMMAND)
-    public void promoSelected(@BindingParam("preposModel") PreposModel preposModel) {
+    public void promoSelected(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel) {
 
-        preposService.recountPrepos(preposModel);
+        Prepos prepos = preposModel.getPrepos();
+        Dart selectedDart = preposModel.getSelectedDart();
+        Prepos recountedPrepos = preposService.recountPrepos(prepos, selectedDart);
+        preposModel.setPrepos(recountedPrepos);
 
         if (preposModel.getChecked()) {
-            BindUtils.postNotifyChange(null, null, this, "totalPosSum");
+            BindUtils.postNotifyChange(null, null, this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
         }
 
-        BindUtils.postNotifyChange(null, null, preposModel, "prepos");
+        BindUtils.postNotifyChange(null, null, preposModel, PREPOS_IN_MODEL_NOTIFY);
     }
 
     @Command(PREPOS_CHECKED_COMMAND)
     @NotifyChange({RECOUNT_TOTAL_POS_SUM_NOTIFY})
-    public void preposChecked(@BindingParam("preposModel") PreposModel preposModel) {
+    public void preposChecked(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel) {
         if (preposModel.getChecked()) {
             checkedPreposes.put(preposModel.getPrepos().getId(), preposModel);
         } else {

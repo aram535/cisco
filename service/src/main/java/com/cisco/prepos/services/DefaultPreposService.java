@@ -1,9 +1,13 @@
 package com.cisco.prepos.services;
 
+import com.cisco.darts.dto.Dart;
 import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
+import com.cisco.prepos.services.recount.DartApplier;
+import com.cisco.pricelists.service.PricelistsService;
+import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.collect.Lists;
@@ -40,6 +44,15 @@ public class DefaultPreposService implements PreposService {
     @Autowired
     private PreposUpdater preposUpdater;
 
+    @Autowired
+    private DartApplier dartApplier;
+
+    @Autowired
+    private PricelistsService pricelistsService;
+
+    @Autowired
+    private PromosService promosService;
+
     @Override
     public List<PreposModel> getAllData() {
 
@@ -56,8 +69,8 @@ public class DefaultPreposService implements PreposService {
     }
 
     @Override
-    public void recountPrepos(PreposModel preposModel) {
-
+    public Prepos recountPrepos(Prepos prepos, Dart selectedDart) {
+        return dartApplier.getPrepos(prepos, selectedDart, pricelistsService.getPricelistsMap(), dartsService.getDartsTable(), promosService.getPromosMap());
     }
 
     @Transactional
