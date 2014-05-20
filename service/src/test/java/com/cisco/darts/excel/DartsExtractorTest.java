@@ -45,7 +45,7 @@ public class DartsExtractorTest {
                 .setDistributorInfo("ERC").setStartDate(startDate).setEndDate(endDate).setDistiDiscount(0.57)
                 .setResellerName("JSC NVISION-UKRAINE").setResellerCountry("UKRAINE").setResellerAcct(0)
                 .setEndUserName("BRISTOL HOTEL").setEndUserCountry("UKRAINE").setQuantity(1).setCiscoSku("ACS-1900-RM-19=")
-                .setListPrice(100).setClaimUnit(15).setExtCreditAmt(15)
+                .setListPrice(100).setClaimUnit(15).setExtCreditAmt(15).setDistiSku("")
                 .setFastTrackPie(0).setIpNgnPartnerPricingEm(0).setMdmFulfillment(15.00).build();
 
         Dart secondDart = builder(firstDart).setQuantity(4).setCiscoSku("EHWIC-1GE-SFP-CU=").setListPrice(799).

@@ -26,6 +26,16 @@
                          onChange="@command('changeFilter')"/>
             </auxheader>
             <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1" >
+                <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
+            </auxheader>
+            <auxheader colspan="1"/>
         </auxhead>
 
         <columns hflex="min" sizable="true">
@@ -98,7 +108,5 @@
                  onChange="@command('changeFilter')"/>
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
-        Total Pos sum:
-        <label width="auto" value="@bind(vmPrePos.totalPosSum)"/>
     </groupbox>
 </window>
