@@ -6,12 +6,17 @@ import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
+import com.cisco.prepos.services.recount.DartApplier;
+import com.cisco.pricelists.dto.Pricelist;
+import com.cisco.pricelists.service.PricelistsService;
+import com.cisco.promos.dto.Promo;
+import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
+import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,8 +28,14 @@ import java.util.Map;
 
 import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
 import static com.cisco.sales.dto.Sale.Status.NEW;
+import static com.cisco.testtools.TestObjects.DartsFactory.getDartsTable;
+import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
+import static com.cisco.testtools.TestObjects.PART_NUMBER;
 import static com.cisco.testtools.TestObjects.PreposFactory.newPrepos;
+import static com.cisco.testtools.TestObjects.PricelistsFactory.newPricelist;
+import static com.cisco.testtools.TestObjects.PromosFactory.newPromo;
 import static com.cisco.testtools.TestObjects.SalesFactory.newSaleList;
+import static com.google.common.collect.ImmutableMap.of;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -36,6 +47,7 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultPreposServiceTest {
 
+    private static final String OTHER_END_USER = "otherEndUser";
     @InjectMocks
     private PreposService preposService = new DefaultPreposService();
 
@@ -56,6 +68,15 @@ public class DefaultPreposServiceTest {
 
     @Mock
     private PreposUpdater preposUpdater;
+
+    @Mock
+    private DartApplier dartApplier;
+
+    @Mock
+    private PricelistsService pricelistsService;
+
+    @Mock
+    private PromosService promosService;
 
 
     @Test
@@ -133,6 +154,30 @@ public class DefaultPreposServiceTest {
         verify(dartsService).update(darts);
     }
 
+    @Test
+    public void thatRecountPreposReturnsRecountedPreposFromApplier() {
+        Prepos newPrepos = newPrepos();
+        Dart selectedDart = newDart();
+        Map<String, Pricelist> pricelistMap = of(PART_NUMBER, newPricelist());
+        Table<String, String, Dart> dartsTable = getDartsTable();
+        Map<String, Promo> promosMap = of(PART_NUMBER, newPromo());
+
+        when(pricelistsService.getPricelistsMap()).thenReturn(pricelistMap);
+        when(promosService.getPromosMap()).thenReturn(promosMap);
+        when(dartsService.getDartsTable()).thenReturn(dartsTable);
+        when(dartApplier.getPrepos(newPrepos, selectedDart, pricelistMap, dartsTable, promosMap)).thenReturn(getExpectedPrepos());
+
+        Prepos prepos = preposService.recountPrepos(newPrepos, selectedDart);
+        Assertions.assertThat(prepos).isEqualTo(getExpectedPrepos());
+    }
+
+    private Prepos getExpectedPrepos() {
+        Prepos expected = newPrepos();
+        expected.setEndUser(OTHER_END_USER);
+        expected.setOk(false);
+        return expected;
+    }
+
     private List<Prepos> newPreposes() {
 
         Prepos prepos = newPrepos();
@@ -143,7 +188,7 @@ public class DefaultPreposServiceTest {
     private List<PreposModel> getAllPreposModels() {
 
         Prepos prepos = newPrepos();
-        Map<String, Dart> suitableDarts = ImmutableMap.of(BLANK_AUTHORIZATION_NUMBER, DartConstants.EMPTY_DART);
+        Map<String, Dart> suitableDarts = of(BLANK_AUTHORIZATION_NUMBER, DartConstants.EMPTY_DART);
         PreposModel preposModel = new PreposModel(prepos, suitableDarts, DartConstants.EMPTY_DART);
 
         return Lists.newArrayList(preposModel);

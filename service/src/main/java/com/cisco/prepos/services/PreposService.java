@@ -1,5 +1,7 @@
 package com.cisco.prepos.services;
 
+import com.cisco.darts.dto.Dart;
+import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 
 import java.util.List;
@@ -13,6 +15,6 @@ public interface PreposService {
 
     public void update(List<PreposModel> prePos);
 
-    public void recountPrepos(PreposModel preposModel);
+    public com.cisco.prepos.dto.Prepos recountPrepos(Prepos prepos, Dart selectedDart);
 
 }
