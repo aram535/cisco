@@ -51,14 +51,14 @@ public class DefaultDartsService implements DartsService {
         return dartsListToTable(darts);
     }
 
-	@Override
-	public void deleteAll() {
-		dartsDao.deleteAll();
-	}
+    @Override
+    public void deleteAll() {
+        dartsDao.deleteAll();
+    }
 
-	private Table<String, String, Dart> dartsListToTable(List<Dart> darts) {
+    private Table<String, String, Dart> dartsListToTable(List<Dart> darts) {
 
-        HashBasedTable<String, String, Dart> dartsTable = HashBasedTable.create();
+        Table<String, String, Dart> dartsTable = HashBasedTable.create();
 
         for (Dart dart : darts) {
             dartsTable.put(dart.getCiscoSku(), dart.getAuthorizationNumber(), dart);

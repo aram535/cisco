@@ -4,6 +4,7 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.recount.PreposRecounter;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +21,22 @@ import java.util.Map;
 @Component
 public class DefaultPreposModelConstructor implements PreposModelConstructor {
 
+    private final Function<PreposModel, Prepos> toPreposTransformFunction = new Function<PreposModel, Prepos>() {
+        @Override
+        public Prepos apply(PreposModel preposModel) {
+            return preposModel.getPrepos();
+        }
+    };
+
     @Autowired
     private PreposRecounter preposRecounter;
 
     @Override
     public List<PreposModel> construct(List<Prepos> preposes) {
 
-        List<PreposModel> preposModels = Lists.newArrayList();
         List<Triplet<Prepos, Map<String, Dart>, Dart>> preposModelTripletList = preposRecounter.recount(preposes);
 
+        List<PreposModel> preposModels = Lists.newArrayList();
         for (Triplet<Prepos, Map<String, Dart>, Dart> preposModelTriplet : preposModelTripletList) {
 
             Prepos prepos = preposModelTriplet.getValue0();
@@ -43,14 +51,8 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
     }
 
     @Override
-    public List<Prepos> getPreposesFromPreposModels(List<PreposModel> preposModels) {
-
-        List<Prepos> preposes = Lists.newArrayList();
-
-        for (PreposModel preposModel : preposModels) {
-            preposes.add(preposModel.getPrepos());
-        }
-
+    public List<Prepos> getPreposes(List<PreposModel> preposModels) {
+        List<Prepos> preposes = Lists.newArrayList(Lists.transform(preposModels, toPreposTransformFunction));
         return preposes;
     }
 }

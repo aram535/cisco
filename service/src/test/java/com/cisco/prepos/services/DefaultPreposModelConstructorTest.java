@@ -72,7 +72,7 @@ public class DefaultPreposModelConstructorTest {
 
         List<PreposModel> preposModels = getNewPreposModels();
 
-        List<Prepos> preposes = preposModelConstructor.getPreposesFromPreposModels(preposModels);
+        List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
 
         assertThat(preposes).isEqualTo(newPreposList());
     }

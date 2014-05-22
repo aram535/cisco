@@ -10,11 +10,9 @@ import com.cisco.pricelists.service.PricelistsService;
 import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
-import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -53,6 +51,9 @@ public class DefaultPreposService implements PreposService {
     @Autowired
     private PromosService promosService;
 
+    @Autowired
+    private PreposValidator preposValidator;
+
     @Override
     public List<PreposModel> getAllData() {
 
@@ -60,7 +61,7 @@ public class DefaultPreposService implements PreposService {
         List<Prepos> updatedPreposes = preposUpdater.update(preposes);
 
         List<Sale> newSales = salesService.getSales(NEW);
-        List<Prepos> newPreposes = getNewPreposes(newSales);
+        List<Prepos> newPreposes = preposConstructor.construct(newSales);
 
         updateData(newSales, newPreposes, updatedPreposes);
 
@@ -73,22 +74,11 @@ public class DefaultPreposService implements PreposService {
         return dartApplier.getPrepos(prepos, selectedDart, pricelistsService.getPricelistsMap(), dartsService.getDartsTable(), promosService.getPromosMap());
     }
 
-    @Transactional
     @Override
     public void update(List<PreposModel> preposModels) {
-        List<Prepos> preposes = preposModelConstructor.getPreposesFromPreposModels(preposModels);
+        preposValidator.validate(preposModels);
+        List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
         preposesDao.update(preposes);
-        dartsService.update(dartsService.getDarts());
-    }
-
-    private List<Prepos> getNewPreposes(List<Sale> sales) {
-
-        if (CollectionUtils.isEmpty(sales)) {
-            return Lists.newArrayList();
-        }
-
-        List<Prepos> newPreposes = preposConstructor.construct(sales);
-        return newPreposes;
     }
 
     //TODO maybe db updates should be produced by sending events to needed services

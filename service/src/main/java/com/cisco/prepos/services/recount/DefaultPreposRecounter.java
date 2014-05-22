@@ -30,7 +30,7 @@ import java.util.Map;
 public class DefaultPreposRecounter implements PreposRecounter {
 
     @Autowired
-    private DartApplier defaultDartApplier;
+    private DartApplier dartApplier;
 
     @Autowired
     private DartsService dartsService;
@@ -69,7 +69,7 @@ public class DefaultPreposRecounter implements PreposRecounter {
                 Map<String, Dart> suitableDarts = suitableDartsProvider.getDarts(partNumber, partnerName, quantity, shippedDate, dartsTable);
                 Dart selectedDart = dartSelector.selectDart(suitableDarts, secondPromo);
 
-                Prepos prepos = defaultDartApplier.getPrepos(inputPrepos, selectedDart, pricelistsMap, dartsTable, promosMap);
+                Prepos prepos = dartApplier.getPrepos(inputPrepos, selectedDart, pricelistsMap, dartsTable, promosMap);
                 return new Triplet(prepos, suitableDarts, selectedDart);
             }
         }));

@@ -14,6 +14,6 @@ public interface PreposModelConstructor {
 
     List<PreposModel> construct(List<Prepos> preposes);
 
-    List<Prepos> getPreposesFromPreposModels(List<PreposModel> preposModels);
+    List<Prepos> getPreposes(List<PreposModel> preposModels);
 
 }

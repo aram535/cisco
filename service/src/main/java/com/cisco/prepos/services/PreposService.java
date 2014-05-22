@@ -15,6 +15,6 @@ public interface PreposService {
 
     public void update(List<PreposModel> prePos);
 
-    public com.cisco.prepos.dto.Prepos recountPrepos(Prepos prepos, Dart selectedDart);
+    public Prepos recountPrepos(Prepos prepos, Dart selectedDart);
 
 }

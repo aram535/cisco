@@ -78,6 +78,9 @@ public class DefaultPreposServiceTest {
     @Mock
     private PromosService promosService;
 
+    @Mock
+    private PreposValidator preposValidator;
+
 
     @Test
     public void thatIfAllPreposAreEmptyAndNoNewSalesReturnEmptyList() {
@@ -139,19 +142,17 @@ public class DefaultPreposServiceTest {
     }
 
     @Test
-    public void thatUpdateCallsPreposesDaoAndDartsServiceUpdateMethod() {
+    public void thatUpdateCallsPreposesDaoIfValidatorProcceed() {
 
         List<PreposModel> preposModels = getAllPreposModels();
-        List<Dart> darts = Lists.newArrayList();
-
         List<Prepos> preposes = newPreposes();
-        when(preposModelConstructor.getPreposesFromPreposModels(preposModels)).thenReturn(preposes);
-        when(dartsService.getDarts()).thenReturn(darts);
+
+        when(preposModelConstructor.getPreposes(preposModels)).thenReturn(preposes);
 
         preposService.update(preposModels);
 
+        verify(preposValidator).validate(preposModels);
         verify(preposesDao).update(preposes);
-        verify(dartsService).update(darts);
     }
 
     @Test
