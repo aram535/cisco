@@ -6,6 +6,7 @@ import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.services.PreposService;
 import com.cisco.prepos.services.filter.PreposFilter;
+import com.cisco.prepos.services.totalsum.TotalSumCounter;
 import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -15,6 +16,7 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +36,10 @@ public class PreposViewModel {
     private static final String RECOUNT_TOTAL_POS_SUM_NOTIFY = "totalPosSum";
     private static final String PREPOS_IN_MODEL_NOTIFY = "prepos";
     private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
-
     private List<PreposModel> preposes;
+
     private List<PreposModel> filteredPreposes;
     private Map<Long, PreposModel> checkedPreposes = Maps.newHashMap();
-
     private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
     @WireVariable
@@ -46,6 +47,9 @@ public class PreposViewModel {
 
     @WireVariable
     private PreposFilter preposFilter;
+
+    @WireVariable
+    private TotalSumCounter defaultTotalSumCounter;
 
     @Command(FILTER_CHANGED_COMMAND)
     public List<PreposModel> getAllPrepos() {
@@ -77,9 +81,10 @@ public class PreposViewModel {
         preposModel.setPrepos(recountedPrepos);
 
         if (preposModel.getChecked()) {
+            //TODO Please, hide working with BindUtils in some entity(it will be very good also hide putting nulls inside from end user of that entity).
             BindUtils.postNotifyChange(null, null, this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
         }
-
+        //TODO Please, hide working with BindUtils in some entity(it will be very good also hide putting nulls inside from end user of that entity).
         BindUtils.postNotifyChange(null, null, preposModel, PREPOS_IN_MODEL_NOTIFY);
     }
 
@@ -99,18 +104,8 @@ public class PreposViewModel {
 
 
     public double getTotalPosSum() {
-        return countTotalPosSum();
-    }
-
-    //TODO move to separate entity TotalPosSumCounter
-    private double countTotalPosSum() {
-
-        double totalPosSum = 0;
-        for (PreposModel preposModel : checkedPreposes.values()) {
-            totalPosSum += preposModel.getPrepos().getPosSum();
-        }
-        totalPosSum = (double) Math.round(totalPosSum * 100) / 100;
-        return totalPosSum;
+        Collection<PreposModel> preposModels = checkedPreposes.values();
+        return defaultTotalSumCounter.countTotalPosSum(preposModels);
     }
 
 }
