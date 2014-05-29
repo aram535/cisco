@@ -185,6 +185,12 @@ public class TestObjects {
         public static Promo newPromo() {
             return new Promo(1L, PART_NUMBER, "2 Port Phone Adapter", PROMO_DISCOUNT, PROMO_CODE, GPL, PROMO_CODE, 5.52, 8, SHIPPED_DATE);
         }
+
+        public static Promo newPromo(String code) {
+            Promo promo = newPromo();
+            promo.setCode(code);
+            return promo;
+        }
     }
 
     public static class DartsFactory {

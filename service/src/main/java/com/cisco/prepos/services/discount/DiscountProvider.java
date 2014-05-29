@@ -3,8 +3,6 @@ package com.cisco.prepos.services.discount;
 import com.cisco.darts.dto.Dart;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
-import com.google.common.collect.Table;
-import org.javatuples.Triplet;
 
 import java.util.Map;
 
@@ -15,7 +13,7 @@ import java.util.Map;
  */
 public interface DiscountProvider {
 
-    double getDiscount(Triplet<String, String, String> discountInfo, Table<String, String, Dart> dartsTable, Map<String, Promo> promos, Map<String, Pricelist> priceMap);
+    double getDiscount(Dart selectedDart, Promo promo, Pricelist pricelist);
 
     int getGpl(String partNumber, Map<String, Pricelist> pricelistsMap);
 

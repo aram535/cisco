@@ -4,11 +4,9 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.dto.PreposBuilder;
 import com.cisco.prepos.services.discount.DiscountProvider;
-import com.cisco.prepos.services.discount.utils.DiscountPartCounter;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Table;
-import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -16,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static com.cisco.prepos.dto.PreposBuilder.builder;
+import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getDiscountPart;
 import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 
 @Component
@@ -31,24 +31,27 @@ public class DefaultDartApplier implements DartApplier {
     @Override
     public Prepos getPrepos(Prepos inputPrepos, Dart selectedDart, Map<String, Pricelist> pricelistsMap, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap) {
 
-        PreposBuilder preposBuilder = PreposBuilder.builder().prepos(inputPrepos);
+        PreposBuilder preposBuilder = builder().prepos(inputPrepos);
 
         String partNumber = inputPrepos.getPartNumber();
         int quantity = inputPrepos.getQuantity();
         double salePrice = inputPrepos.getSalePrice();
-        String firstPromo = inputPrepos.getFirstPromo();
+        Promo firstPromo = promosMap.get(partNumber);
+        Pricelist pricelist = pricelistsMap.get(partNumber);
 
         String newSecondPromo = selectedDart.getAuthorizationNumber();
 
         int gpl = discountProvider.getGpl(partNumber, pricelistsMap);
-        double saleDiscount = DiscountPartCounter.getDiscountPart(salePrice, gpl);
+        double saleDiscount = getDiscountPart(salePrice, gpl);
 
-
-        Triplet<String, String, String> discountInfo = new Triplet(partNumber, firstPromo, newSecondPromo);
-        double buyDiscount = discountProvider.getDiscount(discountInfo, dartsTable, promosMap, pricelistsMap);
+        double buyDiscount = discountProvider.getDiscount(selectedDart, firstPromo, pricelist);
         double buyPrice = getBuyPrice(buyDiscount, gpl);
-        double posSum = DiscountPartCounter.getRoundedDouble(buyPrice * quantity);
+        double posSum = getRoundedDouble(buyPrice * quantity);
         boolean isOk = (salePrice / buyPrice) > threshold;
+
+        if (firstPromo != null) {
+            preposBuilder.firstPromo(firstPromo.getCode());
+        }
 
         preposBuilder.secondPromo(newSecondPromo);
         preposBuilder.endUser(selectedDart.getEndUserName());
