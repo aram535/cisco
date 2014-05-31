@@ -10,6 +10,7 @@ import com.google.common.collect.Table;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +30,7 @@ public class DefaultSalesService implements SalesService {
     @Autowired
     private SalesDao salesDao;
 
+	@Transactional
     @Override
     public List<Sale> getSales(final Status... statuses) {
 
@@ -48,26 +50,31 @@ public class DefaultSalesService implements SalesService {
         return Lists.newArrayList(filteredSales);
     }
 
+	@Transactional
 	@Override
 	public void save(Sale sale) {
 		salesDao.save(sale);
 	}
 
+	@Transactional
 	@Override
  	public void update(Sale sale) {
 		salesDao.update(sale);
 	}
 
+	@Transactional
 	@Override
 	public void update(List<Sale> sales) {
 		salesDao.update(sales);
 	}
 
+	@Transactional
 	@Override
 	public void delete(Sale sale) {
 		salesDao.delete(sale);
 	}
 
+	@Transactional
 	@Override
 	public Table<String, String, Sale> getSalesTable() {
 
@@ -78,6 +85,7 @@ public class DefaultSalesService implements SalesService {
 
 	}
 
+	@Transactional
 	@Override
 	public void updateSalesStatuses(List<Sale> sales) {
 

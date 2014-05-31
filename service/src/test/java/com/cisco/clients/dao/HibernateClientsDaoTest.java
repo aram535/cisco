@@ -35,8 +35,10 @@ public class HibernateClientsDaoTest extends BasicDb {
     @DataSet("clients.xml")
     @ExpectedDataSet("clients-save-result.xml")
     public void thatSaveAddsDataToDb() {
+
         Client client = createNewClient();
         clientsDao.save(client);
+	    System.out.println("asdasd");
     }
 
     @Test

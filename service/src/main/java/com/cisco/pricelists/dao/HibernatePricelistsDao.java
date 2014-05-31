@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,21 +21,21 @@ public class HibernatePricelistsDao implements PricelistsDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public List<Pricelist> getPricelists() {
         Session currentSession = sessionFactory.getCurrentSession();
         return currentSession.createCriteria(Pricelist.class).list();
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(Pricelist pricelist) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.save(pricelist);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void saveAll(Iterable<Pricelist> pricelist) {
         Session currentSession = sessionFactory.getCurrentSession();
@@ -43,21 +44,21 @@ public class HibernatePricelistsDao implements PricelistsDao {
         }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void update(Pricelist pricelist) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.update(pricelist);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void delete(Pricelist pricelist) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.delete(pricelist);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public int deleteAll() {
         Session currentSession = sessionFactory.getCurrentSession();

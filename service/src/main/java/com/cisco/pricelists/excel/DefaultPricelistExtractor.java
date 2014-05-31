@@ -3,7 +3,7 @@ package com.cisco.pricelists.excel;
 import com.cisco.excel.DefaultFieldsExtractor;
 import com.cisco.excel.FieldsExtractor;
 import com.cisco.pricelists.dto.Pricelist;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,8 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
+import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 import static com.cisco.pricelists.dto.PricelistBuilder.newPricelistBuilder;
 
 /**
@@ -37,10 +38,10 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
     private final FieldsExtractor fieldsExtractor = new DefaultFieldsExtractor();
 
     @Override
-    public List<Pricelist> extract(InputStream inputStream) {
+    public Map<String, Pricelist> extract(InputStream inputStream) {
         logger.debug("Extracting prices from file started...");
 
-        List<Pricelist> pricelist = Lists.newArrayList();
+        Map<String, Pricelist> pricelistMap = Maps.newLinkedHashMap();
         try {
 
             Workbook workbook = fieldsExtractor.getWorkbook(inputStream);
@@ -58,10 +59,11 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
                 int gpl = fieldsExtractor.extractIntValue(row, GPL_COLUMN);
                 int discount = fieldsExtractor.extractIntValue(row, DISCOUNT_COLUMN);
                 double wpl = calculateWpl(gpl, discount);
-                Pricelist price = newPricelistBuilder().setPartNumber(partNumber).setDescription(description).
-                        setWpl(wpl).setGpl(gpl).setDiscount(discount).build();
+	            double fractionalDiscount = getRoundedDouble((double)discount / 100);
+	            Pricelist price = newPricelistBuilder().setPartNumber(partNumber).setDescription(description).
+                        setWpl(wpl).setGpl(gpl).setDiscount(fractionalDiscount).build();
 
-                pricelist.add(price);
+                pricelistMap.put(price.getPartNumber(), price);
             }
             inputStream.close();
 
@@ -70,9 +72,9 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
             e.printStackTrace();
         }
 
-        logger.debug("extracted prices {}", pricelist);
+        logger.debug("extracted prices {}", pricelistMap);
 
-        return pricelist;
+        return pricelistMap;
     }
 
     private double calculateWpl(int gpl, int discount) {

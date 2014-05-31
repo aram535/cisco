@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,14 +21,14 @@ public class HibernateSalesDao implements SalesDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public List<Sale> getSales() {
         Session currentSession = sessionFactory.getCurrentSession();
         return currentSession.createCriteria(Sale.class).list();
     }
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void save(Sale sale) {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -35,7 +36,7 @@ public class HibernateSalesDao implements SalesDao {
 		currentSession.save(sale);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void update(Sale sale) {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -43,7 +44,7 @@ public class HibernateSalesDao implements SalesDao {
 		currentSession.saveOrUpdate(sale);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void update(List<Sale> sales) {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -52,7 +53,7 @@ public class HibernateSalesDao implements SalesDao {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void delete(Sale sale) {
 		Session currentSession = sessionFactory.getCurrentSession();

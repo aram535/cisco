@@ -4,7 +4,9 @@ import com.cisco.exception.CiscoException;
 import com.cisco.pricelists.dao.PricelistsDao;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.InputStream;
-import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -56,7 +58,7 @@ public class DefaultPricelistImporterTest {
 
         verify(pricelistExtractor).extract(inputStream);
         verify(pricelistsDao).deleteAll();
-        verify(pricelistsDao).saveAll(createExpectedPricelist());
+        verify(pricelistsDao).saveAll(Lists.newArrayList(createExpectedPricelist().values()));
 
         verifyNoMoreInteractions(pricelistExtractor, pricelistsDao);
     }
@@ -66,36 +68,43 @@ public class DefaultPricelistImporterTest {
 		when(pricelistExtractor.extract(inputStream)).thenReturn(createExpectedPricelistWtihClones());
 		pricelistImporter.importPricelist(inputStream);
 
-		verify(pricelistsDao).saveAll(createExpectedPricelist());
+		verify(pricelistsDao).saveAll(Lists.newArrayList(createExpectedPricelist().values()));
 	}
 
-	private List<Pricelist> createExpectedPricelistWtihClones() {
+	private Map<String, Pricelist> createExpectedPricelistWtihClones() {
 
-		List<Pricelist> expectedPricelist = createExpectedPricelist();
+		Map<String, Pricelist> pricelistMap = createExpectedPricelist();
 
-		List<Pricelist> clonedPricelist = createExpectedPricelist();
+		Map<String, Pricelist> clonedPricelistMap = Maps.newLinkedHashMap();
+		clonedPricelistMap.putAll(pricelistMap);
 
-		expectedPricelist.addAll(clonedPricelist);
+		Pricelist firstPricelistClone = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
+				.setWpl(43.47).setGpl(69).setDiscount(37).build();
 
-		return expectedPricelist;
+		clonedPricelistMap.put(firstPricelistClone.getPartNumber(), firstPricelistClone);
+
+		return clonedPricelistMap;
 	}
 
-	private List<Pricelist> createExpectedPricelist() {
+	private Map<String, Pricelist> createExpectedPricelist() {
 
-        Pricelist firstPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
-                .setWpl(43.47).setGpl(69).setDiscount(37).build();
+		Pricelist firstPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
+				.setWpl(43.47).setGpl(69).setDiscount(37).build();
 
-        Pricelist secondPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SF100D-08-EU").setDescription("SF100D-08 8-Port 10/100 Desktop Switch")
-                .setWpl(35.91).setGpl(57).setDiscount(37).build();
+		Pricelist secondPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SF100D-08-EU").setDescription("SF100D-08 8-Port 10/100 Desktop Switch")
+				.setWpl(35.91).setGpl(57).setDiscount(37).build();
 
-        Pricelist thirdPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display PoE and PC Port")
-                .setWpl(119.07).setGpl(189).setDiscount(37).build();
+		Pricelist thirdPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display PoE and PC Port")
+				.setWpl(119.07).setGpl(189).setDiscount(37).build();
 
-        Pricelist fourthPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("CISCO881-K9").setDescription("Cisco 881 Ethernet Sec Router")
-                .setWpl(376.42).setGpl(649).setDiscount(42).build();
+		Pricelist fourthPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("CISCO881-K9").setDescription("Cisco 881 Ethernet Sec Router")
+				.setWpl(376.42).setGpl(649).setDiscount(42).build();
 
-        return Lists.newArrayList(firstPrice, secondPrice, thirdPrice, fourthPrice);
-    }
+		return ImmutableMap.of(firstPrice.getPartNumber(), firstPrice,
+				secondPrice.getPartNumber(), secondPrice,
+				thirdPrice.getPartNumber(), thirdPrice,
+				fourthPrice.getPartNumber(), fourthPrice);
+	}
 
 
 }

@@ -17,4 +17,5 @@ public interface PreposService {
 
     public Prepos recountPrepos(Prepos prepos, Dart selectedDart);
 
+	void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel);
 }

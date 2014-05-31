@@ -1,12 +1,15 @@
 package com.cisco.prepos;
 
 import com.cisco.darts.dto.Dart;
+import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.services.PreposService;
 import com.cisco.prepos.services.filter.PreposFilter;
 import com.cisco.prepos.services.totalsum.TotalSumCounter;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -15,6 +18,8 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,10 +41,12 @@ public class PreposViewModel {
     private static final String RECOUNT_TOTAL_POS_SUM_NOTIFY = "totalPosSum";
     private static final String PREPOS_IN_MODEL_NOTIFY = "prepos";
     private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
-    private List<PreposModel> preposes;
 
+    private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
-    private Map<Long, PreposModel> checkedPreposes = Maps.newHashMap();
+    private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
+	private Iterable<PreposModel> filteredCheckedPreposes;
+
     private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
     @WireVariable
@@ -49,22 +56,32 @@ public class PreposViewModel {
     private PreposFilter preposFilter;
 
     @WireVariable
-    private TotalSumCounter defaultTotalSumCounter;
+    private TotalSumCounter totalSumCounter;
 
-    @Command(FILTER_CHANGED_COMMAND)
     public List<PreposModel> getAllPrepos() {
         if (preposes == null) {
             preposes = preposService.getAllData();
+	        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
         }
-        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+
         return filteredPreposes;
     }
+
+	public PreposRestrictions getPreposRestrictions() {
+		return preposRestrictions;
+	}
+
+	public double getTotalPosSum() {
+		if(filteredCheckedPreposes == null) {
+			filteredCheckedPreposes = checkedPreposMap.values();
+		}
+		return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
+	}
 
     @Command(REFRESH_COMMAND)
     @NotifyChange(ALL_PREPOS_NOTIFY)
     public void refresh() {
-        preposes = preposService.getAllData();
-        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+        preposes = null;
     }
 
     @Command(SAVE_COMMAND)
@@ -73,7 +90,14 @@ public class PreposViewModel {
     }
 
     @Command(PROMO_SELECTED_COMMAND)
-    public void promoSelected(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel) {
+    public void promoSelected(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel, @BindingParam("comboItem") Combobox comboItem) {
+
+	    try {
+		    preposService.validatePreposForSelectedDart(preposes, preposModel);
+	    } catch(CiscoException ex) {
+		    rollbackSelectedItem(preposModel, comboItem);
+		    throw ex;
+	    }
 
         Prepos prepos = preposModel.getPrepos();
         Dart selectedDart = preposModel.getSelectedDart();
@@ -81,31 +105,53 @@ public class PreposViewModel {
         preposModel.setPrepos(recountedPrepos);
 
         if (preposModel.getChecked()) {
-            //TODO Please, hide working with BindUtils in some entity(it will be very good also hide putting nulls inside from end user of that entity).
-            BindUtils.postNotifyChange(null, null, this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
+	        notifyChange(this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
         }
-        //TODO Please, hide working with BindUtils in some entity(it will be very good also hide putting nulls inside from end user of that entity).
-        BindUtils.postNotifyChange(null, null, preposModel, PREPOS_IN_MODEL_NOTIFY);
+	    notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY);
     }
 
     @Command(PREPOS_CHECKED_COMMAND)
     @NotifyChange({RECOUNT_TOTAL_POS_SUM_NOTIFY})
     public void preposChecked(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel) {
         if (preposModel.getChecked()) {
-            checkedPreposes.put(preposModel.getPrepos().getId(), preposModel);
+            checkedPreposMap.put(preposModel.getPrepos().getId(), preposModel);
         } else {
-            checkedPreposes.remove(preposModel.getPrepos().getId());
+            checkedPreposMap.remove(preposModel.getPrepos().getId());
         }
     }
 
-    public PreposRestrictions getPreposRestrictions() {
-        return preposRestrictions;
-    }
+	@Command(FILTER_CHANGED_COMMAND)
+	@NotifyChange({ALL_PREPOS_NOTIFY, RECOUNT_TOTAL_POS_SUM_NOTIFY})
+	public void filterChanged() {
+		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
 
+		final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
+		filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+				return checkedPreposes.contains(preposModel);
+			}
+		});
+	}
 
-    public double getTotalPosSum() {
-        Collection<PreposModel> preposModels = checkedPreposes.values();
-        return defaultTotalSumCounter.countTotalPosSum(preposModels);
-    }
+	private void notifyChange(Object bean, String property) {
+		BindUtils.postNotifyChange(null, null, bean, property);
+	}
+
+	private void rollbackSelectedItem(PreposModel preposModel, Combobox comboItem) {
+
+		String secondPromo = preposModel.getPrepos().getSecondPromo();
+
+		for (int i = 0; i < comboItem.getItemCount(); i++) {
+
+			Comboitem itemAtIndex = comboItem.getItemAtIndex(i);
+			Dart value = itemAtIndex.getValue();
+			if(secondPromo.equals(value.getAuthorizationNumber())) {
+				comboItem.setSelectedItem(itemAtIndex);
+				preposModel.setSelectedDart(value);
+				return;
+			}
+		}
+	}
 
 }

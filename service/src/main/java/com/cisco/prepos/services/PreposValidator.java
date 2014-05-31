@@ -10,5 +10,5 @@ import java.util.List;
  * Time: 23:39
  */
 public interface PreposValidator {
-    void validate(List<PreposModel> preposModels);
+    void validateDartQuantity(List<PreposModel> preposList, PreposModel preposModel);
 }

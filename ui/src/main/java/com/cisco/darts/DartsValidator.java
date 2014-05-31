@@ -11,6 +11,5 @@ public class DartsValidator extends AbstractValidator {
 
 	public void validate(ValidationContext ctx) {
 
-
 	}
 }

@@ -12,6 +12,7 @@ import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -54,6 +55,7 @@ public class DefaultPreposService implements PreposService {
     @Autowired
     private PreposValidator preposValidator;
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public List<PreposModel> getAllData() {
 
@@ -74,15 +76,21 @@ public class DefaultPreposService implements PreposService {
         return dartApplier.getPrepos(prepos, selectedDart, pricelistsService.getPricelistsMap(), dartsService.getDartsTable(), promosService.getPromosMap());
     }
 
-    @Override
+	@Override
+	public void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel) {
+		preposValidator.validateDartQuantity(preposModels, preposModel);
+	}
+
+	@Override
     public void update(List<PreposModel> preposModels) {
-        preposValidator.validate(preposModels);
+
         List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
         preposesDao.update(preposes);
     }
 
     //TODO maybe db updates should be produced by sending events to needed services
-    @Transactional
+
+
     private void updateData(List<Sale> newSales, List<Prepos> newPreposes, List<Prepos> updatedPreposes) {
         preposesDao.update(updatedPreposes);
         preposesDao.save(newPreposes);

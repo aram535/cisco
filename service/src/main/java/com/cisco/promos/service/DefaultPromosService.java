@@ -6,6 +6,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -20,26 +21,31 @@ public class DefaultPromosService implements PromosService {
 	@Autowired
 	PromosDao promosDao;
 
+	@Transactional
 	@Override
 	public List<Promo> getPromos() {
 		return promosDao.getPromos();
 	}
 
+	@Transactional
 	@Override
 	public void save(Promo promo) {
 		promosDao.save(promo);
 	}
 
+	@Transactional
 	@Override
 	public void update(Promo promo) {
 		promosDao.update(promo);
 	}
 
+	@Transactional
 	@Override
 	public void delete(Promo promo) {
 		promosDao.delete(promo);
 	}
 
+	@Transactional
 	@Override
 	public Map<String, Promo> getPromosMap() {
 
@@ -53,6 +59,7 @@ public class DefaultPromosService implements PromosService {
 		});
 	}
 
+	@Transactional
 	@Override
 	public void deleteAll() {
 		promosDao.deleteAll();

@@ -6,6 +6,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class DefaultClientsService implements ClientsService {
     @Autowired
     ClientsDao clientsDao;
 
+	@Transactional
     @Override
     public List<Client> getClients() {
         return clientsDao.getClients();
@@ -37,17 +39,19 @@ public class DefaultClientsService implements ClientsService {
         });
     }
 
-
+	@Transactional
     @Override
     public void save(Client client) {
         clientsDao.save(client);
     }
 
+	@Transactional
     @Override
     public void update(Client client) {
         clientsDao.update(client);
     }
 
+	@Transactional
     @Override
     public void delete(Client client) {
         clientsDao.delete(client);

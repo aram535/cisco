@@ -85,7 +85,7 @@ public class PromosViewModel {
         }
     }
 
-	@Command("delete")
+	@Command("deleteAll")
 	@NotifyChange({ALL_PROMOS_CHANGE, SELECTED_EVENT_CHANGE})
 	public void deleteAll() {
 

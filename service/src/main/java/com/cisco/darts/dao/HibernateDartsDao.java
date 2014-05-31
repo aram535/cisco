@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -22,7 +23,7 @@ public class HibernateDartsDao implements DartsDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public List<Dart> getDarts() {
         Session currentSession = sessionFactory.getCurrentSession();
@@ -30,21 +31,21 @@ public class HibernateDartsDao implements DartsDao {
         return dartsList;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(Dart dart) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.save(dart);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void update(Dart dart) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.update(dart);
     }
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void update(Collection<Dart> darts) {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -53,14 +54,14 @@ public class HibernateDartsDao implements DartsDao {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void delete(Dart dart) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.delete(dart);
     }
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public int deleteAll() {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -68,7 +69,7 @@ public class HibernateDartsDao implements DartsDao {
 		return query.executeUpdate();
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void saveAll(List<Dart> darts) {
 		Session currentSession = sessionFactory.getCurrentSession();

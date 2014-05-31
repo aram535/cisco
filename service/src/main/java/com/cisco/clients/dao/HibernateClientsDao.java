@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class HibernateClientsDao implements ClientsDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public List<Client> getClients() {
 	    Session currentSession = sessionFactory.getCurrentSession();
@@ -28,7 +29,7 @@ public class HibernateClientsDao implements ClientsDao {
 	    return currentSession.createCriteria(Client.class).list();
     }
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void save(Client client) {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -36,7 +37,7 @@ public class HibernateClientsDao implements ClientsDao {
 		currentSession.save(client);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void update(Client client) {
 		Session currentSession = sessionFactory.getCurrentSession();
@@ -44,7 +45,7 @@ public class HibernateClientsDao implements ClientsDao {
 		currentSession.saveOrUpdate(client);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public void delete(Client client) {
 		Session currentSession = sessionFactory.getCurrentSession();

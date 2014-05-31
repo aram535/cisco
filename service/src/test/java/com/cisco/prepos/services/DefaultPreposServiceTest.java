@@ -151,7 +151,6 @@ public class DefaultPreposServiceTest {
 
         preposService.update(preposModels);
 
-        verify(preposValidator).validate(preposModels);
         verify(preposesDao).update(preposes);
     }
 
@@ -172,6 +171,16 @@ public class DefaultPreposServiceTest {
         Assertions.assertThat(prepos).isEqualTo(getExpectedPrepos());
     }
 
+	@Test
+	public void thatValidationIsPerformedWhenvalidatePreposForSelectedDartIsCalled() {
+
+		List<PreposModel> allPreposModels = getAllPreposModels();
+		PreposModel firstPreposModel = allPreposModels.get(0);
+
+		preposService.validatePreposForSelectedDart(allPreposModels, firstPreposModel);
+
+		verify(preposValidator).validateDartQuantity(allPreposModels, firstPreposModel);
+	}
     private Prepos getExpectedPrepos() {
         Prepos expected = newPrepos();
         expected.setEndUser(OTHER_END_USER);

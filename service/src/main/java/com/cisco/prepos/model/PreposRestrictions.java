@@ -1,6 +1,9 @@
 package com.cisco.prepos.model;
 
+import org.joda.time.DateTimeUtils;
+
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  * Created by Alf on 01.05.2014.
@@ -14,6 +17,13 @@ public class PreposRestrictions {
 
     public PreposRestrictions() {
 
+	    toDate = new Timestamp(DateTimeUtils.currentTimeMillis());
+
+	    Calendar cal = Calendar.getInstance();
+	    cal.setTime(toDate);
+	    cal.add(Calendar.DAY_OF_WEEK, -7);
+
+	    fromDate = new Timestamp(cal.getTime().getTime());
     }
 
     public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate) {

@@ -49,7 +49,7 @@
             <label style="color:red" value="@load(vmsgs['address'])"/>
         </hlayout>
     </groupbox>
-    <button id="importPricelist" label="import" upload="true"
+    <button id="importPricelist" label="Import" upload="true"
             onUpload="@command('importPricelist',upload=event)"/>
     <button id="deleteAllPricelists" label="deleteAll" onClick="@command('deleteAll')"/>
 </window>

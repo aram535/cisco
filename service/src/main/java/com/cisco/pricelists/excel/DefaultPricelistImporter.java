@@ -4,15 +4,14 @@ import com.cisco.exception.CiscoException;
 import com.cisco.pricelists.dao.PricelistsDao;
 import com.cisco.pricelists.dto.Pricelist;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * User: Rost
@@ -28,18 +27,16 @@ public class DefaultPricelistImporter implements PricelistImporter {
     @Autowired
     private PricelistsDao pricelistsDao;
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void importPricelist(InputStream inputStream) {
-        List<Pricelist> pricelist = pricelistExtractor.extract(inputStream);
+        Map<String, Pricelist> pricelistMap = pricelistExtractor.extract(inputStream);
 
-        if (CollectionUtils.isEmpty(pricelist)) {
+        if (CollectionUtils.isEmpty(pricelistMap)) {
             throw new CiscoException("Exported from excel pricelist are null or empty. Please, check file.");
         }
 
-		Set<Pricelist> uniquePricelists = Sets.newLinkedHashSet(pricelist);
-
         pricelistsDao.deleteAll();
-        pricelistsDao.saveAll(Lists.newArrayList(uniquePricelists));
+		pricelistsDao.saveAll(Lists.newArrayList(pricelistMap.values()));
     }
 }

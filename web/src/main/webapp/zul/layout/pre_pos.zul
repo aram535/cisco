@@ -16,14 +16,14 @@
             <auxheader colspan="1">
                 <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->
                 <textbox hflex="100%" instant="true"
-                         value="@bind(vmPrePos.preposRestrictions.partnerName)" onChange="@command('changeFilter')"/>
+                         value="@bind(vmPrePos.preposRestrictions.partnerName)" onChange="@command('filterChanged')"/>
             </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
                          value="@bind(vmPrePos.preposRestrictions.shippedBillNumber)"
-                         onChange="@command('changeFilter')"/>
+                         onChange="@command('filterChanged')"/>
             </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
@@ -70,7 +70,7 @@
                 <label width="auto" value="@bind(each.prepos.type)"/>
                 <label width="auto" value="@bind(each.prepos.partnerName)"/>
                 <label width="auto" value="@bind(each.prepos.partNumber)"/>
-                <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
+                <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)"  buttonVisible="true" />
                 <label width="auto" value="@bind(each.prepos.shippedBillNumber)"/>
                 <label width="auto" value="@bind(each.saleDiscount)"/>
                 <label width="auto" value="@bind(each.buyDiscount)"/>
@@ -79,11 +79,9 @@
                 <label width="auto" value="@bind(each.prepos.firstPromo)"/>
                 <combobox readonly="true"
                           model="@load(each.suitableDartsList)" selectedItem="@bind(each.selectedDart)"
-                          onChange="@command('promoSelected', preposModel=each)"
-                          onSelect="@command('promoSelected', preposModel=each)">
+                          onChange="@command('promoSelected', preposModel=each, comboItem=self)">
                     <template name="model">
-                        <comboitem label="@load(each.authorizationNumber)"
-                                   description="@load(each.endUserName)"/>
+                        <comboitem label="@load(each.authorizationNumber)" description="@load(each.endUserName)"/>
                     </template>
                 </combobox>
                 <label width="auto" value="@bind(each.prepos.endUser)"/>
@@ -102,10 +100,10 @@
     <groupbox id="mygrp" vflex="5%">
         From:
         <datebox inplace="true" width="auto" value="@bind(vmPrePos.preposRestrictions.fromDate)" buttonVisible="true"
-                 onChange="@command('changeFilter')"/>
+                 onChange="@command('filterChanged')"/>
         To:
         <datebox inplace="true" width="auto" value="@bind(vmPrePos.preposRestrictions.toDate)" buttonVisible="true"
-                 onChange="@command('changeFilter')"/>
+                 onChange="@command('filterChanged')"/>
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
     </groupbox>
