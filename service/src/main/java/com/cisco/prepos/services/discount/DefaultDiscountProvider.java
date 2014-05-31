@@ -20,6 +20,7 @@ import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
 @Component
 public class DefaultDiscountProvider implements DiscountProvider {
 
+    private static final String NO_PRICE_FOUND_MESSAGE = "NO price found";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -37,8 +38,8 @@ public class DefaultDiscountProvider implements DiscountProvider {
             return pricelist.getDiscount();
         }
 
-        logger.debug("NO price found");
-        throw new CiscoException(String.format("NO price found"));
+        logger.debug(NO_PRICE_FOUND_MESSAGE);
+        throw new CiscoException(NO_PRICE_FOUND_MESSAGE);
     }
 
     @Override
@@ -56,8 +57,14 @@ public class DefaultDiscountProvider implements DiscountProvider {
 
 
     @Override
-    public boolean isRelevant(Promo existingPromo) {
-        return true;
+    public boolean isRelevant(Promo existingPromo, long preposShippedDateInMillis) {
+
+        if (existingPromo != null) {
+            long promoEndDateInMillis = existingPromo.getEndDate().getTime();
+            return preposShippedDateInMillis < promoEndDateInMillis;
+        }
+
+        return false;
     }
 
 

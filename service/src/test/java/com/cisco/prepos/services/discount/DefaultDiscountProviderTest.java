@@ -10,10 +10,12 @@ import com.cisco.promos.dto.PromoBuilder;
 import com.google.common.collect.Maps;
 import org.junit.Test;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.*;
+import static com.cisco.testtools.TestObjects.PromosFactory.newPromo;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -68,6 +70,28 @@ public class DefaultDiscountProviderTest {
     public void thatOnGetGplReturnsGplAccordingToPricelist() {
         double gpl = discountProvider.getGpl(PART_NUMBER, getPriceMap());
         assertThat(gpl).isEqualTo(GPL);
+    }
+
+    @Test
+    public void thatPromoIsRelevantIfItIsNotNullAndShippedDateSuits() {
+        Promo relevantPromo = newPromo();
+        relevantPromo.setEndDate(new Timestamp(100L));
+        boolean relevant = discountProvider.isRelevant(relevantPromo, 99L);
+        assertThat(relevant).isEqualTo(true);
+    }
+
+    @Test
+    public void thatPromoIsNotRelevantIfItIsNull() {
+        boolean relevant = discountProvider.isRelevant(null, 99L);
+        assertThat(relevant).isEqualTo(false);
+    }
+
+    @Test
+    public void thatPromoIsNotRelevantIfItIsNotNullButIsExpiredForPreposShippedDate() {
+        Promo relevantPromo = newPromo();
+        relevantPromo.setEndDate(new Timestamp(100L));
+        boolean relevant = discountProvider.isRelevant(relevantPromo, 101L);
+        assertThat(relevant).isEqualTo(false);
     }
 
     private Map<String, Pricelist> getPriceMap() {

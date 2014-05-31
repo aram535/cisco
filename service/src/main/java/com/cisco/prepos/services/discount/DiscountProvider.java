@@ -17,5 +17,5 @@ public interface DiscountProvider {
 
     int getGpl(String partNumber, Map<String, Pricelist> pricelistsMap);
 
-    boolean isRelevant(Promo existingPromo);
+    boolean isRelevant(Promo existingPromo, long preposShippedDateInMillis);
 }
