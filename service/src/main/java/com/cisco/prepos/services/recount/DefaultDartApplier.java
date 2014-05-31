@@ -36,6 +36,7 @@ public class DefaultDartApplier implements DartApplier {
         String partNumber = inputPrepos.getPartNumber();
         int quantity = inputPrepos.getQuantity();
         double salePrice = inputPrepos.getSalePrice();
+
         Promo firstPromo = promosMap.get(partNumber);
         Pricelist pricelist = pricelistsMap.get(partNumber);
 
@@ -45,6 +46,7 @@ public class DefaultDartApplier implements DartApplier {
         double saleDiscount = getDiscountPart(salePrice, gpl);
 
         double buyDiscount = discountProvider.getDiscount(selectedDart, firstPromo, pricelist);
+
         double buyPrice = getBuyPrice(buyDiscount, gpl);
         double posSum = getRoundedDouble(buyPrice * quantity);
         boolean isOk = (salePrice / buyPrice) > threshold;
