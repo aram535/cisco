@@ -18,7 +18,7 @@ public class PreposModel {
     private Prepos prepos;
     private Dart selectedDart;
     private boolean checked = false;
-
+    private boolean firstPromoValid = true;
     private Map<String, Dart> suitableDarts;
 
     public PreposModel(Prepos prepos, Map<String, Dart> suitableDarts, Dart selectedDart) {
@@ -72,6 +72,14 @@ public class PreposModel {
         this.checked = checked;
     }
 
+    public boolean isFirstPromoValid() {
+        return firstPromoValid;
+    }
+
+    public void setFirstPromoValid(boolean firstPromoValid) {
+        this.firstPromoValid = firstPromoValid;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -88,8 +96,11 @@ public class PreposModel {
                 .append(this.prepos, rhs.prepos)
                 .append(this.suitableDarts, rhs.suitableDarts)
                 .append(this.selectedDart, rhs.selectedDart)
+                .append(this.checked, rhs.checked)
+                .append(this.firstPromoValid, rhs.firstPromoValid)
                 .isEquals();
     }
+
 
     @Override
     public int hashCode() {
@@ -97,16 +108,13 @@ public class PreposModel {
                 .append(prepos)
                 .append(suitableDarts)
                 .append(selectedDart)
+                .append(checked)
+                .append(firstPromoValid)
                 .toHashCode();
     }
 
-
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("prepos", prepos)
-                .append("suitableDarts", suitableDarts)
-                .append("selectedDart", selectedDart)
-                .toString();
+        return ToStringBuilder.reflectionToString(this);
     }
 }

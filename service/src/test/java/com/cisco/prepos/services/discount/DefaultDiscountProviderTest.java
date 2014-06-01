@@ -72,28 +72,6 @@ public class DefaultDiscountProviderTest {
         assertThat(gpl).isEqualTo(GPL);
     }
 
-    @Test
-    public void thatPromoIsRelevantIfItIsNotNullAndShippedDateSuits() {
-        Promo relevantPromo = newPromo();
-        relevantPromo.setEndDate(new Timestamp(100L));
-        boolean relevant = discountProvider.isRelevant(relevantPromo, 99L);
-        assertThat(relevant).isEqualTo(true);
-    }
-
-    @Test
-    public void thatPromoIsNotRelevantIfItIsNull() {
-        boolean relevant = discountProvider.isRelevant(null, 99L);
-        assertThat(relevant).isEqualTo(false);
-    }
-
-    @Test
-    public void thatPromoIsNotRelevantIfItIsNotNullButIsExpiredForPreposShippedDate() {
-        Promo relevantPromo = newPromo();
-        relevantPromo.setEndDate(new Timestamp(100L));
-        boolean relevant = discountProvider.isRelevant(relevantPromo, 101L);
-        assertThat(relevant).isEqualTo(false);
-    }
-
     private Map<String, Pricelist> getPriceMap() {
         Map<String, Pricelist> map = Maps.newHashMap();
         Pricelist pricelist = PricelistBuilder.newPricelistBuilder().setDiscount(PRICE_LIST_DISCOUNT).setGpl(GPL).build();

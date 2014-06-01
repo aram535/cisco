@@ -1,13 +1,14 @@
 package com.cisco.prepos.services;
 
 import com.cisco.darts.dto.Dart;
-import com.cisco.darts.dto.DartConstants;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
 
 /**
  * User: Rost
@@ -20,31 +21,33 @@ public class DefaultPreposValidator implements PreposValidator {
     @Override
     public void validateDartQuantity(List<PreposModel> preposModels, PreposModel selectedModel) {
 
-	    if(!dartHaveEnoughQuantity(preposModels, selectedModel)) {
-		    throw new CiscoException("Not enough quantity left in Dart. Review other preposes where current Dart is selected");
-	    }
+        boolean dartHasNotEnoughQuantity = !dartHasEnoughQuantity(preposModels, selectedModel);
+        if (dartHasNotEnoughQuantity) {
+            throw new CiscoException("Not enough quantity left in Dart. Review other preposes where current Dart is selected");
+        }
 
     }
 
-	private boolean dartHaveEnoughQuantity(List<PreposModel> preposModels, PreposModel selectedModel) {
+    private boolean dartHasEnoughQuantity(List<PreposModel> preposModels, PreposModel selectedModel) {
 
-		if(selectedModel.equals(DartConstants.EMPTY_DART)) {
-			return true;
-		}
+        Dart selectedDart = selectedModel.getSelectedDart();
 
-		int totalQuantity = 0;
+        if (selectedDart == EMPTY_DART) {
+            return true;
+        }
 
-		Dart selectedDart = selectedModel.getSelectedDart();
+        int totalQuantity = 0;
 
-		for (PreposModel preposModel : preposModels) {
+        for (PreposModel preposModel : preposModels) {
 
-			if(selectedDart.equals(preposModel.getSelectedDart())) {
-				Prepos prepos = preposModel.getPrepos();
-				int saleQuantity = prepos.getQuantity();
-				totalQuantity += saleQuantity;
-			}
+            if (selectedDart.equals(preposModel.getSelectedDart())) {
+                Prepos prepos = preposModel.getPrepos();
+                int saleQuantity = prepos.getQuantity();
+                totalQuantity += saleQuantity;
+            }
 
-		}
-		return selectedDart.getQuantity() >= totalQuantity;
-	}
+        }
+
+        return selectedDart.getQuantity() >= totalQuantity;
+    }
 }

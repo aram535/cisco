@@ -45,7 +45,7 @@ public class PreposViewModel {
     private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
-	private Iterable<PreposModel> filteredCheckedPreposes;
+    private Iterable<PreposModel> filteredCheckedPreposes;
 
     private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
@@ -61,22 +61,22 @@ public class PreposViewModel {
     public List<PreposModel> getAllPrepos() {
         if (preposes == null) {
             preposes = preposService.getAllData();
-	        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+            filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
         }
 
         return filteredPreposes;
     }
 
-	public PreposRestrictions getPreposRestrictions() {
-		return preposRestrictions;
-	}
+    public PreposRestrictions getPreposRestrictions() {
+        return preposRestrictions;
+    }
 
-	public double getTotalPosSum() {
-		if(filteredCheckedPreposes == null) {
-			filteredCheckedPreposes = checkedPreposMap.values();
-		}
-		return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
-	}
+    public double getTotalPosSum() {
+        if (filteredCheckedPreposes == null) {
+            filteredCheckedPreposes = checkedPreposMap.values();
+        }
+        return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
+    }
 
     @Command(REFRESH_COMMAND)
     @NotifyChange(ALL_PREPOS_NOTIFY)
@@ -91,13 +91,12 @@ public class PreposViewModel {
 
     @Command(PROMO_SELECTED_COMMAND)
     public void promoSelected(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel, @BindingParam("comboItem") Combobox comboItem) {
-
-	    try {
-		    preposService.validatePreposForSelectedDart(preposes, preposModel);
-	    } catch(CiscoException ex) {
-		    rollbackSelectedItem(preposModel, comboItem);
-		    throw ex;
-	    }
+        try {
+            preposService.validatePreposForSelectedDart(preposes, preposModel);
+        } catch (CiscoException ex) {
+            rollbackSelectedItem(preposModel, comboItem);
+            throw ex;
+        }
 
         Prepos prepos = preposModel.getPrepos();
         Dart selectedDart = preposModel.getSelectedDart();
@@ -105,9 +104,9 @@ public class PreposViewModel {
         preposModel.setPrepos(recountedPrepos);
 
         if (preposModel.getChecked()) {
-	        notifyChange(this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
+            notifyChange(this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
         }
-	    notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY);
+        notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY);
     }
 
     @Command(PREPOS_CHECKED_COMMAND)
@@ -120,38 +119,37 @@ public class PreposViewModel {
         }
     }
 
-	@Command(FILTER_CHANGED_COMMAND)
-	@NotifyChange({ALL_PREPOS_NOTIFY, RECOUNT_TOTAL_POS_SUM_NOTIFY})
-	public void filterChanged() {
-		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+    @Command(FILTER_CHANGED_COMMAND)
+    @NotifyChange({ALL_PREPOS_NOTIFY, RECOUNT_TOTAL_POS_SUM_NOTIFY})
+    public void filterChanged() {
+        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
 
-		final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
-		filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
-			@Override
-			public boolean apply(PreposModel preposModel) {
-				return checkedPreposes.contains(preposModel);
-			}
-		});
-	}
+        final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
+        filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
+            @Override
+            public boolean apply(PreposModel preposModel) {
+                return checkedPreposes.contains(preposModel);
+            }
+        });
+    }
 
-	private void notifyChange(Object bean, String property) {
-		BindUtils.postNotifyChange(null, null, bean, property);
-	}
+    private void notifyChange(Object bean, String property) {
+        BindUtils.postNotifyChange(null, null, bean, property);
+    }
 
-	private void rollbackSelectedItem(PreposModel preposModel, Combobox comboItem) {
+    private void rollbackSelectedItem(PreposModel preposModel, Combobox comboItem) {
 
-		String secondPromo = preposModel.getPrepos().getSecondPromo();
+        String secondPromo = preposModel.getPrepos().getSecondPromo();
 
-		for (int i = 0; i < comboItem.getItemCount(); i++) {
-
-			Comboitem itemAtIndex = comboItem.getItemAtIndex(i);
-			Dart value = itemAtIndex.getValue();
-			if(secondPromo.equals(value.getAuthorizationNumber())) {
-				comboItem.setSelectedItem(itemAtIndex);
-				preposModel.setSelectedDart(value);
-				return;
-			}
-		}
-	}
+        for (Comboitem item : comboItem.getItems()) {
+            Dart dart = item.getValue();
+            String authorizationNumber = dart.getAuthorizationNumber();
+            if (secondPromo.equals(authorizationNumber)) {
+                comboItem.setSelectedItem(item);
+                preposModel.setSelectedDart(dart);
+                return;
+            }
+        }
+    }
 
 }

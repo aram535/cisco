@@ -55,7 +55,7 @@ public class DefaultPreposService implements PreposService {
     @Autowired
     private PreposValidator preposValidator;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public List<PreposModel> getAllData() {
 
@@ -76,12 +76,12 @@ public class DefaultPreposService implements PreposService {
         return dartApplier.getPrepos(prepos, selectedDart, pricelistsService.getPricelistsMap(), dartsService.getDartsTable(), promosService.getPromosMap());
     }
 
-	@Override
-	public void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel) {
-		preposValidator.validateDartQuantity(preposModels, preposModel);
-	}
+    @Override
+    public void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel) {
+        preposValidator.validateDartQuantity(preposModels, preposModel);
+    }
 
-	@Override
+    @Override
     public void update(List<PreposModel> preposModels) {
 
         List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
@@ -89,8 +89,6 @@ public class DefaultPreposService implements PreposService {
     }
 
     //TODO maybe db updates should be produced by sending events to needed services
-
-
     private void updateData(List<Sale> newSales, List<Prepos> newPreposes, List<Prepos> updatedPreposes) {
         preposesDao.update(updatedPreposes);
         preposesDao.save(newPreposes);

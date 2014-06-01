@@ -56,16 +56,4 @@ public class DefaultDiscountProvider implements DiscountProvider {
     }
 
 
-    @Override
-    public boolean isRelevant(Promo existingPromo, long preposShippedDateInMillis) {
-
-        if (existingPromo != null) {
-            long promoEndDateInMillis = existingPromo.getEndDate().getTime();
-            return preposShippedDateInMillis < promoEndDateInMillis;
-        }
-
-        return false;
-    }
-
-
 }

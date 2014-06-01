@@ -4,9 +4,8 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.recount.PreposRecounter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import org.javatuples.Triplet;
+import org.javatuples.Quartet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,7 @@ import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.AUTHORIZATION_NUMBER;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
 import static com.cisco.testtools.TestObjects.PreposFactory.*;
+import static com.google.common.collect.ImmutableMap.of;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -40,15 +40,16 @@ public class DefaultPreposModelConstructorTest {
     @Mock
     private PreposRecounter preposRecounter;
 
+
     private List<Prepos> preposes = Lists.newArrayList(NEW_SIMPLE_PREPOS);
     private Map<String, Dart> suitableDarts;
     private final Dart dart = newDart();
 
     @Before
     public void init() {
-        suitableDarts = ImmutableMap.of(AUTHORIZATION_NUMBER, dart);
-        Triplet<Prepos, Map<String, Dart>, Dart> recounted = new Triplet(NEW_SIMPLE_PREPOS, suitableDarts, dart);
-        List<Triplet<Prepos, Map<String, Dart>, Dart>> recountedList = Lists.<Triplet<Prepos, Map<String, Dart>, Dart>>newArrayList(recounted);
+        suitableDarts = of(AUTHORIZATION_NUMBER, dart);
+        Quartet<Prepos, Map<String, Dart>, Dart, Boolean> recounted = new Quartet(NEW_SIMPLE_PREPOS, suitableDarts, dart, Boolean.FALSE);
+        List<Quartet<Prepos, Map<String, Dart>, Dart, Boolean>> recountedList = Lists.<Quartet<Prepos, Map<String, Dart>, Dart, Boolean>>newArrayList(recounted);
 
         when(preposRecounter.recount(preposes)).thenReturn(recountedList);
     }
@@ -56,13 +57,16 @@ public class DefaultPreposModelConstructorTest {
     @Test
     public void thatConstructsModelAccordingToRecounter() {
         List<PreposModel> preposModels = preposModelConstructor.construct(preposes);
-        assertThat(preposModels).isEqualTo(Lists.newArrayList(new PreposModel(NEW_SIMPLE_PREPOS, suitableDarts, dart)));
+
+        PreposModel preposModel = new PreposModel(NEW_SIMPLE_PREPOS, suitableDarts, dart);
+        preposModel.setFirstPromoValid(false);
+        assertThat(preposModels).isEqualTo(Lists.newArrayList(preposModel));
     }
 
 
     @Test
     public void thatConstructsEmptyModelsListIfRecounterReturnsEmptyList() {
-        when(preposRecounter.recount(preposes)).thenReturn(Lists.<Triplet<Prepos, Map<String, Dart>, Dart>>newArrayList());
+        when(preposRecounter.recount(preposes)).thenReturn(Lists.<Quartet<Prepos, Map<String, Dart>, Dart, Boolean>>newArrayList());
         List<PreposModel> preposModels = preposModelConstructor.construct(preposes);
         assertThat(preposModels).isNotNull().isEmpty();
     }
@@ -80,7 +84,7 @@ public class DefaultPreposModelConstructorTest {
 
     private List<PreposModel> getNewPreposModels() {
         Prepos prepos = newPrepos();
-        Map<String, Dart> suitableDarts = ImmutableMap.of("", EMPTY_DART);
+        Map<String, Dart> suitableDarts = of("", EMPTY_DART);
         PreposModel preposModel = new PreposModel(prepos, suitableDarts, EMPTY_DART);
 
         return Lists.newArrayList(preposModel);
