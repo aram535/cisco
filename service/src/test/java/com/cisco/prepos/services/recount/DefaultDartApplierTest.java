@@ -60,7 +60,10 @@ public class DefaultDartApplierTest {
     @Before
     public void init() {
         when(discountProvider.getGpl(PART_NUMBER, pricelistMap)).thenReturn(OTHER_GPL);
-        when(discountProvider.getDiscount(selectedDart, promo, newPricelist)).thenReturn(BUY_DISCOUNT_FROM_PROVIDER);
+
+        long shippedDateInMillis = prepos.getShippedDate().getTime();
+        when(discountProvider.getDiscount(selectedDart, promo, newPricelist, shippedDateInMillis)).thenReturn(BUY_DISCOUNT_FROM_PROVIDER);
+
         defaultDartApplier.setThreshold(THRESHOLD);
     }
 

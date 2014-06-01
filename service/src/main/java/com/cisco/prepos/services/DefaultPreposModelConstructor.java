@@ -6,7 +6,7 @@ import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.recount.PreposRecounter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.javatuples.Triplet;
+import org.javatuples.Quartet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,16 +34,18 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
     @Override
     public List<PreposModel> construct(List<Prepos> preposes) {
 
-        List<Triplet<Prepos, Map<String, Dart>, Dart>> preposModelTripletList = preposRecounter.recount(preposes);
+        List<Quartet<Prepos, Map<String, Dart>, Dart, Boolean>> preposModelTripletList = preposRecounter.recount(preposes);
 
         List<PreposModel> preposModels = Lists.newArrayList();
-        for (Triplet<Prepos, Map<String, Dart>, Dart> preposModelTriplet : preposModelTripletList) {
+        for (Quartet<Prepos, Map<String, Dart>, Dart, Boolean> preposModelQuartet : preposModelTripletList) {
 
-            Prepos prepos = preposModelTriplet.getValue0();
-            Map<String, Dart> suitableDarts = preposModelTriplet.getValue1();
-            Dart selectedDart = preposModelTriplet.getValue2();
+            Prepos prepos = preposModelQuartet.getValue0();
+            Map<String, Dart> suitableDarts = preposModelQuartet.getValue1();
+            Dart selectedDart = preposModelQuartet.getValue2();
+            Boolean firstPromoValid = preposModelQuartet.getValue3();
 
             PreposModel preposModel = new PreposModel(prepos, suitableDarts, selectedDart);
+            preposModel.setFirstPromoValid(firstPromoValid);
             preposModels.add(preposModel);
         }
 
