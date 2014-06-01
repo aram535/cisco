@@ -11,7 +11,15 @@
           model="@load(vmPrePos.allPrepos)" vflex="95%" autopaging="true" mold="paging"> <!-- -->
         <auxhead sclass="category-center">
             <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->
+                <combobox hflex="100%" readonly="true"
+                          model="@load(vmPrePos.preposStatuses)" selectedItem="@bind(vmPrePos.selectedStatus)">
+                    <template name="model">
+                        <comboitem label="@load(each)"/>
+                    </template>
+                </combobox>
+            </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->

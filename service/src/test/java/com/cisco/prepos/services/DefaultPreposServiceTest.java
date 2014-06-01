@@ -181,6 +181,26 @@ public class DefaultPreposServiceTest {
 
 		verify(preposValidator).validateDartQuantity(allPreposModels, firstPreposModel);
 	}
+
+	@Test
+	public void thatFilteredPreposesBeingReturnedWhenStatusPassedToGetAllPreposes() {
+
+		List<Prepos> allPreposesWithDifferentSatuses = getAllPreposesWithDifferentSatuses();
+		List<Prepos> allNotProcessedPreposes = getAllPreposes();
+		Table<String, String, Dart> dartsTable = HashBasedTable.create();
+		List<PreposModel> allPreposModels = getAllPreposModels();
+
+		when(preposesDao.getPreposes()).thenReturn(allPreposesWithDifferentSatuses);
+		when(preposUpdater.update(allNotProcessedPreposes)).thenReturn(allNotProcessedPreposes);
+		when(dartsService.getDartsTable()).thenReturn(dartsTable);
+		when(preposModelConstructor.construct(allNotProcessedPreposes)).thenReturn(allPreposModels);
+
+		List<PreposModel> allData = preposService.getAllData(Prepos.Status.NOT_PROCESSED);
+
+		verify(preposesDao).update(allNotProcessedPreposes);
+		assertThat(allData).isEqualTo(allPreposModels);
+	}
+
     private Prepos getExpectedPrepos() {
         Prepos expected = newPrepos();
         expected.setEndUser(OTHER_END_USER);
@@ -204,18 +224,27 @@ public class DefaultPreposServiceTest {
         return Lists.newArrayList(preposModel);
     }
 
-    public List<Prepos> getAllPreposes() {
+	private List<Prepos> getAllPreposes() {
         return Lists.newArrayList(newPrepos());
     }
 
-    public List<Prepos> getAllPreposesWithEmptySerials() {
+	private List<Prepos> getAllPreposesWithDifferentSatuses() {
+		List<Prepos> allPreposes = getAllPreposes();
+		Prepos prepos = newPrepos();
+		prepos.setStatus(Prepos.Status.PROCESSED);
+		allPreposes.add(prepos);
+
+		return allPreposes;
+	}
+
+	private List<Prepos> getAllPreposesWithEmptySerials() {
         Prepos prepos = newPrepos();
         prepos.setSerials("");
 
         return Lists.newArrayList(prepos);
     }
 
-    public List<Sale> getAllSales() {
+	private List<Sale> getAllSales() {
         return newSaleList();
     }
 }

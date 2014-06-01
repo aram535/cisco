@@ -10,6 +10,7 @@ import com.cisco.prepos.services.filter.PreposFilter;
 import com.cisco.prepos.services.totalsum.TotalSumCounter;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -25,6 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static com.cisco.prepos.dto.Prepos.Status.*;
+
 /**
  * Created by Alf on 05.04.14.
  */
@@ -34,6 +37,7 @@ public class PreposViewModel {
 
     private static final String ALL_PREPOS_NOTIFY = "allPrepos";
     private static final String FILTER_CHANGED_COMMAND = "filterChanged";
+    private static final String STATUS_FILTER_CHANGED_COMMAND = "statusFilterChanged";
     private static final String SAVE_COMMAND = "save";
     private static final String REFRESH_COMMAND = "refresh";
     private static final String PROMO_SELECTED_COMMAND = "promoSelected";
@@ -42,7 +46,13 @@ public class PreposViewModel {
     private static final String PREPOS_IN_MODEL_NOTIFY = "prepos";
     private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
 
-    private List<PreposModel> preposes;
+	public static final String ALL_STATUS = "ALL";
+	private final List<String> preposStatuses =
+			Lists.newArrayList(ALL_STATUS, NOT_PROCESSED.toString(), WAITING.toString(), PROCESSED.toString());
+
+	private String selectedStatus = ALL_STATUS;
+
+	private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
 	private Iterable<PreposModel> filteredCheckedPreposes;
@@ -57,15 +67,15 @@ public class PreposViewModel {
 
     @WireVariable
     private TotalSumCounter totalSumCounter;
+	private List<PreposModel> freshPreposes;
 
-    public List<PreposModel> getAllPrepos() {
-        if (preposes == null) {
-            preposes = preposService.getAllData();
-	        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
-        }
+	public String getSelectedStatus() {
+		return selectedStatus;
+	}
 
-        return filteredPreposes;
-    }
+	public List<String> getPreposStatuses() {
+		return preposStatuses;
+	}
 
 	public PreposRestrictions getPreposRestrictions() {
 		return preposRestrictions;
@@ -78,10 +88,25 @@ public class PreposViewModel {
 		return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
 	}
 
+	@NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
+	public List<PreposModel> getAllPrepos() {
+		if (preposes == null) {
+			refreshAndFilterPreposes();
+		}
+
+		return filteredPreposes;
+	}
+
+	@NotifyChange(ALL_PREPOS_NOTIFY)
+	public void setSelectedStatus(String selectedStatus) {
+		this.selectedStatus = selectedStatus;
+		refreshAndFilterPreposes();
+	}
+
     @Command(REFRESH_COMMAND)
     @NotifyChange(ALL_PREPOS_NOTIFY)
     public void refresh() {
-        preposes = null;
+	    refreshAndFilterPreposes();
     }
 
     @Command(SAVE_COMMAND)
@@ -111,7 +136,7 @@ public class PreposViewModel {
     }
 
     @Command(PREPOS_CHECKED_COMMAND)
-    @NotifyChange({RECOUNT_TOTAL_POS_SUM_NOTIFY})
+    @NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
     public void preposChecked(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel) {
         if (preposModel.getChecked()) {
             checkedPreposMap.put(preposModel.getPrepos().getId(), preposModel);
@@ -121,8 +146,22 @@ public class PreposViewModel {
     }
 
 	@Command(FILTER_CHANGED_COMMAND)
-	@NotifyChange({ALL_PREPOS_NOTIFY, RECOUNT_TOTAL_POS_SUM_NOTIFY})
+	@NotifyChange(ALL_PREPOS_NOTIFY)
 	public void filterChanged() {
+		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+
+		final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
+		filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+				return checkedPreposes.contains(preposModel);
+			}
+		});
+	}
+
+	@Command(STATUS_FILTER_CHANGED_COMMAND)
+	@NotifyChange(ALL_PREPOS_NOTIFY)
+	public void statusFilterChanged() {
 		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
 
 		final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
@@ -154,4 +193,14 @@ public class PreposViewModel {
 		}
 	}
 
+	public void refreshAndFilterPreposes() {
+
+		if (!selectedStatus.equals(ALL_STATUS)) {
+			Prepos.Status status = Prepos.Status.valueOf(selectedStatus);
+			preposes = preposService.getAllData(status);
+		} else {
+			preposes = preposService.getAllData();
+		}
+		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+	}
 }

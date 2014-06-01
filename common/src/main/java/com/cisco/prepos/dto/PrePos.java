@@ -363,7 +363,8 @@ public class Prepos {
 	public enum Status {
 		NOT_PROCESSED ("NOT_PROCESSED"),
 		PROCESSED ("PROCESSED"),
-		WAITING ("WAITING");
+		WAITING ("WAITING"),
+		CBN ("CBN");
 
 		private final String name;
 
