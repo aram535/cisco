@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface DiscountProvider {
 
-    double getDiscount(Dart selectedDart, Promo promo, Pricelist pricelist);
+    double getDiscount(Dart selectedDart, Promo promo, Pricelist pricelist, long shippedDateInMillis);
 
     int getGpl(String partNumber, Map<String, Pricelist> pricelistsMap);
 

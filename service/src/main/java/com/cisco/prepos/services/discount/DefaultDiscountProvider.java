@@ -2,10 +2,12 @@ package com.cisco.prepos.services.discount;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
+import com.cisco.prepos.services.promo.PromoValidator;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -23,14 +25,18 @@ public class DefaultDiscountProvider implements DiscountProvider {
     private static final String NO_PRICE_FOUND_MESSAGE = "NO price found";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private PromoValidator promoValidator;
+
     @Override
-    public double getDiscount(Dart selectedDart, Promo promo, Pricelist pricelist) {
+    public double getDiscount(Dart selectedDart, Promo promo, Pricelist pricelist, long shippedDateInMillis) {
 
         if (selectedDart != EMPTY_DART) {
             return selectedDart.getDistiDiscount();
         }
 
-        if (promo != null) {
+        boolean promoIsValid = promoValidator.isValid(promo, shippedDateInMillis);
+        if (promoIsValid) {
             return promo.getDiscount();
         }
 
