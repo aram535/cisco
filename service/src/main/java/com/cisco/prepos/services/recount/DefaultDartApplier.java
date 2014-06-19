@@ -54,6 +54,8 @@ public class DefaultDartApplier implements DartApplier {
 
         if (firstPromo != null) {
             preposBuilder.firstPromo(firstPromo.getCode());
+        } else {
+	        preposBuilder.firstPromo(null);
         }
 
         preposBuilder.secondPromo(newSecondPromo);

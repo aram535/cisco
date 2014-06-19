@@ -15,15 +15,18 @@ public class PreposRestrictions {
     private Timestamp toDate;
     private Timestamp fromDate;
 
+	//TODO move to & from date to properties
     public PreposRestrictions() {
 
-	    toDate = new Timestamp(DateTimeUtils.currentTimeMillis());
+	    Timestamp currentTime = new Timestamp(DateTimeUtils.currentTimeMillis());
 
 	    Calendar cal = Calendar.getInstance();
-	    cal.setTime(toDate);
-	    cal.add(Calendar.DAY_OF_WEEK, -7);
+	    cal.setTime(currentTime);
+	    cal.add(Calendar.YEAR, -2);
 
 	    fromDate = new Timestamp(cal.getTime().getTime());
+	    cal.add(Calendar.YEAR, 4);
+	    toDate  = new Timestamp(cal.getTime().getTime());
     }
 
     public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate) {

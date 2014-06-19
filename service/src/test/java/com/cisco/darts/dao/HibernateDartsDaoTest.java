@@ -47,7 +47,7 @@ public class HibernateDartsDaoTest extends BasicDb {
     @ExpectedDataSet("darts-update-result.xml")
     public void thatUpdateAmendsDataToDartsDb() throws Exception {
         Dart dart = createExpectedDart();
-        dart.setCiscoSku("newCiscoSku");
+        dart.setAuthorizationNumber("NEW AUTH NUMBER");
         dartsDao.update(dart);
     }
 
@@ -68,7 +68,7 @@ public class HibernateDartsDaoTest extends BasicDb {
                 .setDistributorInfo("ERC").setStartDate(someDate).setEndDate(someDate).setDistiDiscount(20.20)
                 .setResellerName("ResName").setResellerCountry("Ukraine").setResellerAcct(123)
                 .setEndUserName("EndUserName").setEndUserCountry("Country").setQuantity(10).setQuantityInitial(10)
-		        .setCiscoSku("CiscoSku").setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1)
+		        .setCiscoSku("CiscoSku1").setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1)
 		        .setExtCreditAmt(100.1).setFastTrackPie(100.1).setIpNgnPartnerPricingEm(100.1).setMdmFulfillment(100.1)
 		        .build();
 
@@ -83,7 +83,7 @@ public class HibernateDartsDaoTest extends BasicDb {
                 .setDistributorInfo("ERC").setStartDate(someDate).setEndDate(someDate).setDistiDiscount(20.20)
                 .setResellerName("ResName").setResellerCountry("Poland").setResellerAcct(123)
                 .setEndUserName("EndUserName").setEndUserCountry("Country").setQuantity(10).setQuantityInitial(10)
-		        .setCiscoSku("CiscoSku").setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1)
+		        .setCiscoSku("CiscoSku3").setDistiSku("DistiSku").setListPrice(100.1).setClaimUnit(100.1)
 		        .setExtCreditAmt(100.1).setFastTrackPie(100.1).setIpNgnPartnerPricingEm(100.1).setMdmFulfillment(100.1)
 		        .build();
 

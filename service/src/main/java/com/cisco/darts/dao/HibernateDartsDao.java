@@ -35,7 +35,7 @@ public class HibernateDartsDao implements DartsDao {
     @Override
     public void save(Dart dart) {
         Session currentSession = sessionFactory.getCurrentSession();
-        currentSession.save(dart);
+        currentSession.saveOrUpdate(dart);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -74,7 +74,7 @@ public class HibernateDartsDao implements DartsDao {
 	public void saveAll(List<Dart> darts) {
 		Session currentSession = sessionFactory.getCurrentSession();
 		for (Dart dart : darts) {
-			currentSession.save(dart);
+			currentSession.saveOrUpdate(dart);
 		}
 	}
 }

@@ -1,6 +1,9 @@
 package com.cisco.prepos.services;
 
+import com.cisco.clients.dto.Client;
+import com.cisco.clients.service.ClientsService;
 import com.cisco.prepos.dto.Prepos;
+import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.base.Function;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: Rost
@@ -29,25 +33,39 @@ public class DefaultPreposUpdater implements PreposUpdater {
     @Autowired
     private SalesService salesService;
 
+	@Autowired
+	private PartnerNameProvider partnerNameProvider;
+
+	@Autowired
+	private ClientsService clientsService;
+
     @Override
     public List<Prepos> update(final List<Prepos> preposes) {
 
         final Table<String, String, Sale> salesTable = salesService.getSalesTable();
+	    final Map<String, Client> clientsMap = clientsService.getClientsMap();
 
         Collection<Prepos> updatedPreposes = Collections2.transform(preposes, new Function<Prepos, Prepos>() {
             @Override
             public Prepos apply(Prepos prepos) {
-                String serials = prepos.getSerials();
-                if (StringUtils.isBlank(serials)) {
-                    String partNumber = prepos.getPartNumber();
-                    String shippedBillNumber = prepos.getShippedBillNumber();
-                    Sale sale = salesTable.get(partNumber, shippedBillNumber);
-                    if (sale != null) {
-                        prepos.setSerials(sale.getSerials());
-                    } else {
-                        logger.debug("No sale was found for prepos {}", prepos);
-                    }
-                }
+
+	            String partNumber = prepos.getPartNumber();
+	            String shippedBillNumber = prepos.getShippedBillNumber();
+	            Sale sale = salesTable.get(partNumber, shippedBillNumber);
+
+	            if (sale != null) {
+		            //update partner name
+			        prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
+
+		            //update serials
+		            String serials = prepos.getSerials();
+		            if (StringUtils.isBlank(serials)) {
+			            prepos.setSerials(sale.getSerials());
+		            }
+	            } else {
+		            logger.debug("No sale was found for prepos {}", prepos);
+	            }
+
                 return prepos;
             }
         });

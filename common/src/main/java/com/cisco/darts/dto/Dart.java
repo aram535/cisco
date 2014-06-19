@@ -1,8 +1,10 @@
 package com.cisco.darts.dto;
 
+import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,9 +13,10 @@ import java.sql.Timestamp;
  * Created by Alf on 15.04.14.
  */
 @Entity(name = "dart")
+@IdClass(Dart.DartId.class)
 public class Dart {
 
-    private long id;
+	private long id;
     private String authorizationNumber;
     private int version;
     private String distributorInfo;
@@ -74,7 +77,16 @@ public class Dart {
 
     }
 
-    @Id
+	@Id
+	@AttributeOverrides({
+			@AttributeOverride(name = "ciscoSku",
+					column = @Column(name="reseller_name")),
+			@AttributeOverride(name = "resellerName",
+					column = @Column(name="cisko_sku"))
+	})
+
+	//@Id
+	@Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
@@ -110,6 +122,7 @@ public class Dart {
         return distiDiscount;
     }
 
+	@NaturalId
     @Column(name = "reseller_name")
     public String getResellerName() {
         return resellerName;
@@ -145,6 +158,7 @@ public class Dart {
 		return quantityInitial;
 	}
 
+	@NaturalId
 	@Column(name = "cisco_sku")
     public String getCiscoSku() {
         return ciscoSku;
@@ -369,4 +383,47 @@ public class Dart {
 				.toString();
 	}
 
+	//@Embeddable
+	public static class DartId implements java.io.Serializable {
+		//@Column(name = "cisco_sku")
+		private String ciscoSku;
+		//@Column(name = "reseller_name")
+		private String resellerName;
+
+		public DartId() {
+
+		}
+
+		public String getCiscoSku() {
+			return ciscoSku;
+		}
+
+		public String getResellerName() {
+			return resellerName;
+		}
+
+		public void setCiscoSku(String ciscoSku) {
+			this.ciscoSku = ciscoSku;
+		}
+
+		public void setResellerName(String resellerName) {
+			this.resellerName = resellerName;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			DartId that = (DartId) o;
+
+			return Objects.equal(this.ciscoSku, that.ciscoSku) &&
+					Objects.equal(this.resellerName, that.resellerName);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(ciscoSku, resellerName);
+		}
+	}
 }

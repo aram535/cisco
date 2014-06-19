@@ -29,7 +29,7 @@ import static com.cisco.sales.dto.Sale.Status.NEW;
  * Created by Alf on 05.04.14.
  */
 @Service("preposService")
-public class DefaultPreposService implements PreposService {
+public final class DefaultPreposService implements PreposService {
 
     @Autowired
     private PreposesDao preposesDao;

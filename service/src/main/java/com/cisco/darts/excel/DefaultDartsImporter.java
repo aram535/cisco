@@ -39,7 +39,8 @@ public class DefaultDartsImporter implements DartsImporter {
 
 		Set<Dart> uniqueDarts = Sets.newLinkedHashSet(darts);
 
-		dartsDao.deleteAll();
+		//Seems like no need anymore
+		//dartsDao.deleteAll();
 		dartsDao.saveAll(Lists.newArrayList(uniqueDarts));
 	}
 }

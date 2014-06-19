@@ -132,7 +132,7 @@ public class PreposViewModel {
         if (preposModel.getChecked()) {
 	        notifyChange(this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
         }
-	    notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY);
+	    notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY, "buyDiscount", "saleDiscount");
     }
 
     @Command(PREPOS_CHECKED_COMMAND)
@@ -173,8 +173,12 @@ public class PreposViewModel {
 		});
 	}
 
-	private void notifyChange(Object bean, String property) {
-		BindUtils.postNotifyChange(null, null, bean, property);
+	private void notifyChange(Object bean, String... properties) {
+
+		for (String property : properties) {
+			BindUtils.postNotifyChange(null, null, bean, property);
+		}
+
 	}
 
 	private void rollbackSelectedItem(PreposModel preposModel, Combobox comboItem) {
@@ -193,7 +197,7 @@ public class PreposViewModel {
 		}
 	}
 
-	public void refreshAndFilterPreposes() {
+	private void refreshAndFilterPreposes() {
 
 		if (!selectedStatus.equals(ALL_STATUS)) {
 			Prepos.Status status = Prepos.Status.valueOf(selectedStatus);
