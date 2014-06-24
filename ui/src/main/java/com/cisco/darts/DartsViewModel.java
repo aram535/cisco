@@ -4,6 +4,7 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.darts.excel.DartsImporter;
 import com.cisco.darts.service.DartsService;
 import com.cisco.exception.CiscoException;
+import com.google.common.collect.Lists;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -13,6 +14,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
+import org.zkoss.zul.Messagebox;
 
 import java.io.InputStream;
 import java.util.List;
@@ -59,8 +61,14 @@ public class DartsViewModel {
     }
 
     public List<Dart> getAllDarts() {
-        allDarts = dartsService.getDarts();
-        return allDarts;
+
+	    try {
+		    allDarts = dartsService.getDarts();
+		    return allDarts;
+	    } catch (Exception e) {
+		    Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+		    return Lists.newArrayList();
+	    }
     }
 
     @Command("add")

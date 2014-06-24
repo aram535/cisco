@@ -21,6 +21,7 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Messagebox;
 
 import java.util.Collection;
 import java.util.List;
@@ -90,11 +91,16 @@ public class PreposViewModel {
 
 	@NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
 	public List<PreposModel> getAllPrepos() {
-		if (preposes == null) {
-			refreshAndFilterPreposes();
-		}
+		try {
+			if (preposes == null) {
+				refreshAndFilterPreposes();
+			}
 
-		return filteredPreposes;
+			return filteredPreposes;
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+			return Lists.newArrayList();
+		}
 	}
 
 	@NotifyChange(ALL_PREPOS_NOTIFY)

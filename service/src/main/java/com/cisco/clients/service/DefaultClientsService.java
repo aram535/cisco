@@ -42,8 +42,8 @@ public class DefaultClientsService implements ClientsService {
 	@Transactional
     @Override
     public void save(Client client) {
-        clientsDao.save(client);
-    }
+			clientsDao.save(client);
+	}
 
 	@Transactional
     @Override

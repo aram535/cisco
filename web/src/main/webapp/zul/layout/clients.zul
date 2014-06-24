@@ -3,8 +3,19 @@
         viewModel="@id('vm') @init('com.cisco.clients.ClientsViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
     <listbox id="box" multiple="true" model="@bind(vm.allClients)" selectedItem="@bind(vm.selectedClientModel)" vflex="85%" autopaging="true" mold="paging">
+        <auxhead sclass="category-center">
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vm.clientRestrictions.clientNumber)" onChange="@command('filterChanged')"/>
+            </auxheader>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vm.clientRestrictions.partnerName)" onChange="@command('filterChanged')"/>
+            </auxheader>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+        </auxhead>
         <listhead sizable="true">
-            <listheader hflex="min" label="Id" sort="auto(id)" />
             <listheader hflex="1" label="Client number" sort="auto(clientNumber)" />
             <listheader hflex="1" label="Name"  sort="auto(name)" />
             <listheader hflex="1" label="City" sort="auto(city)" />
@@ -12,7 +23,6 @@
         </listhead>
         <template name="model" var="clients">
             <listitem value="@load(clients)">
-                <listcell label="@bind(clients.id)" />
                 <listcell label="@bind(clients.clientNumber)" />
                 <listcell label="@bind(clients.name)" />
                 <listcell label="@bind(clients.city)" />
