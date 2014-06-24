@@ -21,26 +21,24 @@ import java.util.Set;
 @Component("dartsImporter")
 public class DefaultDartsImporter implements DartsImporter {
 
-	@Autowired
-	private DartsExtractor dartsExtractor;
+    @Autowired
+    private DartsExtractor dartsExtractor;
 
-	@Autowired
-	private DartsDao dartsDao;
+    @Autowired
+    private DartsDao dartsDao;
 
-	@Transactional(propagation = Propagation.REQUIRED)
-	@Override
-	public void importDarts(InputStream inputStream) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void importDarts(InputStream inputStream) {
 
-		List<Dart> darts = dartsExtractor.extract(inputStream);
+        List<Dart> darts = dartsExtractor.extract(inputStream);
 
-		if (CollectionUtils.isEmpty(darts)) {
-			throw new CiscoException("Exported from excel dart are null or empty. Please, check file.");
-		}
+        if (CollectionUtils.isEmpty(darts)) {
+            throw new CiscoException("Exported from excel dart are null or empty. Please, check file.");
+        }
 
-		Set<Dart> uniqueDarts = Sets.newLinkedHashSet(darts);
+        Set<Dart> uniqueDarts = Sets.newLinkedHashSet(darts);
 
-		//Seems like no need anymore
-		//dartsDao.deleteAll();
-		dartsDao.saveAll(Lists.newArrayList(uniqueDarts));
-	}
+        dartsDao.saveAll(Lists.newArrayList(uniqueDarts));
+    }
 }
