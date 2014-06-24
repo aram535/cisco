@@ -1,12 +1,18 @@
 package com.cisco.clients;
 
 import com.cisco.clients.dto.Client;
+import com.cisco.clients.service.ClientFilter;
+import com.cisco.clients.service.ClientRestrictions;
 import com.cisco.clients.service.ClientsService;
+import com.cisco.exception.CiscoException;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
+import org.zkoss.zul.Messagebox;
 
 import java.util.List;
 
@@ -17,13 +23,30 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class ClientsViewModel {
 
+	private static final String FILTER_CHANGED_COMMAND = "filterChanged";
+	public static final String ALL_CLIENTS_NOTIFY = "allClients";
+	public static final String SELECTED_EVENT = "selectedEvent";
+	public static final String UPDATE_COMMAND = "update";
+	public static final String DELETE_COMMAND = "delete";
+	public static final String ADD_COMMAND = "add";
+
 	private Client selectedClientModel;
 	private Client newClientModel = new Client();
+
+	private ClientRestrictions clientRestrictions = new ClientRestrictions();
+
+	@WireVariable
+	private ClientFilter clientFilter;
 
 	@WireVariable
 	private ClientsService clientsService;
 
 	private List<Client> allClients;
+	private List<Client> filteredClients;
+
+	public ClientRestrictions getClientRestrictions() {
+		return clientRestrictions;
+	}
 
 	public Client getSelectedClientModel() {
 		return selectedClientModel;
@@ -46,26 +69,36 @@ public class ClientsViewModel {
 	}
 
 	public List<Client> getAllClients() {
-		allClients = clientsService.getClients();
-		return allClients;
+		try {
+			allClients = clientsService.getClients();
+			filteredClients = clientFilter.filter(allClients, clientRestrictions);
+			return filteredClients;
+		} catch (Exception e) {
+			Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+			return Lists.newArrayList();
+		}
 	}
 
-	@Command("add")
-	@NotifyChange("allClients")
+	@Command(ADD_COMMAND)
+	@NotifyChange(ALL_CLIENTS_NOTIFY)
 	public void add() {
 
-		clientsService.save(newClientModel);
-		this.newClientModel = new Client();
+		try {
+			clientsService.save(newClientModel);
+			this.newClientModel = new Client();
+		} catch (Exception e) {
+			throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
+		}
 	}
 
-	@Command("update")
-	@NotifyChange("allClients")
+	@Command(UPDATE_COMMAND)
+	@NotifyChange(ALL_CLIENTS_NOTIFY)
 	public void update() {
 		clientsService.update(selectedClientModel);
 	}
 
-	@Command("delete")
-	@NotifyChange({"allClients", "selectedEvent"})
+	@Command(DELETE_COMMAND)
+	@NotifyChange({ALL_CLIENTS_NOTIFY, SELECTED_EVENT})
 	public void delete() {
 		//shouldn't be able to delete with selectedEvent being null anyway
 		//unless trying to hack the system, so just ignore the request
@@ -73,5 +106,11 @@ public class ClientsViewModel {
 			clientsService.delete(this.selectedClientModel);
 			this.selectedClientModel = null;
 		}
+	}
+
+	@Command(FILTER_CHANGED_COMMAND)
+	@NotifyChange(ALL_CLIENTS_NOTIFY)
+	public void filterChanged() {
+		filteredClients = clientFilter.filter(allClients, clientRestrictions);
 	}
 }

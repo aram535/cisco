@@ -4,6 +4,7 @@ import com.cisco.exception.CiscoException;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.excel.PricelistImporter;
 import com.cisco.pricelists.service.PricelistsService;
+import com.google.common.collect.Lists;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -13,6 +14,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
+import org.zkoss.zul.Messagebox;
 
 import java.io.InputStream;
 import java.util.List;
@@ -58,8 +60,13 @@ public class PricelistsViewModel {
     }
 
     public List<Pricelist> getAllPricelists() {
-        allPricelists = pricelistsService.getPricelists();
-        return allPricelists;
+	    try {
+		    allPricelists = pricelistsService.getPricelists();
+		    return allPricelists;
+	    } catch (Exception e) {
+		    Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+		    return Lists.newArrayList();
+	    }
     }
 
     @Command("add")

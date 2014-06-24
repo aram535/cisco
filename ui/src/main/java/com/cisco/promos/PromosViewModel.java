@@ -4,6 +4,7 @@ import com.cisco.exception.CiscoException;
 import com.cisco.promos.dto.Promo;
 import com.cisco.promos.excel.PromosImporter;
 import com.cisco.promos.service.PromosService;
+import com.google.common.collect.Lists;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -13,6 +14,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
+import org.zkoss.zul.Messagebox;
 
 import java.io.InputStream;
 import java.util.List;
@@ -59,7 +61,12 @@ public class PromosViewModel {
     }
 
     public List<Promo> getAllPromos() {
-        return promosService.getPromos();
+	    try {
+		    return promosService.getPromos();
+	    } catch (Exception e) {
+		    Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+		    return Lists.newArrayList();
+	    }
     }
 
     @Command("add")
