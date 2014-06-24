@@ -48,7 +48,6 @@ public class DefaultDartsImporterTest {
 		when(dartsExtractor.extract(inputStream)).thenReturn(createExpectedDarts());
 		defaultDartsImporter.importDarts(inputStream);
 
-		verify(dartsDao).deleteAll();
 		verify(dartsDao).saveAll(createExpectedDarts());
 		verifyNoMoreInteractions(dartsDao);
 	}
