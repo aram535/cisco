@@ -92,7 +92,7 @@
                         <comboitem label="@load(each.authorizationNumber)" description="@load(each.endUserName)"/>
                     </template>
                 </combobox>
-                <label width="auto" value="@bind(each.prepos.endUser)"/>
+                <textbox width="auto" value="@bind(each.prepos.endUser)"/>
                 <label width="auto" value="@bind(each.prepos.posSum)"/>
                 <label width="auto" value="@bind(each.prepos.quantity)"/>
                 <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
@@ -114,5 +114,12 @@
                  onChange="@command('filterChanged')"/>
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
+        <combobox width="auto" readonly="true"
+                  model="@load(vmPrePos.preposStatuses)" selectedItem="@bind(vmPrePos.statusToChange)">
+            <template name="model">
+                <comboitem label="@load(each)"/>
+            </template>
+        </combobox>
+        <button id="setStatus" label="Set status" onClick="@command('setStatus')"/>
     </groupbox>
 </window>

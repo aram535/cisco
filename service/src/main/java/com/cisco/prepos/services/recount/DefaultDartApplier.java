@@ -59,7 +59,7 @@ public class DefaultDartApplier implements DartApplier {
         }
 
         preposBuilder.secondPromo(newSecondPromo);
-        preposBuilder.endUser(selectedDart.getEndUserName());
+		preposBuilder.endUser(selectedDart.getEndUserName());
         preposBuilder.saleDiscount(saleDiscount);
         preposBuilder.buyDiscount(buyDiscount);
         preposBuilder.buyPrice(buyPrice);

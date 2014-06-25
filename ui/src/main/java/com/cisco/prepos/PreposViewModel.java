@@ -36,7 +36,7 @@ import static com.cisco.prepos.dto.Prepos.Status.*;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
-    private static final String ALL_PREPOS_NOTIFY = "allPrepos";
+	private static final String ALL_PREPOS_NOTIFY = "allPrepos";
     private static final String FILTER_CHANGED_COMMAND = "filterChanged";
     private static final String STATUS_FILTER_CHANGED_COMMAND = "statusFilterChanged";
     private static final String SAVE_COMMAND = "save";
@@ -48,10 +48,14 @@ public class PreposViewModel {
     private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
 
 	public static final String ALL_STATUS = "ALL";
+	public static final String SET_STATUS_COMMAND = "setStatus";
+
 	private final List<String> preposStatuses =
-			Lists.newArrayList(ALL_STATUS, NOT_PROCESSED.toString(), WAITING.toString(), PROCESSED.toString());
+			Lists.newArrayList(ALL_STATUS, NOT_PROCESSED.toString(), WAITING.toString(), PROCESSED.toString(),
+					CBN.toString(), NOT_FOR_REPORT.toString());
 
 	private String selectedStatus = ALL_STATUS;
+	private String statusToChange = PROCESSED.toString();
 
 	private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
@@ -69,6 +73,10 @@ public class PreposViewModel {
     @WireVariable
     private TotalSumCounter totalSumCounter;
 	private List<PreposModel> freshPreposes;
+
+	public String getStatusToChange() {
+		return statusToChange;
+	}
 
 	public String getSelectedStatus() {
 		return selectedStatus;
@@ -89,6 +97,10 @@ public class PreposViewModel {
 		return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
 	}
 
+	public void setStatusToChange(String statusToChange) {
+		this.statusToChange = statusToChange;
+	}
+
 	@NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
 	public List<PreposModel> getAllPrepos() {
 		try {
@@ -107,6 +119,15 @@ public class PreposViewModel {
 	public void setSelectedStatus(String selectedStatus) {
 		this.selectedStatus = selectedStatus;
 		refreshAndFilterPreposes();
+	}
+
+	@Command(SET_STATUS_COMMAND)
+	@NotifyChange(ALL_PREPOS_NOTIFY)
+	public void setStatus() {
+
+		for (PreposModel checkedPrepos : checkedPreposMap.values()) {
+			checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
+		}
 	}
 
     @Command(REFRESH_COMMAND)
