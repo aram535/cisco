@@ -1,10 +1,14 @@
 package com.cisco.accountmanager.service;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static junitparams.JUnitParamsRunner.$;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -12,6 +16,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * Date: 26.06.2014
  * Time: 20:37
  */
+@RunWith(JUnitParamsRunner.class)
 public class DefaultJsonConverterTest {
 
     private final String firstItem = "first item";
@@ -27,11 +32,16 @@ public class DefaultJsonConverterTest {
     }
 
     @Test
-    public void thatParseListOfStringsFromJson() {
-        List<String> parsedItems = jsonConverter.fromJson(expectedJsonRepresentation);
+    @Parameters(method = "fromJsonParameters")
+    public void thatParseListOfStringsFromJson(String json, List<String> expectedResult) {
+        List<String> parsedItems = jsonConverter.fromJson(json);
         assertThat(parsedItems)
                 .isNotNull()
-                .isEqualTo(createItemsList());
+                .isEqualTo(expectedResult);
+    }
+
+    private Object[] fromJsonParameters() {
+        return $($(expectedJsonRepresentation, createItemsList()), $(null, newArrayList()), $("", newArrayList()), $("broken json", newArrayList()));
     }
 
     private List<String> createItemsList() {

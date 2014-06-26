@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.dto.Prepos.Status.*;
+import static com.google.common.collect.Lists.*;
 
 /**
  * Created by Alf on 05.04.14.
@@ -51,8 +52,8 @@ public class PreposViewModel {
     public static final String SET_STATUS_COMMAND = "setStatus";
 
     private final List<String> preposStatuses =
-            Lists.newArrayList(ALL_STATUS, NOT_PROCESSED.toString(), WAITING.toString(), PROCESSED.toString(),
-                    CBN.toString());
+            newArrayList(ALL_STATUS, NOT_PROCESSED.getName(), WAITING.getName(), PROCESSED.getName(),
+                    CBN.getName(), NOT_FOR_REPORT.getName());
 
     private String selectedStatus = ALL_STATUS;
     private String statusToChange = PROCESSED.toString();
@@ -111,7 +112,7 @@ public class PreposViewModel {
             return filteredPreposes;
         } catch (Exception e) {
             Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
-            return Lists.newArrayList();
+            return newArrayList();
         }
     }
 
