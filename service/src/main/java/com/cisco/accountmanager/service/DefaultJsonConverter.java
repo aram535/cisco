@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * User: Rost
  * Date: 25.06.2014
@@ -16,10 +18,14 @@ public class DefaultJsonConverter implements JsonConverter {
 
     @Override
     public List<String> fromJson(String json) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.create();
-        List<String> items = gson.fromJson(json, List.class);
-        return items;
+        try {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            List<String> items = gson.fromJson(json, List.class);
+            return items;
+        } catch (RuntimeException ex) {
+            return newArrayList();
+        }
     }
 
     @Override
