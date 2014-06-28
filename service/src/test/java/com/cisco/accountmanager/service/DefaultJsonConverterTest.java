@@ -19,6 +19,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(JUnitParamsRunner.class)
 public class DefaultJsonConverterTest {
 
+    private static final String EMPTY_STRING = "";
     private final String firstItem = "first item";
     private final String secondItem = "second item";
     private final String expectedJsonRepresentation = "[\"" + firstItem + "\",\"" + secondItem + "\"]";
@@ -26,9 +27,10 @@ public class DefaultJsonConverterTest {
     private JsonConverter jsonConverter = new DefaultJsonConverter();
 
     @Test
-    public void thatMakesCorrectJsonRepresentationFromListOfStrings() {
-        String jsonItemsRepresentation = jsonConverter.toJson(createItemsList());
-        assertThat(jsonItemsRepresentation).isEqualTo(expectedJsonRepresentation);
+    @Parameters(method = "toJsonParameters")
+    public void thatMakesCorrectJsonRepresentationFromListOfStrings(List<String> items, String jsonRepresentation) {
+        String jsonItemsRepresentation = jsonConverter.toJson(items);
+        assertThat(jsonItemsRepresentation).isEqualTo(jsonItemsRepresentation);
     }
 
     @Test
@@ -41,7 +43,11 @@ public class DefaultJsonConverterTest {
     }
 
     private Object[] fromJsonParameters() {
-        return $($(expectedJsonRepresentation, createItemsList()), $(null, newArrayList()), $("", newArrayList()), $("broken json", newArrayList()));
+        return $($(expectedJsonRepresentation, createItemsList()), $(null, newArrayList()), $(EMPTY_STRING, newArrayList()), $("broken json", newArrayList()));
+    }
+
+    private Object[] toJsonParameters() {
+        return $($(createItemsList(), expectedJsonRepresentation), $(newArrayList(), EMPTY_STRING), $(null, EMPTY_STRING));
     }
 
     private List<String> createItemsList() {

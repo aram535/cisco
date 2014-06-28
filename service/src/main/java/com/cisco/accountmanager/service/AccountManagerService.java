@@ -10,5 +10,10 @@ import java.util.List;
  * Time: 22:38
  */
 public interface AccountManagerService {
+
     List<AccountManagerModel> getAccountManagers();
+
+    AccountManagerModel getAccountManagerByPartner(String partnerName);
+
+    AccountManagerModel getAccountManagerByEndUser(String endUserName);
 }
