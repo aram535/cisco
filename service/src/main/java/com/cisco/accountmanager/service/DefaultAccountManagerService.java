@@ -23,7 +23,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @Service("accountManagerService")
 public class DefaultAccountManagerService implements AccountManagerService {
 
-    public final static AccountManagerModel DEFAULT_MANAGER = new AccountManagerModel(-1L, "Default manager", Lists.<String>newArrayList(), Lists.<String>newArrayList());
+    final static AccountManagerModel DEFAULT_MANAGER = new AccountManagerModel(-1L, "Default manager", Lists.<String>newArrayList(), Lists.<String>newArrayList());
 
     @Autowired
     private AccountManagerDao accountManagerDao;
