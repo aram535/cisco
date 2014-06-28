@@ -1,5 +1,7 @@
 package com.cisco.prepos.services;
 
+import com.cisco.accountmanager.model.AccountManagerModel;
+import com.cisco.accountmanager.service.AccountManagerProvider;
 import com.cisco.clients.dto.Client;
 import com.cisco.clients.service.ClientsService;
 import com.cisco.prepos.dto.Prepos;
@@ -33,38 +35,47 @@ public class DefaultPreposUpdater implements PreposUpdater {
     @Autowired
     private SalesService salesService;
 
-	@Autowired
-	private PartnerNameProvider partnerNameProvider;
+    @Autowired
+    private PartnerNameProvider partnerNameProvider;
 
-	@Autowired
-	private ClientsService clientsService;
+    @Autowired
+    private ClientsService clientsService;
+
+    @Autowired
+    private AccountManagerProvider accountManagerProvider;
 
     @Override
     public List<Prepos> update(final List<Prepos> preposes) {
 
         final Table<String, String, Sale> salesTable = salesService.getSalesTable();
-	    final Map<String, Client> clientsMap = clientsService.getClientsMap();
+        final Map<String, Client> clientsMap = clientsService.getClientsMap();
 
         Collection<Prepos> updatedPreposes = Collections2.transform(preposes, new Function<Prepos, Prepos>() {
             @Override
             public Prepos apply(Prepos prepos) {
 
-	            String partNumber = prepos.getPartNumber();
-	            String shippedBillNumber = prepos.getShippedBillNumber();
-	            Sale sale = salesTable.get(partNumber, shippedBillNumber);
+                String partNumber = prepos.getPartNumber();
+                String shippedBillNumber = prepos.getShippedBillNumber();
+                String partnerName = prepos.getPartnerName();
+                String endUser = prepos.getEndUser();
+                Sale sale = salesTable.get(partNumber, shippedBillNumber);
 
-	            if (sale != null) {
-		            //update partner name
-			        prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
+                if (sale != null) {
 
-		            //update serials
-		            String serials = prepos.getSerials();
-		            if (StringUtils.isBlank(serials)) {
-			            prepos.setSerials(sale.getSerials());
-		            }
-	            } else {
-		            logger.debug("No sale was found for prepos {}", prepos);
-	            }
+                    prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
+
+                    String serials = prepos.getSerials();
+                    if (StringUtils.isBlank(serials)) {
+                        prepos.setSerials(sale.getSerials());
+                    }
+
+                    AccountManagerModel accountManager = accountManagerProvider.getAccountManager(partnerName, endUser);
+                    String accountManagerName = accountManager.getName();
+                    prepos.setAccountManagerName(accountManagerName);
+
+                } else {
+                    logger.debug("No sale was found for prepos {}", prepos);
+                }
 
                 return prepos;
             }

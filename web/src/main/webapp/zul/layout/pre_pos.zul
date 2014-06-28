@@ -40,7 +40,7 @@
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
-            <auxheader colspan="1" >
+            <auxheader colspan="1">
                 <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
             </auxheader>
             <auxheader colspan="1"/>
@@ -69,6 +69,7 @@
             <column label="Comment"/>
             <column label="Serials"/>
             <column label="Zip"/>
+            <column label="Manager"/>
         </columns>
         <template name="model">
             <row>
@@ -78,7 +79,7 @@
                 <label width="auto" value="@bind(each.prepos.type)"/>
                 <label width="auto" value="@bind(each.prepos.partnerName)"/>
                 <label width="auto" value="@bind(each.prepos.partNumber)"/>
-                <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)"  buttonVisible="true" />
+                <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
                 <label width="auto" value="@bind(each.prepos.shippedBillNumber)"/>
                 <label width="auto" value="@bind(each.saleDiscount)"/>
                 <label width="auto" value="@bind(each.buyDiscount)"/>
@@ -101,7 +102,7 @@
                 <label width="auto" value="@bind(each.prepos.comment)"/>
                 <label width="auto" value="@bind(each.prepos.serials)"/>
                 <label width="auto" value="@bind(each.prepos.zip)"/>
-
+                <label width="auto" value="@bind(each.prepos.accountManagerName)"/>
             </row>
         </template>
     </grid>

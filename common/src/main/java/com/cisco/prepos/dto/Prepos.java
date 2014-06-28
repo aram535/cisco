@@ -35,13 +35,14 @@ public class Prepos {
     private String comment;
     private String serials;
     private int zip;
+    private String accountManagerName;
     private Status status;
 
 
     public Prepos() {
     }
 
-    public Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip, Status status) {
+    public Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip, String accountManagerName, Status status) {
         this.id = id;
         this.type = type;
         this.partnerName = partnerName;
@@ -63,6 +64,7 @@ public class Prepos {
         this.comment = comment;
         this.serials = serials;
         this.zip = zip;
+        this.accountManagerName = accountManagerName;
         this.status = status;
     }
 
@@ -172,6 +174,11 @@ public class Prepos {
         return zip;
     }
 
+    @Column(name = "account_manager_name")
+    public String getAccountManagerName() {
+        return accountManagerName;
+    }
+
     @Column(name = "status")
     public Status getStatus() {
         return status;
@@ -261,6 +268,10 @@ public class Prepos {
         this.zip = zip;
     }
 
+    public void setAccountManagerName(String accountManagerName) {
+        this.accountManagerName = accountManagerName;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -299,6 +310,7 @@ public class Prepos {
                 .append(this.comment, rhs.comment)
                 .append(this.serials, rhs.serials)
                 .append(this.zip, rhs.zip)
+                .append(this.accountManagerName, rhs.accountManagerName)
                 .append(this.status, rhs.status)
                 .isEquals();
     }
@@ -328,6 +340,7 @@ public class Prepos {
                 .append(serials)
                 .append(zip)
                 .append(status)
+                .append(accountManagerName)
                 .toHashCode();
     }
 
@@ -355,6 +368,7 @@ public class Prepos {
                 .append("comment", comment)
                 .append("serials", serials)
                 .append("zip", zip)
+                .append("accountManagerName", accountManagerName)
                 .append("status", status)
                 .toString();
     }
