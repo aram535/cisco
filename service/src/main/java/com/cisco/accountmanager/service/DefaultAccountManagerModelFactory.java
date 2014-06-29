@@ -5,6 +5,7 @@ import com.cisco.accountmanager.model.AccountManagerModel;
 import com.google.common.base.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class DefaultAccountManagerModelFactory implements AccountManagerModelFac
     @Override
     public List<AccountManagerModel> createModels(List<AccountManager> accountManagers) {
 
+        if (CollectionUtils.isEmpty(accountManagers)) {
+            return newArrayList();
+        }
+
         List<AccountManagerModel> accountManagerModels = newArrayList(transform(accountManagers, new Function<AccountManager, AccountManagerModel>() {
             @Override
             public AccountManagerModel apply(AccountManager accountManager) {
@@ -39,4 +44,30 @@ public class DefaultAccountManagerModelFactory implements AccountManagerModelFac
 
         return accountManagerModels;
     }
+
+    @Override
+    public List<AccountManager> createManagers(List<AccountManagerModel> accountManagerModels) {
+
+        if (CollectionUtils.isEmpty(accountManagerModels)) {
+            return newArrayList();
+        }
+
+        List<AccountManager> accountManagers = newArrayList(transform(accountManagerModels, new Function<AccountManagerModel, AccountManager>() {
+
+            @Override
+            public AccountManager apply(AccountManagerModel accountManagerModel) {
+                List<String> partners = accountManagerModel.getPartners();
+                String partnersInJson = jsonConverter.toJson(partners);
+
+                List<String> endUsers = accountManagerModel.getEndUsers();
+                String endUsersInJson = jsonConverter.toJson(endUsers);
+
+                return new AccountManager(accountManagerModel.getId(), accountManagerModel.getName(), partnersInJson, endUsersInJson);
+            }
+
+        }));
+        return accountManagers;
+    }
+
+
 }

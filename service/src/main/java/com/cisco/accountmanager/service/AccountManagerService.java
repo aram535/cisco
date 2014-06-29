@@ -16,4 +16,6 @@ public interface AccountManagerService {
     AccountManagerModel getAccountManagerByPartner(String partnerName);
 
     AccountManagerModel getAccountManagerByEndUser(String endUserName);
+
+    void saveOrUpdate(List<AccountManagerModel> accountManagerModels);
 }

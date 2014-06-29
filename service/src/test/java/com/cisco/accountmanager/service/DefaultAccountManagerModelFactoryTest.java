@@ -42,6 +42,14 @@ public class DefaultAccountManagerModelFactoryTest {
     public void init() {
         when(jsonConverter.fromJson(PARTNERS_JSON)).thenReturn(getPartners());
         when(jsonConverter.fromJson(END_USERS_JSON)).thenReturn(getEndUsers());
+        when(jsonConverter.toJson(getPartners())).thenReturn(PARTNERS_JSON);
+        when(jsonConverter.toJson(getEndUsers())).thenReturn(END_USERS_JSON);
+    }
+
+    @Test
+    public void thatCreatesEmptyModelsListIfInputIsNull() {
+        List<AccountManagerModel> models = accountManagerModelFactory.createModels(null);
+        assertThat(models).isNotNull().isEmpty();
     }
 
     @Test
@@ -50,7 +58,22 @@ public class DefaultAccountManagerModelFactoryTest {
         assertThat(accountManagerModels)
                 .isNotNull()
                 .hasSize(1)
-                .contains(new AccountManagerModel(MANAGER_ID, MANAGER_NAME, getPartners(), getEndUsers()));
+                .isEqualTo(createModelsList());
+    }
+
+    @Test
+    public void thatCreatesEmptyManagersListIfInputIsNull() {
+        List<AccountManager> managers = accountManagerModelFactory.createManagers(null);
+        assertThat(managers).isNotNull().isEmpty();
+    }
+
+    @Test
+    public void thatCreatesManagersFromInputModelsList() {
+        List<AccountManager> accountManagers = accountManagerModelFactory.createManagers(createModelsList());
+        assertThat(accountManagers)
+                .isNotNull()
+                .hasSize(1)
+                .isEqualTo(createManagersList());
     }
 
     private List<String> getPartners() {
@@ -63,5 +86,9 @@ public class DefaultAccountManagerModelFactoryTest {
 
     private List<AccountManager> createManagersList() {
         return newArrayList(new AccountManager(MANAGER_ID, MANAGER_NAME, PARTNERS_JSON, END_USERS_JSON));
+    }
+
+    private List<AccountManagerModel> createModelsList() {
+        return newArrayList(new AccountManagerModel(MANAGER_ID, MANAGER_NAME, getPartners(), getEndUsers()));
     }
 }

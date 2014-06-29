@@ -50,6 +50,12 @@ public class DefaultAccountManagerService implements AccountManagerService {
         return getAccountManagerModelFromMap(endUserNameToManagersMap, endUserName);
     }
 
+    @Override
+    public void saveOrUpdate(List<AccountManagerModel> accountManagerModels) {
+        List<AccountManager> managers = accountManagerModelFactory.createManagers(accountManagerModels);
+        accountManagerDao.saveOrUpdate(managers);
+    }
+
     @PostConstruct
     public void init() {
         fetchModels();

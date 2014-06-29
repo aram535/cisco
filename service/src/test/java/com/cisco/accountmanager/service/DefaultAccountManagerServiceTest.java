@@ -14,8 +14,7 @@ import java.util.List;
 import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * User: Rost
@@ -97,6 +96,18 @@ public class DefaultAccountManagerServiceTest {
 
         AccountManagerModel manager = accountManagerService.getAccountManagerByEndUser(FIRST_END_USER);
         assertThat(manager).isEqualTo(createAccountManagerModel());
+    }
+
+    @Test
+    public void thatDelegatesSaveOrUpdateToDaoAfterFactoryCreation() {
+        List<AccountManagerModel> accountManagersModels = getAccountManagersModels();
+        List<AccountManager> accountManagers = getAccountManagers();
+        when(accountManagerModelFactory.createManagers(accountManagersModels)).thenReturn(accountManagers);
+
+        accountManagerService.saveOrUpdate(accountManagersModels);
+
+        verify(accountManagerDao).saveOrUpdate(accountManagers);
+        verifyNoMoreInteractions(accountManagerDao);
     }
 
     private void initNotNullManagers() {
