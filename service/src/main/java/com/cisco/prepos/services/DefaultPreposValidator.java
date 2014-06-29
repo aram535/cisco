@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 
 /**
  * User: Rost

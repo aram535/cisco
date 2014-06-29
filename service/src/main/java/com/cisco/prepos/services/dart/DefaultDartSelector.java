@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 
 /**
  * User: Rost

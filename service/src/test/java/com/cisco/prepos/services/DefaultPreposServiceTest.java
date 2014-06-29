@@ -1,7 +1,7 @@
 package com.cisco.prepos.services;
 
 import com.cisco.darts.dto.Dart;
-import com.cisco.darts.dto.DartConstants;
+import com.cisco.darts.dto.DartAssistant;
 import com.cisco.darts.service.DartsService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.List;
 import java.util.Map;
 
-import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
+import static com.cisco.darts.dto.DartAssistant.BLANK_AUTHORIZATION_NUMBER;
 import static com.cisco.sales.dto.Sale.Status.NEW;
 import static com.cisco.testtools.TestObjects.DartsFactory.getDartsTable;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
@@ -218,8 +218,8 @@ public class DefaultPreposServiceTest {
     private List<PreposModel> getAllPreposModels() {
 
         Prepos prepos = newPrepos();
-        Map<String, Dart> suitableDarts = of(BLANK_AUTHORIZATION_NUMBER, DartConstants.EMPTY_DART);
-        PreposModel preposModel = new PreposModel(prepos, suitableDarts, DartConstants.EMPTY_DART);
+        Map<String, Dart> suitableDarts = of(BLANK_AUTHORIZATION_NUMBER, DartAssistant.EMPTY_DART);
+        PreposModel preposModel = new PreposModel(prepos, suitableDarts, DartAssistant.EMPTY_DART);
 
         return Lists.newArrayList(preposModel);
     }

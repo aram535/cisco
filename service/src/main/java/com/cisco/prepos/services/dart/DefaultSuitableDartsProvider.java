@@ -10,8 +10,8 @@ import org.springframework.util.CollectionUtils;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.BLANK_AUTHORIZATION_NUMBER;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 
 /**
  * User: Rost

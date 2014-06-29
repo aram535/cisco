@@ -15,11 +15,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.*;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

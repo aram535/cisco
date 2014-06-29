@@ -11,8 +11,8 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
-import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.BLANK_AUTHORIZATION_NUMBER;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.*;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.entry;

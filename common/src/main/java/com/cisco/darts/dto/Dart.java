@@ -81,7 +81,7 @@ public class Dart {
 	@AttributeOverrides({
 			@AttributeOverride(name = "ciscoSku",
 					column = @Column(name="reseller_name")),
-			@AttributeOverride(name = "resellerName",
+			@AttributeOverride(name = "authorizationNumber",
 					column = @Column(name="cisko_sku"))
 	})
 

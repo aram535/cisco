@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static com.cisco.darts.dto.DartConstants.BLANK_AUTHORIZATION_NUMBER;
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.BLANK_AUTHORIZATION_NUMBER;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.AUTHORIZATION_NUMBER;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
 import static org.fest.assertions.api.Assertions.assertThat;

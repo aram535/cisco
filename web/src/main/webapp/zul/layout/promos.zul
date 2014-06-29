@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.promos.PromosViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" autopaging="true" mold="paging" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)" sizedByContent="true" vflex="85%" span="true">
+    <listbox id="box" multiple="true" mold="paging"  pageSize="100" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)" sizedByContent="true" vflex="85%" span="true">
         <listhead sizable="true">
             <listheader hflex="min" label="Id" sort="auto(id)"/>
             <listheader hflex="2" label="Part nubmer" sort="auto(partNumber)"/>

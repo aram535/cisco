@@ -1,5 +1,5 @@
 <window apply="org.zkoss.bind.BindComposer"
-        viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')" vflex="true" hflex="true">
+        viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')" vflex="true" hflex="true" ctrlKeys="#bak" onCtrlKey="@command('filterChanged')">
     <style>
         .z-textbox-disd { color: #2B3856 !important;}
         .z-intbox-disd { color: #2B3856 !important;}
@@ -8,7 +8,7 @@
     <style src="/widgets/grid/data_filter/style.css"/>
     <!--     <style src="/widgets/grid/inline_editing/style.css" /> -->
     <grid sizedByContent="true"
-          model="@load(vmPrePos.allPrepos)" vflex="95%" autopaging="true" mold="paging"> <!-- -->
+          model="@load(vmPrePos.allPrepos)" vflex="95%"  mold="paging" pageSize="100"> <!-- --><!--autopaging="true"-->
         <auxhead sclass="category-center">
             <auxheader colspan="1"/>
             <auxheader colspan="1">

@@ -364,7 +364,8 @@ public class Prepos {
 		NOT_PROCESSED ("NOT_PROCESSED"),
 		PROCESSED ("PROCESSED"),
 		WAITING ("WAITING"),
-		CBN ("CBN");
+		CBN ("CBN"),
+		NOT_FOR_REPORT("NOT_FOR_REPORT");
 
 		private final String name;
 

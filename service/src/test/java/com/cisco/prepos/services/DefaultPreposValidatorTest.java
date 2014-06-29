@@ -12,7 +12,7 @@ import org.junit.rules.ExpectedException;
 import java.util.List;
 import java.util.Map;
 
-import static com.cisco.darts.dto.DartConstants.EMPTY_DART;
+import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
 import static com.cisco.testtools.TestObjects.PreposFactory.newPrepos;
 import static com.google.common.collect.Lists.newArrayList;

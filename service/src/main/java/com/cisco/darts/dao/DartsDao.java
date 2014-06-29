@@ -19,6 +19,8 @@ public interface DartsDao {
 
 	void delete(Dart dart);
 
+	void delete(List<Dart> dart);
+
 	int deleteAll();
 
 	void saveAll(List<Dart> darts);

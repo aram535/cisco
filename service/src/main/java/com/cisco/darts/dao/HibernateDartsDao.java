@@ -35,7 +35,7 @@ public class HibernateDartsDao implements DartsDao {
     @Override
     public void save(Dart dart) {
         Session currentSession = sessionFactory.getCurrentSession();
-        currentSession.saveOrUpdate(dart);
+        currentSession.save(dart);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -63,6 +63,15 @@ public class HibernateDartsDao implements DartsDao {
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
+	public void delete(List<Dart> darts) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		for (Dart dart : darts) {
+			currentSession.delete(dart);
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
 	public int deleteAll() {
 		Session currentSession = sessionFactory.getCurrentSession();
 		Query query = currentSession.createQuery(DELETE_ALL_HQL);
@@ -74,7 +83,7 @@ public class HibernateDartsDao implements DartsDao {
 	public void saveAll(List<Dart> darts) {
 		Session currentSession = sessionFactory.getCurrentSession();
 		for (Dart dart : darts) {
-			currentSession.saveOrUpdate(dart);
+			currentSession.save(dart);
 		}
 	}
 }

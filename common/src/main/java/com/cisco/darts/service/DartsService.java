@@ -15,11 +15,15 @@ public interface DartsService {
 
     void save(Dart dart);
 
+	void saveAll(List<Dart> darts);
+
     void update(Dart dart);
 
     void update(Collection<Dart> darts);
 
     void delete(Dart dart);
+
+	void delete(List<Dart> darts);
 
     Table<String, String, Dart> getDartsTable();
 

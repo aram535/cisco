@@ -3,7 +3,7 @@
         viewModel="@id('vm') @init('com.cisco.pricelists.PricelistsViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
     <listbox id="box" multiple="true" model="@bind(vm.allPricelists)"
-             selectedItem="@bind(vm.selectedPricelistModel)" vflex="85%" autopaging="true" mold="paging">
+             selectedItem="@bind(vm.selectedPricelistModel)" vflex="85%" mold="paging" pageSize="100">
         <listhead sizable="true">
             <listheader hflex="min" label="Id" sort="auto(id)"/>
             <listheader hflex="1" label="Part number" sort="auto(partNumber)"/>

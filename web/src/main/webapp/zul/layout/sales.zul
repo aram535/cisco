@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.sales.SalesViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)" vflex="85%" autopaging="true" mold="paging">
+    <listbox id="box" multiple="true" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)" vflex="85%" mold="paging" pageSize="100">
         <listhead sizable="true">
             <listheader hflex="1" label="Shipped date" sort="auto(shippedDate)"/>
             <listheader hflex="1" label="Shipped BN:" sort="auto(shippedBillNumber)"/>

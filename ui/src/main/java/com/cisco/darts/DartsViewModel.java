@@ -28,6 +28,10 @@ public class DartsViewModel {
 
 	public static final String ALL_DARTS_CHANGE = "allDarts";
 	public static final String SELECTED_EVENT_CHANGE = "selectedEvent";
+	public static final String DELETE_ALL_COMMAND = "deleteAll";
+	public static final String DELETE_COMMAND = "delete";
+	public static final String UPDATE_COMMAND = "update";
+	public static final String ADD_COMMAND = "add";
 
 	private Dart selectedDartModel;
     private Dart newDartModel = new Dart();
@@ -71,7 +75,7 @@ public class DartsViewModel {
 	    }
     }
 
-    @Command("add")
+    @Command(ADD_COMMAND)
     @NotifyChange(ALL_DARTS_CHANGE)
     public void add() {
 
@@ -80,13 +84,13 @@ public class DartsViewModel {
         this.newDartModel = new Dart();
     }
 
-    @Command("update")
+    @Command(UPDATE_COMMAND)
     @NotifyChange(ALL_DARTS_CHANGE)
     public void update() {
         dartsService.update(selectedDartModel);
     }
 
-    @Command("delete")
+    @Command(DELETE_COMMAND)
     @NotifyChange({ALL_DARTS_CHANGE, SELECTED_EVENT_CHANGE})
     public void delete() {
         if (this.selectedDartModel != null) {
@@ -95,7 +99,7 @@ public class DartsViewModel {
         }
     }
 
-	@Command("deleteAll")
+	@Command(DELETE_ALL_COMMAND)
 	@NotifyChange({ALL_DARTS_CHANGE, SELECTED_EVENT_CHANGE})
 	public void deleteAll() {
 
