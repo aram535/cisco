@@ -19,5 +19,7 @@ CREATE TABLE PRE_POS (
   shipped_bill_number  VARCHAR(1000),
   comment VARCHAR(1000),
   serials VARCHAR(1000),
-  zip INT
+  zip INT,
+  account_manager_name VARCHAR(1000),
+  status VARCHAR(45)
 );
