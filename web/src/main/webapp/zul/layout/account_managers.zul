@@ -1,0 +1,25 @@
+<window id="win" title="Account managers" border="normal"
+        apply="org.zkoss.bind.BindComposer"
+        viewModel="@id('vm') @init('com.cisco.accountmanager.AccountManagerViewModel')"
+        validationMessages="@id('vmsgs')" vflex="1" hflex="1">
+    <listbox id="box" multiple="true" model="@bind(vm.allManagers)" selectedItem="@bind(vm.selectedAccountManagerModel)"
+             vflex="85%" autopaging="true" mold="paging">
+        <listhead sizable="true">
+            <listheader hflex="1" label="Name" sort="auto(name)"/>
+        </listhead>
+        <template name="model" var="manager">
+            <listitem value="@load(manager)">
+                <listcell label="@bind(manager.name)"/>
+            </listitem>
+        </template>
+    </listbox>
+    <groupbox id="mygrp" vflex="15%"
+              form="@id('manager') @load(vm.selectedAccountManagerModel)">
+        <caption label="Manager's info"/>
+        Name:
+        <textbox id="txtName" value="@bind(clients.name)"/>
+        <hlayout>
+            <label style="color:red" value="@load(vmsgs['name'])"/>
+        </hlayout>
+    </groupbox>
+</window>
