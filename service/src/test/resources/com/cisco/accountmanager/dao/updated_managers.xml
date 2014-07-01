@@ -1,0 +1,5 @@
+<!DOCTYPE dataset SYSTEM "../../../../../db-schema/database.dtd">
+<dataset>
+    <ACCOUNT_MANAGER NAME="Manager" JSON_PARTNERS="{updated partners:[]}" JSON_END_USERS="{updated endUsers:[]}"/>
+    <ACCOUNT_MANAGER NAME="Second Manager" JSON_PARTNERS="{second partners:[]}" JSON_END_USERS="{second endUsers:[]}"/>
+</dataset>

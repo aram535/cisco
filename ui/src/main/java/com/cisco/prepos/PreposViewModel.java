@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.dto.Prepos.Status.*;
+import static com.google.common.collect.Lists.*;
 
 /**
  * Created by Alf on 05.04.14.
@@ -36,7 +37,7 @@ import static com.cisco.prepos.dto.Prepos.Status.*;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
-	private static final String ALL_PREPOS_NOTIFY = "allPrepos";
+    private static final String ALL_PREPOS_NOTIFY = "allPrepos";
     private static final String FILTER_CHANGED_COMMAND = "filterChanged";
     private static final String STATUS_FILTER_CHANGED_COMMAND = "statusFilterChanged";
     private static final String SAVE_COMMAND = "save";
@@ -47,20 +48,20 @@ public class PreposViewModel {
     private static final String PREPOS_IN_MODEL_NOTIFY = "prepos";
     private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
 
-	public static final String ALL_STATUS = "ALL";
-	public static final String SET_STATUS_COMMAND = "setStatus";
+    public static final String ALL_STATUS = "ALL";
+    public static final String SET_STATUS_COMMAND = "setStatus";
 
-	private final List<String> preposStatuses =
-			Lists.newArrayList(ALL_STATUS, NOT_PROCESSED.toString(), WAITING.toString(), PROCESSED.toString(),
-					CBN.toString(), NOT_FOR_REPORT.toString());
+    private final List<String> preposStatuses =
+            newArrayList(ALL_STATUS, NOT_PROCESSED.getName(), WAITING.getName(), PROCESSED.getName(),
+                    CBN.getName(), NOT_FOR_REPORT.getName());
 
-	private String selectedStatus = ALL_STATUS;
-	private String statusToChange = PROCESSED.toString();
+    private String selectedStatus = ALL_STATUS;
+    private String statusToChange = PROCESSED.toString();
 
-	private List<PreposModel> preposes;
+    private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes;
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
-	private Iterable<PreposModel> filteredCheckedPreposes;
+    private Iterable<PreposModel> filteredCheckedPreposes;
 
     private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
@@ -72,68 +73,68 @@ public class PreposViewModel {
 
     @WireVariable
     private TotalSumCounter totalSumCounter;
-	private List<PreposModel> freshPreposes;
+    private List<PreposModel> freshPreposes;
 
-	public String getStatusToChange() {
-		return statusToChange;
-	}
+    public String getStatusToChange() {
+        return statusToChange;
+    }
 
-	public String getSelectedStatus() {
-		return selectedStatus;
-	}
+    public String getSelectedStatus() {
+        return selectedStatus;
+    }
 
-	public List<String> getPreposStatuses() {
-		return preposStatuses;
-	}
+    public List<String> getPreposStatuses() {
+        return preposStatuses;
+    }
 
-	public PreposRestrictions getPreposRestrictions() {
-		return preposRestrictions;
-	}
+    public PreposRestrictions getPreposRestrictions() {
+        return preposRestrictions;
+    }
 
-	public double getTotalPosSum() {
-		if(filteredCheckedPreposes == null) {
-			filteredCheckedPreposes = checkedPreposMap.values();
-		}
-		return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
-	}
+    public double getTotalPosSum() {
+        if (filteredCheckedPreposes == null) {
+            filteredCheckedPreposes = checkedPreposMap.values();
+        }
+        return totalSumCounter.countTotalPosSum(filteredCheckedPreposes);
+    }
 
-	public void setStatusToChange(String statusToChange) {
-		this.statusToChange = statusToChange;
-	}
+    public void setStatusToChange(String statusToChange) {
+        this.statusToChange = statusToChange;
+    }
 
-	@NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
-	public List<PreposModel> getAllPrepos() {
-		try {
-			if (preposes == null) {
-				refreshAndFilterPreposes();
-			}
+    @NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
+    public List<PreposModel> getAllPrepos() {
+        try {
+            if (preposes == null) {
+                refreshAndFilterPreposes();
+            }
 
-			return filteredPreposes;
-		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
-			return Lists.newArrayList();
-		}
-	}
+            return filteredPreposes;
+        } catch (Exception e) {
+            Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+            return newArrayList();
+        }
+    }
 
-	@NotifyChange(ALL_PREPOS_NOTIFY)
-	public void setSelectedStatus(String selectedStatus) {
-		this.selectedStatus = selectedStatus;
-		refreshAndFilterPreposes();
-	}
+    @NotifyChange(ALL_PREPOS_NOTIFY)
+    public void setSelectedStatus(String selectedStatus) {
+        this.selectedStatus = selectedStatus;
+        refreshAndFilterPreposes();
+    }
 
-	@Command(SET_STATUS_COMMAND)
-	@NotifyChange(ALL_PREPOS_NOTIFY)
-	public void setStatus() {
+    @Command(SET_STATUS_COMMAND)
+    @NotifyChange(ALL_PREPOS_NOTIFY)
+    public void setStatus() {
 
-		for (PreposModel checkedPrepos : checkedPreposMap.values()) {
-			checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
-		}
-	}
+        for (PreposModel checkedPrepos : checkedPreposMap.values()) {
+            checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
+        }
+    }
 
     @Command(REFRESH_COMMAND)
     @NotifyChange(ALL_PREPOS_NOTIFY)
     public void refresh() {
-	    refreshAndFilterPreposes();
+        refreshAndFilterPreposes();
     }
 
     @Command(SAVE_COMMAND)
@@ -144,12 +145,12 @@ public class PreposViewModel {
     @Command(PROMO_SELECTED_COMMAND)
     public void promoSelected(@BindingParam(PREPOS_MODEL_BINDING_PARAM) PreposModel preposModel, @BindingParam("comboItem") Combobox comboItem) {
 
-	    try {
-		    preposService.validatePreposForSelectedDart(preposes, preposModel);
-	    } catch(CiscoException ex) {
-		    rollbackSelectedItem(preposModel, comboItem);
-		    throw ex;
-	    }
+        try {
+            preposService.validatePreposForSelectedDart(preposes, preposModel);
+        } catch (CiscoException ex) {
+            rollbackSelectedItem(preposModel, comboItem);
+            throw ex;
+        }
 
         Prepos prepos = preposModel.getPrepos();
         Dart selectedDart = preposModel.getSelectedDart();
@@ -157,9 +158,9 @@ public class PreposViewModel {
         preposModel.setPrepos(recountedPrepos);
 
         if (preposModel.getChecked()) {
-	        notifyChange(this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
+            notifyChange(this, RECOUNT_TOTAL_POS_SUM_NOTIFY);
         }
-	    notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY, "buyDiscount", "saleDiscount");
+        notifyChange(preposModel, PREPOS_IN_MODEL_NOTIFY, "buyDiscount", "saleDiscount");
     }
 
     @Command(PREPOS_CHECKED_COMMAND)
@@ -172,66 +173,66 @@ public class PreposViewModel {
         }
     }
 
-	@Command(FILTER_CHANGED_COMMAND)
-	@NotifyChange(ALL_PREPOS_NOTIFY)
-	public void filterChanged() {
-		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+    @Command(FILTER_CHANGED_COMMAND)
+    @NotifyChange(ALL_PREPOS_NOTIFY)
+    public void filterChanged() {
+        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
 
-		final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
-		filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
-			@Override
-			public boolean apply(PreposModel preposModel) {
-				return checkedPreposes.contains(preposModel);
-			}
-		});
-	}
+        final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
+        filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
+            @Override
+            public boolean apply(PreposModel preposModel) {
+                return checkedPreposes.contains(preposModel);
+            }
+        });
+    }
 
-	@Command(STATUS_FILTER_CHANGED_COMMAND)
-	@NotifyChange(ALL_PREPOS_NOTIFY)
-	public void statusFilterChanged() {
-		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+    @Command(STATUS_FILTER_CHANGED_COMMAND)
+    @NotifyChange(ALL_PREPOS_NOTIFY)
+    public void statusFilterChanged() {
+        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
 
-		final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
-		filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
-			@Override
-			public boolean apply(PreposModel preposModel) {
-				return checkedPreposes.contains(preposModel);
-			}
-		});
-	}
+        final Collection<PreposModel> checkedPreposes = checkedPreposMap.values();
+        filteredCheckedPreposes = Iterables.filter(filteredPreposes, new Predicate<PreposModel>() {
+            @Override
+            public boolean apply(PreposModel preposModel) {
+                return checkedPreposes.contains(preposModel);
+            }
+        });
+    }
 
-	private void notifyChange(Object bean, String... properties) {
+    private void notifyChange(Object bean, String... properties) {
 
-		for (String property : properties) {
-			BindUtils.postNotifyChange(null, null, bean, property);
-		}
+        for (String property : properties) {
+            BindUtils.postNotifyChange(null, null, bean, property);
+        }
 
-	}
+    }
 
-	private void rollbackSelectedItem(PreposModel preposModel, Combobox comboItem) {
+    private void rollbackSelectedItem(PreposModel preposModel, Combobox comboItem) {
 
-		String secondPromo = preposModel.getPrepos().getSecondPromo();
+        String secondPromo = preposModel.getPrepos().getSecondPromo();
 
-		for (int i = 0; i < comboItem.getItemCount(); i++) {
+        for (int i = 0; i < comboItem.getItemCount(); i++) {
 
-			Comboitem itemAtIndex = comboItem.getItemAtIndex(i);
-			Dart value = itemAtIndex.getValue();
-			if(secondPromo.equals(value.getAuthorizationNumber())) {
-				comboItem.setSelectedItem(itemAtIndex);
-				preposModel.setSelectedDart(value);
-				return;
-			}
-		}
-	}
+            Comboitem itemAtIndex = comboItem.getItemAtIndex(i);
+            Dart value = itemAtIndex.getValue();
+            if (secondPromo.equals(value.getAuthorizationNumber())) {
+                comboItem.setSelectedItem(itemAtIndex);
+                preposModel.setSelectedDart(value);
+                return;
+            }
+        }
+    }
 
-	private void refreshAndFilterPreposes() {
+    private void refreshAndFilterPreposes() {
 
-		if (!selectedStatus.equals(ALL_STATUS)) {
-			Prepos.Status status = Prepos.Status.valueOf(selectedStatus);
-			preposes = preposService.getAllData(status);
-		} else {
-			preposes = preposService.getAllData();
-		}
-		filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
-	}
+        if (!selectedStatus.equals(ALL_STATUS)) {
+            Prepos.Status status = Prepos.Status.valueOf(selectedStatus);
+            preposes = preposService.getAllData(status);
+        } else {
+            preposes = preposService.getAllData();
+        }
+        filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+    }
 }

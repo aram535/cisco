@@ -12,8 +12,6 @@ import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +22,9 @@ import java.util.List;
 
 import static com.cisco.prepos.dto.Prepos.Status;
 import static com.cisco.sales.dto.Sale.Status.NEW;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.ArrayUtils.contains;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 /**
  * Created by Alf on 05.04.14.
@@ -61,12 +62,12 @@ public final class DefaultPreposService implements PreposService {
     @Autowired
     private PreposValidator preposValidator;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public List<PreposModel> getAllData(final Status... statuses) {
 
-		List<Prepos> preposes = getPreposes(statuses);
-		List<Prepos> updatedPreposes = preposUpdater.update(preposes);
+        List<Prepos> preposes = getPreposes(statuses);
+        List<Prepos> updatedPreposes = preposUpdater.update(preposes);
 
         List<Sale> newSales = salesService.getSales(NEW);
         List<Prepos> newPreposes = preposConstructor.construct(newSales);
@@ -77,17 +78,17 @@ public final class DefaultPreposService implements PreposService {
         return preposModelConstructor.construct(updatedPreposes);
     }
 
-	@Override
+    @Override
     public Prepos recountPrepos(Prepos prepos, Dart selectedDart) {
         return dartApplier.getPrepos(prepos, selectedDart, pricelistsService.getPricelistsMap(), dartsService.getDartsTable(), promosService.getPromosMap());
     }
 
-	@Override
-	public void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel) {
-		preposValidator.validateDartQuantity(preposModels, preposModel);
-	}
+    @Override
+    public void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel) {
+        preposValidator.validateDartQuantity(preposModels, preposModel);
+    }
 
-	@Override
+    @Override
     public void update(List<PreposModel> preposModels) {
 
         List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
@@ -96,24 +97,24 @@ public final class DefaultPreposService implements PreposService {
 
     //TODO maybe db updates should be produced by sending events to needed services
 
-	private List<Prepos> getPreposes(final Status... statuses) {
+    private List<Prepos> getPreposes(final Status... statuses) {
 
-		List preposes = preposesDao.getPreposes();
+        List preposes = preposesDao.getPreposes();
 
-		if (ArrayUtils.isEmpty(statuses)) {
-			return Lists.newArrayList(preposes);
-		}
+        if (isEmpty(statuses)) {
+            return newArrayList(preposes);
+        }
 
-		Collection<Prepos> filteredPreposes = Collections2.filter(preposes, new Predicate<Prepos>() {
-			@Override
-			public boolean apply(Prepos prepos) {
-				Status status = prepos.getStatus();
-				return ArrayUtils.contains(statuses, status);
-			}
-		});
+        Collection<Prepos> filteredPreposes = Collections2.filter(preposes, new Predicate<Prepos>() {
+            @Override
+            public boolean apply(Prepos prepos) {
+                Status status = prepos.getStatus();
+                return contains(statuses, status);
+            }
+        });
 
-		return Lists.newArrayList(filteredPreposes);
-	}
+        return newArrayList(filteredPreposes);
+    }
 
     private void updateData(List<Sale> newSales, List<Prepos> newPreposes, List<Prepos> updatedPreposes) {
         preposesDao.update(updatedPreposes);

@@ -32,6 +32,7 @@ public class PreposBuilder {
     private String comment;
     private String serials;
     private int zip;
+    private String accountManagerName;
     private Status status;
 
     private PreposBuilder() {
@@ -147,13 +148,18 @@ public class PreposBuilder {
         return this;
     }
 
+    public PreposBuilder accountManagerName(String accountManagerName) {
+        this.accountManagerName = accountManagerName;
+        return this;
+    }
+
     public PreposBuilder status(Status status) {
         this.status = status;
         return this;
     }
 
     public Prepos build() {
-        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip, status);
+        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip, accountManagerName, status);
         return prepos;
     }
 
@@ -179,6 +185,7 @@ public class PreposBuilder {
         this.comment = prepos.getComment();
         this.serials = prepos.getSerials();
         this.zip = prepos.getZip();
+        this.accountManagerName = prepos.getAccountManagerName();
         this.status = prepos.getStatus();
         return this;
     }

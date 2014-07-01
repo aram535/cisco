@@ -11,10 +11,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 
+import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * User: Rost
@@ -57,17 +57,65 @@ public class DefaultAccountManagerServiceTest {
 
     @Test
     public void thatReturnsModelsAccordingToDaoOutput() {
-        when(accountManagerDao.getAccountManagers())
-                .thenReturn(getAccountManagers());
-        when(accountManagerModelFactory.createModels(getAccountManagers()))
-                .thenReturn(getAccountManagersModels());
-        accountManagerService.init();
+        initNotNullManagers();
 
         List<AccountManagerModel> accountManagers = accountManagerService.getAccountManagers();
         assertThat(accountManagers)
                 .isNotNull()
                 .hasSize(1)
                 .contains(createAccountManagerModel());
+    }
+
+    @Test
+    public void thatReturnsDefaultManagerIfNoOccurrenceByPartnerName() {
+        initNotNullManagers();
+
+        AccountManagerModel manager = accountManagerService.getAccountManagerByPartner("unknown partner");
+        assertThat(manager).isEqualTo(DEFAULT_MANAGER);
+    }
+
+    @Test
+    public void thatReturnsManagerIfPartnerNameIsInHisList() {
+        initNotNullManagers();
+
+        AccountManagerModel manager = accountManagerService.getAccountManagerByPartner(FIRST_PARTNER);
+        assertThat(manager).isEqualTo(createAccountManagerModel());
+    }
+
+    @Test
+    public void thatReturnsDefaultManagerIfNoOccurrenceByEndUserName() {
+        initNotNullManagers();
+
+        AccountManagerModel manager = accountManagerService.getAccountManagerByEndUser("unknown end user");
+        assertThat(manager).isEqualTo(DEFAULT_MANAGER);
+    }
+
+    @Test
+    public void thatReturnsManagerIfEndUserNameIsInHisList() {
+        initNotNullManagers();
+
+        AccountManagerModel manager = accountManagerService.getAccountManagerByEndUser(FIRST_END_USER);
+        assertThat(manager).isEqualTo(createAccountManagerModel());
+    }
+
+    @Test
+    public void thatDelegatesSaveOrUpdateToDaoAfterFactoryCreation() {
+        List<AccountManagerModel> accountManagersModels = getAccountManagersModels();
+        List<AccountManager> accountManagers = getAccountManagers();
+        when(accountManagerModelFactory.createManagers(accountManagersModels)).thenReturn(accountManagers);
+
+        accountManagerService.saveOrUpdate(accountManagersModels);
+
+        verify(accountManagerDao).saveOrUpdate(accountManagers);
+        verifyNoMoreInteractions(accountManagerDao);
+    }
+
+    private void initNotNullManagers() {
+        when(accountManagerDao.getAccountManagers())
+                .thenReturn(getAccountManagers());
+        when(accountManagerModelFactory.createModels(getAccountManagers()))
+                .thenReturn(getAccountManagersModels());
+        accountManagerService.init();
     }
 
     private List<AccountManagerModel> getAccountManagersModels() {

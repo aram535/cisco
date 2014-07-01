@@ -20,5 +20,6 @@ CREATE TABLE PRE_POS (
   comment VARCHAR(1000),
   serials VARCHAR(1000),
   zip INT,
+  account_manager_name VARCHAR(1000),
   status VARCHAR(45)
 );

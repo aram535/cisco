@@ -11,5 +11,8 @@ import java.util.List;
  * Time: 23:29
  */
 public interface AccountManagerModelFactory {
+
     List<AccountManagerModel> createModels(List<AccountManager> accountManagers);
+
+    List<AccountManager> createManagers(List<AccountManagerModel> accountManagerModels);
 }

@@ -18,6 +18,9 @@ public class AccountManagerModel {
     private List<String> partners;
     private List<String> endUsers;
 
+    public AccountManagerModel() {
+    }
+
     public AccountManagerModel(long id, String name, List<String> partners, List<String> endUsers) {
         this.id = id;
         this.name = name;

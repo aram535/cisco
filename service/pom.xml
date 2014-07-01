@@ -17,6 +17,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.cisco</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>

@@ -1,5 +1,7 @@
 package com.cisco.prepos.services;
 
+import com.cisco.accountmanager.model.AccountManagerModel;
+import com.cisco.accountmanager.service.AccountManagerProvider;
 import com.cisco.clients.dto.Client;
 import com.cisco.clients.service.ClientsService;
 import com.cisco.prepos.dto.Prepos;
@@ -36,6 +38,9 @@ public class DefaultPreposUpdaterTest {
 
     private static final String EMPTY_SERIALS = "";
     private static final String OTHER_SERIALS = "OTHER_SERIALS";
+    private static final String ACCOUNT_MANAGER_NAME = "Manager";
+
+    private AccountManagerModel accountManagerModel = new AccountManagerModel(1L, ACCOUNT_MANAGER_NAME, Lists.<String>newArrayList(), Lists.<String>newArrayList());
 
     @InjectMocks
     private DefaultPreposUpdater preposUpdater = new DefaultPreposUpdater();
@@ -43,27 +48,34 @@ public class DefaultPreposUpdaterTest {
     @Mock
     private SalesService salesService;
 
-	@Mock
-	private ClientsService clientsService;
+    @Mock
+    private ClientsService clientsService;
 
-	@Mock
-	private PartnerNameProvider partnerNameProvider;
+    @Mock
+    private PartnerNameProvider partnerNameProvider;
 
-	@Before
-	public void initMocks() {
-		Table<String, String, Sale> salesTable = create();
-		Sale sale = newSale();
-		sale.setSerials(SERIALS);
-		salesTable.put(PART_NUMBER, SHIPPED_BILL_NUMBER, sale);
-		when(salesService.getSalesTable()).thenReturn(salesTable);
+    @Mock
+    private AccountManagerProvider accountManagerProvider;
 
-		Map<String, Client> clientsMap = Maps.newHashMap();
-		Client client = newClient();
-		clientsMap.put(sale.getClientNumber(), client);
-		when(clientsService.getClientsMap()).thenReturn(clientsMap);
+    @Before
+    public void initMocks() {
+        Table<String, String, Sale> salesTable = create();
+        Sale sale = newSale();
+        sale.setSerials(SERIALS);
+        salesTable.put(PART_NUMBER, SHIPPED_BILL_NUMBER, sale);
+        when(salesService.getSalesTable()).thenReturn(salesTable);
 
-		when(partnerNameProvider.getPartnerName(sale, clientsMap)).thenReturn(client.getName());
-	}
+        Map<String, Client> clientsMap = Maps.newHashMap();
+        Client client = newClient();
+        clientsMap.put(sale.getClientNumber(), client);
+        when(clientsService.getClientsMap()).thenReturn(clientsMap);
+
+        when(partnerNameProvider.getPartnerName(sale, clientsMap)).thenReturn(client.getName());
+        Prepos prepos = newPrepos();
+        when(accountManagerProvider.getAccountManager(prepos.getPartnerName(), prepos.getEndUser())).thenReturn(accountManagerModel);
+    }
+
+
     @Test
     public void thatUpdatesPreposesWithEmptySerials() throws Exception {
 
@@ -86,26 +98,34 @@ public class DefaultPreposUpdaterTest {
         assertThat(updatedPreposes).isEqualTo(createExpectedNotUpdatedPreposes());
     }
 
-	@Test
-	public void thatUpdatesPreposesWithPartnerNameFromClients() {
+    @Test
+    public void thatUpdatesPreposesWithPartnerNameFromClients() {
+        Prepos notUpdatedPrepos = newPrepos();
+        notUpdatedPrepos.setPartnerName(CLIENT_NAME);
+        when(accountManagerProvider.getAccountManager(notUpdatedPrepos.getPartnerName(), notUpdatedPrepos.getEndUser())).thenReturn(accountManagerModel);
 
-		Prepos notUpdatedPrepos = newPrepos();
-		notUpdatedPrepos.setPartnerName(CLIENT_NAME);
+        List<Prepos> updatedPreposes = preposUpdater.update(Lists.newArrayList(notUpdatedPrepos));
 
-		List<Prepos> updatedPreposes = preposUpdater.update(Lists.newArrayList(notUpdatedPrepos));
-
-		assertThat(updatedPreposes).isEqualTo(createExpectedUpdatedPreposes());
-	}
+        assertThat(updatedPreposes).isEqualTo(createExpectedUpdatedPreposes());
+    }
 
     private List<Prepos> createExpectedUpdatedPreposes() {
-        return newPreposList();
+
+        Prepos prepos = getPreposWithAccountManager();
+        return Lists.newArrayList(prepos);
     }
 
     private List<Prepos> createExpectedNotUpdatedPreposes() {
 
-        Prepos prepos = newPrepos();
+        Prepos prepos = getPreposWithAccountManager();
         prepos.setSerials(OTHER_SERIALS);
         return Lists.newArrayList(prepos);
+    }
+
+    private Prepos getPreposWithAccountManager() {
+        Prepos prepos = newPrepos();
+        prepos.setAccountManagerName(ACCOUNT_MANAGER_NAME);
+        return prepos;
     }
 
 }

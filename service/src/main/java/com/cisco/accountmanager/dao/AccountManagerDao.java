@@ -10,5 +10,8 @@ import java.util.List;
  * Time: 21:31
  */
 public interface AccountManagerDao {
+
     List<AccountManager> getAccountManagers();
+
+    void saveOrUpdate(List<AccountManager> managers);
 }

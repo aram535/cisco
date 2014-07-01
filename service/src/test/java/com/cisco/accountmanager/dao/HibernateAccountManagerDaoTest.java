@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.unitils.UnitilsJUnit4TestClassRunner;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -30,11 +32,30 @@ public class HibernateAccountManagerDaoTest extends BasicDb {
         assertThat(accountManagers)
                 .isNotNull()
                 .hasSize(1)
-                .contains(expectedAccountManager());
+                .contains(accountManager());
     }
 
-    private AccountManager expectedAccountManager() {
+    @Test
+    @DataSet("account_managers.xml")
+    @ExpectedDataSet("updated_managers.xml")
+    public void thatUpdateExistRecordAndSaveNewOne() {
+        accountManagerDao.saveOrUpdate(newArrayList(updateAccountManager(), secondAccountManager()));
+    }
+
+    private AccountManager accountManager() {
         return new AccountManager(1, "Manager", "{partners:[]}", "{endUsers:[]}");
+    }
+
+    private AccountManager updateAccountManager() {
+        return new AccountManager(1, "Manager", "{updated partners:[]}", "{updated endUsers:[]}");
+    }
+
+    private AccountManager secondAccountManager() {
+        AccountManager secondAccountManager = new AccountManager();
+        secondAccountManager.setName("Second Manager");
+        secondAccountManager.setJsonPartners("{second partners:[]}");
+        secondAccountManager.setJsonEndUsers("{second endUsers:[]}");
+        return secondAccountManager;
     }
 
 }
