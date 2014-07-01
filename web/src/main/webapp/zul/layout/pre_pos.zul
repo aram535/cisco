@@ -1,5 +1,5 @@
 <window apply="org.zkoss.bind.BindComposer"
-        viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')" vflex="true" hflex="true" ctrlKeys="#bak" onCtrlKey="@command('filterChanged')">
+        viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')" vflex="true" hflex="true" > <!--ctrlKeys="#bak" onCtrlKey="@command('filterChanged')"-->
     <style>
         .z-textbox-disd { color: #2B3856 !important;}
         .z-intbox-disd { color: #2B3856 !important;}

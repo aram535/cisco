@@ -31,13 +31,12 @@ public class Client {
         this.address = address;
     }
 
-
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
 
-	@Id
     @Column(name = "client_number")
     public String getClientNumber() {
         return clientNumber;
