@@ -4,7 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * User: Rost
@@ -15,13 +15,13 @@ public class AccountManagerModel {
 
     private long id;
     private String name;
-    private List<String> partners;
-    private List<String> endUsers;
+    private Set<String> partners;
+    private Set<String> endUsers;
 
     public AccountManagerModel() {
     }
 
-    public AccountManagerModel(long id, String name, List<String> partners, List<String> endUsers) {
+    public AccountManagerModel(long id, String name, Set<String> partners, Set<String> endUsers) {
         this.id = id;
         this.name = name;
         this.partners = partners;
@@ -44,19 +44,19 @@ public class AccountManagerModel {
         this.name = name;
     }
 
-    public List<String> getPartners() {
+    public Set<String> getPartners() {
         return partners;
     }
 
-    public void setPartners(List<String> partners) {
+    public void setPartners(Set<String> partners) {
         this.partners = partners;
     }
 
-    public List<String> getEndUsers() {
+    public Set<String> getEndUsers() {
         return endUsers;
     }
 
-    public void setEndUsers(List<String> endUsers) {
+    public void setEndUsers(Set<String> endUsers) {
         this.endUsers = endUsers;
     }
 

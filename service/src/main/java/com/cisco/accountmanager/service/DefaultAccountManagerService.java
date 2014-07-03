@@ -3,7 +3,7 @@ package com.cisco.accountmanager.service;
 import com.cisco.accountmanager.dao.AccountManagerDao;
 import com.cisco.accountmanager.dto.AccountManager;
 import com.cisco.accountmanager.model.AccountManagerModel;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +23,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @Service("accountManagerService")
 public class DefaultAccountManagerService implements AccountManagerService {
 
-    final static AccountManagerModel DEFAULT_MANAGER = new AccountManagerModel(-1L, "Default manager", Lists.<String>newArrayList(), Lists.<String>newArrayList());
+    final static AccountManagerModel DEFAULT_MANAGER = new AccountManagerModel(-1L, "Default manager", Sets.<String>newHashSet(), Sets.<String>newHashSet());
 
     @Autowired
     private AccountManagerDao accountManagerDao;
@@ -54,6 +54,18 @@ public class DefaultAccountManagerService implements AccountManagerService {
     public void saveOrUpdate(List<AccountManagerModel> accountManagerModels) {
         List<AccountManager> managers = accountManagerModelFactory.createManagers(accountManagerModels);
         accountManagerDao.saveOrUpdate(managers);
+        fetchModels();
+    }
+
+    @Override
+    public void delete(AccountManagerModel accountManagerModel) {
+        List<AccountManager> managers = accountManagerModelFactory.createManagers(newArrayList(accountManagerModel));
+        boolean managersIsNotEmpty = !CollectionUtils.isEmpty(managers);
+        if (managersIsNotEmpty) {
+            AccountManager accountManager = managers.get(0);
+            accountManagerDao.delete(accountManager);
+            fetchModels();
+        }
     }
 
     @PostConstruct

@@ -3,7 +3,7 @@
         viewModel="@id('vm') @init('com.cisco.accountmanager.AccountManagerViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
     <listbox id="box" multiple="true" model="@bind(vm.allManagers)" selectedItem="@bind(vm.selectedAccountManagerModel)"
-             vflex="85%" autopaging="true" mold="paging">
+             vflex="30%" autopaging="true" mold="paging">
         <listhead sizable="true">
             <listheader hflex="1" label="Name" sort="auto(name)"/>
         </listhead>
@@ -13,11 +13,56 @@
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" vflex="15%"
-              form="@id('manager') @load(vm.selectedAccountManagerModel)">
+    <groupbox id="mygrp" vflex="70%"
+              form="@id('manager') @load(vm.selectedAccountManagerModel) @save(vm.selectedAccountManagerModel, before='update') @save(vm.newAccountManagerModel, before='add')">
         <caption label="Manager's info"/>
-        Name:
-        <textbox id="txtName" value="@bind(clients.name)"/>
+        <vbox>
+            Name:
+            <textbox id="txtName" value="@bind(manager.name)"/>
+            <vbox>
+                <button id="add" label="Add" onClick="@command('add')"/>
+                <button id="update" label="Update" onClick="@command('update')"
+                        disabled="@load(empty vm.selectedAccountManagerModel)"/>
+                <button id="delete" label="Delete" onClick="@command('delete')"
+                        disabled="@load(empty vm.selectedAccountManagerModel)"/>
+            </vbox>
+            <hbox>
+                <vbox>
+                    <listbox id="partners" multiple="true" model="@bind(manager.partners)">
+                        <listhead sizable="true">
+                            <listheader hflex="1" label="Partner"/>
+                        </listhead>
+                        <template name="model" var="partner">
+                            <listitem value="@load(partner)">
+                                <listcell label="@bind(partner)"/>
+                            </listitem>
+                        </template>
+                    </listbox>
+                    Name:
+                    <textbox id="partnerName" value="@bind(partner)"/>
+                    <button id="addPartner" label="Add partner" onClick="@command('addPartner')"/>
+                    <button id="deletePartner" label="Delete partner" onClick="@command('deletePartner')"
+                            disabled="@load(empty vm.selectedPartner)"/>
+                </vbox>
+                <vbox>
+                    <listbox id="endUsers" multiple="true" model="@bind(manager.endUsers)">
+                        <listhead sizable="true">
+                            <listheader hflex="1" label="End user"/>
+                        </listhead>
+                        <template name="model" var="endUser">
+                            <listitem value="@load(endUser)">
+                                <listcell label="@bind(endUser)"/>
+                            </listitem>
+                        </template>
+                    </listbox>
+                    Name:
+                    <textbox id="endUserName" value="@bind(endUser)"/>
+                    <button id="addEndUser" label="Add end user" onClick="@command('addEndUser')"/>
+                    <button id="deleteEndUser" label="Delete end user" onClick="@command('deleteEndUser')"
+                            disabled="@load(empty vm.selectedEndUser)"/>
+                </vbox>
+            </hbox>
+        </vbox>
         <hlayout>
             <label style="color:red" value="@load(vmsgs['name'])"/>
         </hlayout>

@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 
 /**
  * User: Rost
@@ -21,23 +21,23 @@ public class DefaultJsonConverter implements JsonConverter {
     private final Logger logger = LoggerFactory.getLogger(DefaultJsonConverter.class);
 
     @Override
-    public List<String> fromJson(String json) {
+    public Set<String> fromJson(String json) {
         try {
             GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.create();
-            List<String> items = gson.fromJson(json, List.class);
+            Set<String> items = gson.fromJson(json, Set.class);
             if (items == null) {
-                return newArrayList();
+                return newHashSet();
             }
             return items;
         } catch (RuntimeException ex) {
             logger.error("error during parsing json", ex);
-            return newArrayList();
+            return newHashSet();
         }
     }
 
     @Override
-    public String toJson(List<String> items) {
+    public String toJson(Set<String> items) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
         String jsonRepresentation = gson.toJson(items);

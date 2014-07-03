@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.transform;
@@ -34,10 +35,10 @@ public class DefaultAccountManagerModelFactory implements AccountManagerModelFac
             @Override
             public AccountManagerModel apply(AccountManager accountManager) {
                 String jsonPartners = accountManager.getJsonPartners();
-                List<String> partners = jsonConverter.fromJson(jsonPartners);
+                Set<String> partners = jsonConverter.fromJson(jsonPartners);
 
                 String jsonEndUsers = accountManager.getJsonEndUsers();
-                List<String> endUsers = jsonConverter.fromJson(jsonEndUsers);
+                Set<String> endUsers = jsonConverter.fromJson(jsonEndUsers);
                 return new AccountManagerModel(accountManager.getId(), accountManager.getName(), partners, endUsers);
             }
         }));
@@ -56,10 +57,10 @@ public class DefaultAccountManagerModelFactory implements AccountManagerModelFac
 
             @Override
             public AccountManager apply(AccountManagerModel accountManagerModel) {
-                List<String> partners = accountManagerModel.getPartners();
+                Set<String> partners = accountManagerModel.getPartners();
                 String partnersInJson = jsonConverter.toJson(partners);
 
-                List<String> endUsers = accountManagerModel.getEndUsers();
+                Set<String> endUsers = accountManagerModel.getEndUsers();
                 String endUsersInJson = jsonConverter.toJson(endUsers);
 
                 return new AccountManager(accountManagerModel.getId(), accountManagerModel.getName(), partnersInJson, endUsersInJson);

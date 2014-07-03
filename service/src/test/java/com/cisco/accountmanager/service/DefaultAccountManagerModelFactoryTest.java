@@ -2,6 +2,7 @@ package com.cisco.accountmanager.service;
 
 import com.cisco.accountmanager.dto.AccountManager;
 import com.cisco.accountmanager.model.AccountManagerModel;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +11,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.*;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -76,12 +79,12 @@ public class DefaultAccountManagerModelFactoryTest {
                 .isEqualTo(createManagersList());
     }
 
-    private List<String> getPartners() {
-        return newArrayList(FIRST_PARTNER, SECOND_PARTNER);
+    private Set<String> getPartners() {
+        return newHashSet(FIRST_PARTNER, SECOND_PARTNER);
     }
 
-    private List<String> getEndUsers() {
-        return newArrayList(FIRST_END_USER, SECOND_END_USER);
+    private Set<String> getEndUsers() {
+        return newHashSet(FIRST_END_USER, SECOND_END_USER);
     }
 
     private List<AccountManager> createManagersList() {

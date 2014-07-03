@@ -14,4 +14,6 @@ public interface AccountManagerDao {
     List<AccountManager> getAccountManagers();
 
     void saveOrUpdate(List<AccountManager> managers);
+
+    void delete(AccountManager accountManager);
 }

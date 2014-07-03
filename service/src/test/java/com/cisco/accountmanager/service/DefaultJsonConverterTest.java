@@ -5,9 +5,9 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
+import java.util.Set;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static junitparams.JUnitParamsRunner.$;
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -28,29 +28,29 @@ public class DefaultJsonConverterTest {
 
     @Test
     @Parameters(method = "toJsonParameters")
-    public void thatMakesCorrectJsonRepresentationFromListOfStrings(List<String> items, String jsonRepresentation) {
+    public void thatMakesCorrectJsonRepresentationFromListOfStrings(Set<String> items, String jsonRepresentation) {
         String jsonItemsRepresentation = jsonConverter.toJson(items);
         assertThat(jsonItemsRepresentation).isEqualTo(jsonItemsRepresentation);
     }
 
     @Test
     @Parameters(method = "fromJsonParameters")
-    public void thatParseListOfStringsFromJson(String json, List<String> expectedResult) {
-        List<String> parsedItems = jsonConverter.fromJson(json);
+    public void thatParseListOfStringsFromJson(String json, Set<String> expectedResult) {
+        Set<String> parsedItems = jsonConverter.fromJson(json);
         assertThat(parsedItems)
                 .isNotNull()
                 .isEqualTo(expectedResult);
     }
 
     private Object[] fromJsonParameters() {
-        return $($(expectedJsonRepresentation, createItemsList()), $(null, newArrayList()), $(EMPTY_STRING, newArrayList()), $("broken json", newArrayList()));
+        return $($(expectedJsonRepresentation, createItemsList()), $(null, newHashSet()), $(EMPTY_STRING, newHashSet()), $("broken json", newHashSet()));
     }
 
     private Object[] toJsonParameters() {
-        return $($(createItemsList(), expectedJsonRepresentation), $(newArrayList(), EMPTY_STRING), $(null, EMPTY_STRING));
+        return $($(createItemsList(), expectedJsonRepresentation), $(newHashSet(), EMPTY_STRING), $(null, EMPTY_STRING));
     }
 
-    private List<String> createItemsList() {
-        return newArrayList(firstItem, secondItem);
+    private Set<String> createItemsList() {
+        return newHashSet(firstItem, secondItem);
     }
 }

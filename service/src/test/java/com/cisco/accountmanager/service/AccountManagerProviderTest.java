@@ -1,6 +1,7 @@
 package com.cisco.accountmanager.service;
 
 import com.cisco.accountmanager.model.AccountManagerModel;
+import com.google.common.collect.Sets;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.*;
 import static junitparams.JUnitParamsRunner.$;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -60,6 +62,6 @@ public class AccountManagerProviderTest {
     }
 
     private AccountManagerModel createAccountManagerModel() {
-        return new AccountManagerModel(MANAGER_ID, MANAGER_NAME, newArrayList(FIRST_PARTNER, SECOND_PARTNER), newArrayList(FIRST_END_USER, SECOND_END_USER));
+        return new AccountManagerModel(MANAGER_ID, MANAGER_NAME, newHashSet(FIRST_PARTNER, SECOND_PARTNER), newHashSet(FIRST_END_USER, SECOND_END_USER));
     }
 }

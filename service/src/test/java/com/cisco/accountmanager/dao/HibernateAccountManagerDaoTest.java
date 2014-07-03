@@ -42,6 +42,13 @@ public class HibernateAccountManagerDaoTest extends BasicDb {
         accountManagerDao.saveOrUpdate(newArrayList(updateAccountManager(), secondAccountManager()));
     }
 
+    @Test
+    @DataSet("account_managers.xml")
+    public void thatDeleteAccountManagerFromDb() {
+        accountManagerDao.delete(accountManager());
+        assertThat(accountManagerDao.getAccountManagers()).isEmpty();
+    }
+
     private AccountManager accountManager() {
         return new AccountManager(1, "Manager", "{partners:[]}", "{endUsers:[]}");
     }

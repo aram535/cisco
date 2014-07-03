@@ -1,6 +1,6 @@
 package com.cisco.accountmanager.service;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * User: Rost
@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface JsonConverter {
 
-    List<String> fromJson(String json);
+    Set<String> fromJson(String json);
 
-    String toJson(List<String> items);
+    String toJson(Set<String> items);
 }

@@ -37,4 +37,11 @@ public class HibernateAccountManagerDao implements AccountManagerDao {
             currentSession.saveOrUpdate(manager);
         }
     }
+
+    @Transactional(propagation = REQUIRED)
+    @Override
+    public void delete(AccountManager accountManager) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.delete(accountManager);
+    }
 }

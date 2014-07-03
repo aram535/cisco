@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -107,7 +108,17 @@ public class DefaultAccountManagerServiceTest {
         accountManagerService.saveOrUpdate(accountManagersModels);
 
         verify(accountManagerDao).saveOrUpdate(accountManagers);
-        verifyNoMoreInteractions(accountManagerDao);
+    }
+
+    @Test
+    public void thatDelegatesDeletingToDaoAfterFactoryCreation() {
+        List<AccountManagerModel> accountManagersModels = getAccountManagersModels();
+        List<AccountManager> accountManagers = getAccountManagers();
+        when(accountManagerModelFactory.createManagers(accountManagersModels)).thenReturn(accountManagers);
+
+        accountManagerService.delete(createAccountManagerModel());
+
+        verify(accountManagerDao).delete(createAccountManager());
     }
 
     private void initNotNullManagers() {
@@ -127,7 +138,7 @@ public class DefaultAccountManagerServiceTest {
     }
 
     private AccountManagerModel createAccountManagerModel() {
-        return new AccountManagerModel(MANAGER_ID, MANAGER_NAME, newArrayList(FIRST_PARTNER, SECOND_PARTNER), newArrayList(FIRST_END_USER, SECOND_END_USER));
+        return new AccountManagerModel(MANAGER_ID, MANAGER_NAME, newHashSet(FIRST_PARTNER, SECOND_PARTNER), newHashSet(FIRST_END_USER, SECOND_END_USER));
     }
 
     private AccountManager createAccountManager() {

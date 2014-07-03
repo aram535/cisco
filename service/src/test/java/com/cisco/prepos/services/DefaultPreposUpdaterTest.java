@@ -10,6 +10,7 @@ import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class DefaultPreposUpdaterTest {
     private static final String OTHER_SERIALS = "OTHER_SERIALS";
     private static final String ACCOUNT_MANAGER_NAME = "Manager";
 
-    private AccountManagerModel accountManagerModel = new AccountManagerModel(1L, ACCOUNT_MANAGER_NAME, Lists.<String>newArrayList(), Lists.<String>newArrayList());
+    private AccountManagerModel accountManagerModel = new AccountManagerModel(1L, ACCOUNT_MANAGER_NAME, Sets.<String>newHashSet(), Sets.<String>newHashSet());
 
     @InjectMocks
     private DefaultPreposUpdater preposUpdater = new DefaultPreposUpdater();
