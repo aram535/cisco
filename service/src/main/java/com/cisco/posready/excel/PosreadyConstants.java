@@ -5,7 +5,7 @@ package com.cisco.posready.excel;
  */
 public class PosreadyConstants {
 
-	public static final int TOTAL_CELL_COUNT = 74;
+	public static final int TOTAL_CELL_COUNT = 76;
 	public static final String POS_READY_SHEET_NAME = "POS_READY";
 
 	public static final String DISTRIBUTOR_WAREHOUSE_NUMBER = "Distributor Warehouse Number";
@@ -19,8 +19,7 @@ public class PosreadyConstants {
 	public static final String RESELLER_CONTACT_NAME = "Reseller Contact Name";
 	public static final String RESELLER_CONTACT_TELEPHONE = "Reseller Contact Telephone";
 	public static final String RESELLER_CONTACT_EMAIL = "Reseller Contact Email";
-	public static final String DISTRIBUTOR_TO_RESELLER = "Distributor to Reseller";
-	public static final String INVOICE_DATE_SHIPPED_DATE = "Invoice Date (Shipped Date)";
+	public static final String DISTRIBUTOR_TO_RESELLER_INVOICE_DATE_SHIPPED_DATE = "Distributor to Reseller Invoice Date (Shipped Date)";
 	public static final String DISTRIBUTOR_TO_RESELLER_SALES_ORDER_DATE = "Distributor to Reseller Sales Order Date";
 	public static final String RESELLER_TO_DISTRIBUTOR_PO_NUMBER = "Reseller to Distributor PO Number";
 	public static final String DISTRIBUTOR_TO_RESELLER_INVOICE_NUMBER = "Distributor to Reseller Invoice Number";
@@ -47,17 +46,20 @@ public class PosreadyConstants {
 	public static final String END_CUSTOMER_CONTACT_NAME = "End Customer Contact Name";
 	public static final String END_CUSTOMER_CONTACT_TELEPHONE = "End Customer Contact Telephone";
 	public static final String END_CUSTOMER_CONTACT_EMAIL = "End Customer Contact Email";
-	public static final String SP_SERVICE_SHIP_TO_NAME = "SP Service	Ship-To Name";
+	public static final String SP_SERVICE = "SP Service";
+	public static final String SHIP_TO_NAME = "Ship-To Name";
 	public static final String SHIP_TO_ADDRESS1 = "Ship-To Address1";
 	public static final String SHIP_TO_ADDRESS2 = "Ship-To Address2";
 	public static final String SHIP_TO_CITY = "Ship-To City";
 	public static final String SHIP_TO_ZIP_POSTAL_CODE = "Ship-To Zip / Postal Code";
-	public static final String SHIP_TO_COUNTRY_BILL_TO_NAME = "Ship-To Country	Bill-To Name";
+	public static final String SHIP_TO_COUNTRY = "Ship-To Country";
+	public static final String BILL_TO_NAME = "Bill-To Name";
 	public static final String BILL_TO_ADDRESS1 = "Bill-To Address1";
 	public static final String BILL_TO_ADDRESS2 = "Bill-To Address2";
 	public static final String BILL_TO_CITY = "Bill-To City";
 	public static final String BILL_TO_ZIP_POSTAL_CODE = "Bill-To Zip / Postal Code";
-	public static final String BILL_TO_COUNTRY_REPORTED_DEAL_ID = "Bill-To Country	Reported Deal ID";
+	public static final String BILL_TO_COUNTRY = "Bill-To Country";
+	public static final String REPORTED_DEAL_ID = "Reported Deal ID";
 	public static final String PROMOTION_AUTHORIZATION_NUMBER_1 = "Promotion Authorization Number 1";
 	public static final String CLAIM_REFERENCE_NUMBER_1 = "Claim Reference Number 1";
 	public static final String CLAIM_ELIGIBILITY_QUANTITY_1 = "Claim Eligibility Quantity 1";

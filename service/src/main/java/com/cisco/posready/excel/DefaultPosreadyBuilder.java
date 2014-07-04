@@ -12,28 +12,32 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import static com.cisco.posready.excel.PosreadyConstants.*;
 import static com.cisco.posready.excel.PosreadyConstants.ColumnId.*;
 import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by Alf on 02.07.2014.
  */
-public class DefaultPosreadyExporter implements PosreadyExporter {
+@Component
+public class DefaultPosreadyBuilder implements PosreadyBuilder {
 
 	@Autowired
 	private PosreadyFieldsBuilder posreadyFieldsBuilder;
 
 	@Override
-	public Workbook exportDarts(List<Prepos> preposes, Map<String, Client> clientMap,
-	                            Map<String, Pricelist> pricelistsMap,
-	                            Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap) {
+	public byte[] buildPosready(List<Prepos> preposes, Map<String, Client> clientMap,
+	                              Map<String, Pricelist> pricelistsMap,
+	                              Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap) {
 
 		if(preposes.isEmpty()) {
 			throw new CiscoException("Nothing to export. Prepos list is empty");
@@ -50,7 +54,10 @@ public class DefaultPosreadyExporter implements PosreadyExporter {
 			Row dataRow = posreadyFieldsBuilder.createEmptyDataRow(sheet, i++, TOTAL_CELL_COUNT);
 
 			Client client = clientMap.get(prepos.getClientNumber());
+			checkNotNull(client, String.format("No client was found for prepos with PN: %s", prepos.getPartNumber()));
+
 			Pricelist pricelist = pricelistsMap.get(prepos.getPartNumber());
+			checkNotNull(pricelist, String.format("No pricelist was found for prepos with PN: %s", prepos.getPartNumber()));
 
 			posreadyFieldsBuilder.setStringCellValue(dataRow, PARTNER_NAME_COLUMN, prepos.getPartnerName());
 			posreadyFieldsBuilder.setStringCellValue(dataRow, CLIENT_NUMBER_COLUMN, prepos.getClientNumber());
@@ -89,7 +96,16 @@ public class DefaultPosreadyExporter implements PosreadyExporter {
 
 		}
 
-		return workbook;
+
+		try(ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+			workbook.write(bos);
+
+			return bos.toByteArray();
+
+		} catch (IOException e) {
+			throw new CiscoException("Error while getting bytes from workbook", e);
+		}
+
 	}
 
 	private String getClaimAmout(int quantity, String claimPerUnit) {
@@ -191,70 +207,74 @@ public class DefaultPosreadyExporter implements PosreadyExporter {
 		posreadyFieldsBuilder.buildStringCell(row, 8, RESELLER_CONTACT_NAME);
 		posreadyFieldsBuilder.buildStringCell(row, 9, RESELLER_CONTACT_TELEPHONE);
 		posreadyFieldsBuilder.buildStringCell(row, 10, RESELLER_CONTACT_EMAIL);
-		posreadyFieldsBuilder.buildStringCell(row, 11, DISTRIBUTOR_TO_RESELLER);
-		posreadyFieldsBuilder.buildStringCell(row, 12, INVOICE_DATE_SHIPPED_DATE);
-		posreadyFieldsBuilder.buildStringCell(row, 13, DISTRIBUTOR_TO_RESELLER_SALES_ORDER_DATE);
-		posreadyFieldsBuilder.buildStringCell(row, 14, RESELLER_TO_DISTRIBUTOR_PO_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 15, DISTRIBUTOR_TO_RESELLER_INVOICE_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 16, ORIGINAL_DISTRIBUTOR_TO_RESELLER_INVOICE_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 17, SO_LINE_NUMBER_ORDER_LINE_ITEM_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 18, DISTRIBUTOR_SALES_ORDER_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 19, ORIGINAL_DISTRIBUTOR_TO_RESELLER_SALES_ORDER_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 20, DISTRIBUTOR_PART_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 21, CISCO_STANDARD_PART_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 22, PRODUCT_ITEM_DESCRIPTION);
-		posreadyFieldsBuilder.buildStringCell(row, 23, PRODUCT_QUANTITY);
-		posreadyFieldsBuilder.buildStringCell(row, 24, DROP_SHIP);
-		posreadyFieldsBuilder.buildStringCell(row, 25, DISTRIBUTOR_PO_NUMBER_TO_CISCO);
-		posreadyFieldsBuilder.buildStringCell(row, 26, REPORTED_PRODUCT_UNIT_PRICE_USD);
-		posreadyFieldsBuilder.buildStringCell(row, 28, REPORTED_NET_POS_PRICE);
-		posreadyFieldsBuilder.buildStringCell(row, 29, PRODUCT_SERIAL_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 30, END_CUSTOMER_NAME);
-		posreadyFieldsBuilder.buildStringCell(row, 31, END_CUSTOMER_ADDRESS1);
-		posreadyFieldsBuilder.buildStringCell(row, 32, END_CUSTOMER_ADDRESS2);
-		posreadyFieldsBuilder.buildStringCell(row, 33, END_CUSTOMER_CITY);
-		posreadyFieldsBuilder.buildStringCell(row, 34, END_CUSTOMER_ZIP_POSTAL_CODE);
-		posreadyFieldsBuilder.buildStringCell(row, 35, END_CUSTOMER_COUNTRY);
-		posreadyFieldsBuilder.buildStringCell(row, 36, END_CUSTOMER_TO_RESELLER_PO_NUMBER);
-		posreadyFieldsBuilder.buildStringCell(row, 37, END_CUSTOMER_CONTACT_NAME);
-		posreadyFieldsBuilder.buildStringCell(row, 38, END_CUSTOMER_CONTACT_TELEPHONE);
-		posreadyFieldsBuilder.buildStringCell(row, 39, END_CUSTOMER_CONTACT_EMAIL);
-		posreadyFieldsBuilder.buildStringCell(row, 40, SP_SERVICE_SHIP_TO_NAME);
-		posreadyFieldsBuilder.buildStringCell(row, 41, SHIP_TO_ADDRESS1);
-		posreadyFieldsBuilder.buildStringCell(row, 42, SHIP_TO_ADDRESS2);
-		posreadyFieldsBuilder.buildStringCell(row, 43, SHIP_TO_CITY);
-		posreadyFieldsBuilder.buildStringCell(row, 44, SHIP_TO_ZIP_POSTAL_CODE);
-		posreadyFieldsBuilder.buildStringCell(row, 45, SHIP_TO_COUNTRY_BILL_TO_NAME);
+		posreadyFieldsBuilder.buildStringCell(row, 11, DISTRIBUTOR_TO_RESELLER_INVOICE_DATE_SHIPPED_DATE);
+		posreadyFieldsBuilder.buildStringCell(row, 12, DISTRIBUTOR_TO_RESELLER_SALES_ORDER_DATE);
+		posreadyFieldsBuilder.buildStringCell(row, 13, RESELLER_TO_DISTRIBUTOR_PO_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 14, DISTRIBUTOR_TO_RESELLER_INVOICE_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 15, ORIGINAL_DISTRIBUTOR_TO_RESELLER_INVOICE_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 16, SO_LINE_NUMBER_ORDER_LINE_ITEM_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 17, DISTRIBUTOR_SALES_ORDER_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 18, ORIGINAL_DISTRIBUTOR_TO_RESELLER_SALES_ORDER_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 19, DISTRIBUTOR_PART_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 20, CISCO_STANDARD_PART_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 21, PRODUCT_ITEM_DESCRIPTION);
+		posreadyFieldsBuilder.buildStringCell(row, 22, PRODUCT_QUANTITY);
+		posreadyFieldsBuilder.buildStringCell(row, 23, DROP_SHIP);
+		posreadyFieldsBuilder.buildStringCell(row, 24, DISTRIBUTOR_PO_NUMBER_TO_CISCO);
+		posreadyFieldsBuilder.buildStringCell(row, 25, REPORTED_PRODUCT_UNIT_PRICE_USD);
+		posreadyFieldsBuilder.buildStringCell(row, 26, REPORTED_NET_POS_PRICE);
+		posreadyFieldsBuilder.buildStringCell(row, 27, PRODUCT_SERIAL_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 28, END_CUSTOMER_NAME);
+		posreadyFieldsBuilder.buildStringCell(row, 29, END_CUSTOMER_ADDRESS1);
+		posreadyFieldsBuilder.buildStringCell(row, 30, END_CUSTOMER_ADDRESS2);
+		posreadyFieldsBuilder.buildStringCell(row, 31, END_CUSTOMER_CITY);
+		posreadyFieldsBuilder.buildStringCell(row, 32, END_CUSTOMER_ZIP_POSTAL_CODE);
+		posreadyFieldsBuilder.buildStringCell(row, 33, END_CUSTOMER_COUNTRY);
+		posreadyFieldsBuilder.buildStringCell(row, 34, END_CUSTOMER_TO_RESELLER_PO_NUMBER);
+		posreadyFieldsBuilder.buildStringCell(row, 35, END_CUSTOMER_CONTACT_NAME);
+		posreadyFieldsBuilder.buildStringCell(row, 36, END_CUSTOMER_CONTACT_TELEPHONE);
+		posreadyFieldsBuilder.buildStringCell(row, 37, END_CUSTOMER_CONTACT_EMAIL);
+		posreadyFieldsBuilder.buildStringCell(row, 38, SP_SERVICE);
+		posreadyFieldsBuilder.buildStringCell(row, 39, SHIP_TO_NAME);
+		posreadyFieldsBuilder.buildStringCell(row, 40, SHIP_TO_ADDRESS1);
+		posreadyFieldsBuilder.buildStringCell(row, 41, SHIP_TO_ADDRESS2);
+		posreadyFieldsBuilder.buildStringCell(row, 42, SHIP_TO_CITY);
+		posreadyFieldsBuilder.buildStringCell(row, 43, SHIP_TO_ZIP_POSTAL_CODE);
+		posreadyFieldsBuilder.buildStringCell(row, 44, SHIP_TO_COUNTRY);
+		posreadyFieldsBuilder.buildStringCell(row, 45, BILL_TO_NAME);
 		posreadyFieldsBuilder.buildStringCell(row, 46, BILL_TO_ADDRESS1);
 		posreadyFieldsBuilder.buildStringCell(row, 47, BILL_TO_ADDRESS2);
 		posreadyFieldsBuilder.buildStringCell(row, 48, BILL_TO_CITY);
 		posreadyFieldsBuilder.buildStringCell(row, 49, BILL_TO_ZIP_POSTAL_CODE);
-		posreadyFieldsBuilder.buildStringCell(row, 50, BILL_TO_COUNTRY_REPORTED_DEAL_ID);
-		posreadyFieldsBuilder.buildStringCell(row, 51, PROMOTION_AUTHORIZATION_NUMBER_1);
-		posreadyFieldsBuilder.buildStringCell(row, 52, CLAIM_REFERENCE_NUMBER_1);
-		posreadyFieldsBuilder.buildStringCell(row, 53, CLAIM_ELIGIBILITY_QUANTITY_1);
-		posreadyFieldsBuilder.buildStringCell(row, 54, CLAIM_PER_UNIT_1);
-		posreadyFieldsBuilder.buildStringCell(row, 55, EXTENDED_CLAIM_AMOUNT_1);
-		posreadyFieldsBuilder.buildStringCell(row, 56, COMMENTS_1);
-		posreadyFieldsBuilder.buildStringCell(row, 57, PROMOTION_AUTHORIZATION_NUMBER_2);
-		posreadyFieldsBuilder.buildStringCell(row, 58, CLAIM_REFERENCE_NUMBER_2);
-		posreadyFieldsBuilder.buildStringCell(row, 59, CLAIM_ELIGIBILITY_QUANTITY_2);
-		posreadyFieldsBuilder.buildStringCell(row, 60, CLAIM_PER_UNIT_2);
-		posreadyFieldsBuilder.buildStringCell(row, 61, EXTENDED_CLAIM_AMOUNT_2);
-		posreadyFieldsBuilder.buildStringCell(row, 62, COMMENTS_2);
-		posreadyFieldsBuilder.buildStringCell(row, 63, PROMOTION_AUTHORIZATION_NUMBER_3);
-		posreadyFieldsBuilder.buildStringCell(row, 64, CLAIM_REFERENCE_NUMBER_3);
-		posreadyFieldsBuilder.buildStringCell(row, 65, CLAIM_ELIGIBILITY_QUANTITY_3);
-		posreadyFieldsBuilder.buildStringCell(row, 66, CLAIM_PER_UNIT_3);
-		posreadyFieldsBuilder.buildStringCell(row, 67, EXTENDED_CLAIM_AMOUNT_3);
-		posreadyFieldsBuilder.buildStringCell(row, 68, COMMENTS_3);
-		posreadyFieldsBuilder.buildStringCell(row, 69, PROMOTION_AUTHORIZATION_NUMBER_4);
-		posreadyFieldsBuilder.buildStringCell(row, 70, CLAIM_REFERENCE_NUMBER_4);
-		posreadyFieldsBuilder.buildStringCell(row, 71, CLAIM_ELIGIBILITY_QUANTITY_4);
-		posreadyFieldsBuilder.buildStringCell(row, 72, CLAIM_PER_UNIT_4);
-		posreadyFieldsBuilder.buildStringCell(row, 73, EXTENDED_CLAIM_AMOUNT_4);
-		posreadyFieldsBuilder.buildStringCell(row, 74, COMMENTS_4);
+		posreadyFieldsBuilder.buildStringCell(row, 50, BILL_TO_COUNTRY);
+		posreadyFieldsBuilder.buildStringCell(row, 51, REPORTED_DEAL_ID);
+		posreadyFieldsBuilder.buildStringCell(row, 52, PROMOTION_AUTHORIZATION_NUMBER_1);
+		posreadyFieldsBuilder.buildStringCell(row, 53, CLAIM_REFERENCE_NUMBER_1);
+		posreadyFieldsBuilder.buildStringCell(row, 54, CLAIM_ELIGIBILITY_QUANTITY_1);
+		posreadyFieldsBuilder.buildStringCell(row, 55, CLAIM_PER_UNIT_1);
+		posreadyFieldsBuilder.buildStringCell(row, 56, EXTENDED_CLAIM_AMOUNT_1);
+		posreadyFieldsBuilder.buildStringCell(row, 57, COMMENTS_1);
+		posreadyFieldsBuilder.buildStringCell(row, 58, PROMOTION_AUTHORIZATION_NUMBER_2);
+		posreadyFieldsBuilder.buildStringCell(row, 59, CLAIM_REFERENCE_NUMBER_2);
+		posreadyFieldsBuilder.buildStringCell(row, 60, CLAIM_ELIGIBILITY_QUANTITY_2);
+		posreadyFieldsBuilder.buildStringCell(row, 61, CLAIM_PER_UNIT_2);
+		posreadyFieldsBuilder.buildStringCell(row, 62, EXTENDED_CLAIM_AMOUNT_2);
+		posreadyFieldsBuilder.buildStringCell(row, 63, COMMENTS_2);
+		posreadyFieldsBuilder.buildStringCell(row, 64, PROMOTION_AUTHORIZATION_NUMBER_3);
+		posreadyFieldsBuilder.buildStringCell(row, 65, CLAIM_REFERENCE_NUMBER_3);
+		posreadyFieldsBuilder.buildStringCell(row, 66, CLAIM_ELIGIBILITY_QUANTITY_3);
+		posreadyFieldsBuilder.buildStringCell(row, 67, CLAIM_PER_UNIT_3);
+		posreadyFieldsBuilder.buildStringCell(row, 68, EXTENDED_CLAIM_AMOUNT_3);
+		posreadyFieldsBuilder.buildStringCell(row, 69, COMMENTS_3);
+		posreadyFieldsBuilder.buildStringCell(row, 70, PROMOTION_AUTHORIZATION_NUMBER_4);
+		posreadyFieldsBuilder.buildStringCell(row, 71, CLAIM_REFERENCE_NUMBER_4);
+		posreadyFieldsBuilder.buildStringCell(row, 72, CLAIM_ELIGIBILITY_QUANTITY_4);
+		posreadyFieldsBuilder.buildStringCell(row, 73, CLAIM_PER_UNIT_4);
+		posreadyFieldsBuilder.buildStringCell(row, 74, EXTENDED_CLAIM_AMOUNT_4);
+		posreadyFieldsBuilder.buildStringCell(row, 75, COMMENTS_4);
 
 		return row;
 	}
+
+	//TODO что если нет клиента?
 }

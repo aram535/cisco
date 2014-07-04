@@ -122,5 +122,6 @@
             </template>
         </combobox>
         <button id="setStatus" label="Set status" onClick="@command('setStatus')"/>
+        <button id="exportPosready" label="Get POS READY" onClick="@command('exportPosready')"/>
     </groupbox>
 </window>

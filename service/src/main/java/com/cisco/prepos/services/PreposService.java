@@ -4,6 +4,7 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.cisco.prepos.dto.Prepos.Status;
@@ -20,4 +21,7 @@ public interface PreposService {
     public Prepos recountPrepos(Prepos prepos, Dart selectedDart);
 
 	void validatePreposForSelectedDart(List<PreposModel> preposModels, PreposModel preposModel);
+
+	public String exportPosready(Collection<PreposModel> preposes);
+
 }

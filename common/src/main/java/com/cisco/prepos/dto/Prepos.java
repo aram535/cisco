@@ -37,12 +37,13 @@ public class Prepos {
     private int zip;
     private String accountManagerName;
     private Status status;
+    private String posready_id;
 
 
     public Prepos() {
     }
 
-    public Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip, String accountManagerName, Status status) {
+    public Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip, String accountManagerName, Status status, String posready_id) {
         this.id = id;
         this.type = type;
         this.partnerName = partnerName;
@@ -66,6 +67,7 @@ public class Prepos {
         this.zip = zip;
         this.accountManagerName = accountManagerName;
         this.status = status;
+	    this.posready_id = posready_id;
     }
 
     @Id
@@ -184,6 +186,11 @@ public class Prepos {
         return status;
     }
 
+	@Column(name = "posready_id")
+	public String getPosreadyId() {
+		return posready_id;
+	}
+
     public void setId(long id) {
         this.id = id;
     }
@@ -276,105 +283,112 @@ public class Prepos {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj == this) {
-            return true;
-        }
-        if (obj.getClass() != getClass()) {
-            return false;
-        }
-        Prepos rhs = (Prepos) obj;
-        return new EqualsBuilder()
-                .append(this.id, rhs.id)
-                .append(this.type, rhs.type)
-                .append(this.partnerName, rhs.partnerName)
-                .append(this.partNumber, rhs.partNumber)
-                .append(this.posSum, rhs.posSum)
-                .append(this.quantity, rhs.quantity)
-                .append(this.ok, rhs.ok)
-                .append(this.delta, rhs.delta)
-                .append(this.saleDiscount, rhs.saleDiscount)
-                .append(this.buyDiscount, rhs.buyDiscount)
-                .append(this.salePrice, rhs.salePrice)
-                .append(this.buyPrice, rhs.buyPrice)
-                .append(this.firstPromo, rhs.firstPromo)
-                .append(this.secondPromo, rhs.secondPromo)
-                .append(this.endUser, rhs.endUser)
-                .append(this.clientNumber, rhs.clientNumber)
-                .append(this.shippedDate, rhs.shippedDate)
-                .append(this.shippedBillNumber, rhs.shippedBillNumber)
-                .append(this.comment, rhs.comment)
-                .append(this.serials, rhs.serials)
-                .append(this.zip, rhs.zip)
-                .append(this.accountManagerName, rhs.accountManagerName)
-                .append(this.status, rhs.status)
-                .isEquals();
-    }
+	public void setPosreadyId(String posready_id) {
+		this.posready_id = posready_id;
+	}
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .append(id)
-                .append(type)
-                .append(partnerName)
-                .append(partNumber)
-                .append(posSum)
-                .append(quantity)
-                .append(ok)
-                .append(delta)
-                .append(saleDiscount)
-                .append(buyDiscount)
-                .append(salePrice)
-                .append(buyPrice)
-                .append(firstPromo)
-                .append(secondPromo)
-                .append(endUser)
-                .append(clientNumber)
-                .append(shippedDate)
-                .append(shippedBillNumber)
-                .append(comment)
-                .append(serials)
-                .append(zip)
-                .append(status)
-                .append(accountManagerName)
-                .toHashCode();
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() != getClass()) {
+			return false;
+		}
+		Prepos rhs = (Prepos) obj;
+		return new EqualsBuilder()
+				.append(this.id, rhs.id)
+				.append(this.type, rhs.type)
+				.append(this.partnerName, rhs.partnerName)
+				.append(this.partNumber, rhs.partNumber)
+				.append(this.posSum, rhs.posSum)
+				.append(this.quantity, rhs.quantity)
+				.append(this.ok, rhs.ok)
+				.append(this.delta, rhs.delta)
+				.append(this.saleDiscount, rhs.saleDiscount)
+				.append(this.buyDiscount, rhs.buyDiscount)
+				.append(this.salePrice, rhs.salePrice)
+				.append(this.buyPrice, rhs.buyPrice)
+				.append(this.firstPromo, rhs.firstPromo)
+				.append(this.secondPromo, rhs.secondPromo)
+				.append(this.endUser, rhs.endUser)
+				.append(this.clientNumber, rhs.clientNumber)
+				.append(this.shippedDate, rhs.shippedDate)
+				.append(this.shippedBillNumber, rhs.shippedBillNumber)
+				.append(this.comment, rhs.comment)
+				.append(this.serials, rhs.serials)
+				.append(this.zip, rhs.zip)
+				.append(this.accountManagerName, rhs.accountManagerName)
+				.append(this.status, rhs.status)
+				.append(this.posready_id, rhs.posready_id)
+				.isEquals();
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("id", id)
-                .append("type", type)
-                .append("partnerName", partnerName)
-                .append("partNumber", partNumber)
-                .append("posSum", posSum)
-                .append("quantity", quantity)
-                .append("ok", ok)
-                .append("delta", delta)
-                .append("saleDiscount", saleDiscount)
-                .append("buyDiscount", buyDiscount)
-                .append("salePrice", salePrice)
-                .append("buyPrice", buyPrice)
-                .append("firstPromo", firstPromo)
-                .append("secondPromo", secondPromo)
-                .append("endUser", endUser)
-                .append("clientNumber", clientNumber)
-                .append("shippedDate", shippedDate)
-                .append("shippedBillNumber", shippedBillNumber)
-                .append("comment", comment)
-                .append("serials", serials)
-                .append("zip", zip)
-                .append("accountManagerName", accountManagerName)
-                .append("status", status)
-                .toString();
-    }
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.append(id)
+				.append(type)
+				.append(partnerName)
+				.append(partNumber)
+				.append(posSum)
+				.append(quantity)
+				.append(ok)
+				.append(delta)
+				.append(saleDiscount)
+				.append(buyDiscount)
+				.append(salePrice)
+				.append(buyPrice)
+				.append(firstPromo)
+				.append(secondPromo)
+				.append(endUser)
+				.append(clientNumber)
+				.append(shippedDate)
+				.append(shippedBillNumber)
+				.append(comment)
+				.append(serials)
+				.append(zip)
+				.append(accountManagerName)
+				.append(status)
+				.append(posready_id)
+				.toHashCode();
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.append("id", id)
+				.append("type", type)
+				.append("partnerName", partnerName)
+				.append("partNumber", partNumber)
+				.append("posSum", posSum)
+				.append("quantity", quantity)
+				.append("ok", ok)
+				.append("delta", delta)
+				.append("saleDiscount", saleDiscount)
+				.append("buyDiscount", buyDiscount)
+				.append("salePrice", salePrice)
+				.append("buyPrice", buyPrice)
+				.append("firstPromo", firstPromo)
+				.append("secondPromo", secondPromo)
+				.append("endUser", endUser)
+				.append("clientNumber", clientNumber)
+				.append("shippedDate", shippedDate)
+				.append("shippedBillNumber", shippedBillNumber)
+				.append("comment", comment)
+				.append("serials", serials)
+				.append("zip", zip)
+				.append("accountManagerName", accountManagerName)
+				.append("status", status)
+				.append("posready_id", posready_id)
+				.toString();
+	}
 
 
-    public enum Status {
+	public enum Status {
         NOT_PROCESSED("NOT_PROCESSED"),
         PROCESSED("PROCESSED"),
         WAITING("WAITING"),

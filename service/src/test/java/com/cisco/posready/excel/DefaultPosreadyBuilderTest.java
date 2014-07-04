@@ -7,22 +7,26 @@ import com.cisco.prepos.dto.Prepos;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 
-import static com.cisco.posready.excel.PosreadyConstants.*;
 import static com.cisco.posready.excel.PosreadyConstants.ColumnId.*;
-import static com.cisco.posready.excel.PosreadyConstants.POS_READY_SHEET_NAME;
-import static com.cisco.posready.excel.PosreadyConstants.RESELLER_COUNTRY;
+import static com.cisco.posready.excel.PosreadyConstants.*;
+import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 import static com.cisco.testtools.TestObjects.ClientsFactory.newClient;
 import static com.cisco.testtools.TestObjects.DartsFactory.getDartsTable;
 import static com.cisco.testtools.TestObjects.PART_NUMBER;
@@ -36,38 +40,36 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DefaultPosreadyExporterTest {
+public class DefaultPosreadyBuilderTest {
 
 	@InjectMocks
-	private DefaultPosreadyExporter posreadyExporter = new DefaultPosreadyExporter();
+	private DefaultPosreadyBuilder posreadyExporter = new DefaultPosreadyBuilder();
 
 	@Spy
 	private DefaultPosreadyFieldsBuilder posreadyFieldsBuilder;
 
-	private static final String SELECTED_DART_AUTHORIZATION_NUMBER = "other authorization number";
-	private static final String SELECTED_DART_END_USER_NAME = "other end user name";
-	private static final int OTHER_GPL = 270;
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	private final Prepos prepos = newPrepos();
-	private final Pricelist newPricelist = newPricelist(OTHER_GPL);
-	private final Promo promo = newPromo("other promo code");
+
 	private final Map<String, Client> clientsMap = of(prepos.getClientNumber(), newClient());
 	private final Table<String, String, Dart> dartsTable = getDartsTable();
-	private final Map<String, Pricelist> pricelistMap = of(prepos.getPartNumber(), newPricelist);
-	private final Map<String, Promo> promosMap = of(PART_NUMBER, promo);
+	private final Map<String, Pricelist> pricelistMap = of(prepos.getPartNumber(), newPricelist());
+	private final Map<String, Promo> promosMap = of(PART_NUMBER, newPromo());
 
 	@Test(expected = CiscoException.class)
 	public void thatThrowsExceptionWhenInputIsEmpty() throws Exception {
 
-		posreadyExporter.exportDarts(Lists.<Prepos>newArrayList(), clientsMap, pricelistMap, dartsTable, promosMap);
+		posreadyExporter.buildPosready(Lists.<Prepos>newArrayList(), clientsMap, pricelistMap, dartsTable, promosMap);
 	}
 
 	@Test
 	public void thatExportedPosreadysTitleRowContainsCorrectNumberOfColunms() throws Exception {
 
-		Prepos prepos = newPrepos();
+		byte[] bytes = posreadyExporter.buildPosready(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
 
-		Workbook workbook = posreadyExporter.exportDarts(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
+		Workbook workbook = new HSSFWorkbook(new ByteArrayInputStream(bytes));
 
 		Sheet posReadySheet = workbook.getSheet(POS_READY_SHEET_NAME);
 
@@ -80,9 +82,9 @@ public class DefaultPosreadyExporterTest {
 	@Test
 	public void thatSinglePreposResultsInCorrectDataRow() throws Exception {
 
-		Prepos prepos = newPrepos();
+		byte[] bytes = posreadyExporter.buildPosready(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
 
-		Workbook workbook = posreadyExporter.exportDarts(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
+		Workbook workbook = new HSSFWorkbook(new ByteArrayInputStream(bytes));
 
 		Sheet posReadySheet = workbook.getSheet(POS_READY_SHEET_NAME);
 
@@ -118,6 +120,79 @@ public class DefaultPosreadyExporterTest {
 
 	}
 
-	//TODO END user or partner name logic
-	//TODO Promo1 / Promo2 logic
+	@Test
+	public void thatPartnerNameIsSetWhenEndUserIsEmpty() throws Exception {
+
+		prepos.setEndUser("");
+
+		byte[] bytes = posreadyExporter.buildPosready(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
+
+		Workbook workbook = new HSSFWorkbook(new ByteArrayInputStream(bytes));
+
+		Sheet posReadySheet = workbook.getSheet(POS_READY_SHEET_NAME);
+
+		Row row = posReadySheet.getRow(1);
+
+		assertEquals(row.getCell(END_USER_COLUMN).getStringCellValue(), prepos.getPartnerName());
+
+	}
+
+	@Test
+	public void thatPromo1ValuesIsSetWhenPromo2IsEmpty() throws Exception {
+
+		prepos.setSecondPromo("");
+
+		byte[] bytes = posreadyExporter.buildPosready(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
+
+		Workbook workbook = new HSSFWorkbook(new ByteArrayInputStream(bytes));
+
+		Sheet posReadySheet = workbook.getSheet(POS_READY_SHEET_NAME);
+
+		Row row = posReadySheet.getRow(1);
+
+		Promo promo = promosMap.get(prepos.getPartNumber());
+
+		assertEquals(row.getCell(PROMO_VERSION_COLUMN).getStringCellValue(), String.valueOf(promo.getVersion()));
+		assertEquals(row.getCell(CLAIM_PER_UNIT_COLUMN).getStringCellValue(), String.valueOf(promo.getClaimPerUnit()));
+		assertEquals(row.getCell(EXTENDED_CLAIM_AMOUNT_COLUMN).getStringCellValue(), String.valueOf(getRoundedDouble(promo.getClaimPerUnit() * prepos.getQuantity())));
+	}
+
+	@Test
+	public void thatExceptionIsThrownWnenNoClientFound() throws Exception {
+
+		expectedException.expect(NullPointerException.class);
+		expectedException.expectMessage(String.format("No client was found for prepos with PN: %s", prepos.getPartNumber()));
+
+		posreadyExporter.buildPosready(Lists.newArrayList(prepos), Maps.<String, Client>newHashMap(), pricelistMap, dartsTable, promosMap);
+	}
+
+	@Test
+	public void thatExceptionIsThrownWnenNoPricelistFound() throws Exception {
+
+		expectedException.expect(NullPointerException.class);
+		expectedException.expectMessage(String.format("No pricelist was found for prepos with PN: %s", prepos.getPartNumber()));
+
+		posreadyExporter.buildPosready(Lists.newArrayList(prepos), clientsMap, Maps.<String, Pricelist>newHashMap(), dartsTable, promosMap);
+
+	}
+
+	@Test
+	public void thatResultHaveEmptyPromoFiledsWhenNoPromo1AndPromo2Exisits() throws Exception {
+
+		prepos.setSecondPromo("");
+		prepos.setFirstPromo("");
+
+		byte[] bytes = posreadyExporter.buildPosready(Lists.newArrayList(prepos), clientsMap, pricelistMap, dartsTable, promosMap);
+
+		Workbook workbook = new HSSFWorkbook(new ByteArrayInputStream(bytes));
+
+		Sheet posReadySheet = workbook.getSheet(POS_READY_SHEET_NAME);
+
+		Row row = posReadySheet.getRow(1);
+
+		assertEquals(row.getCell(PROMO_VERSION_COLUMN).getStringCellValue(), "");
+		assertEquals(row.getCell(CLAIM_PER_UNIT_COLUMN).getStringCellValue(), "");
+		assertEquals(row.getCell(EXTENDED_CLAIM_AMOUNT_COLUMN).getStringCellValue(), "");
+
+	}
 }

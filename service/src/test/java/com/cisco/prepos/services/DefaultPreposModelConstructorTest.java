@@ -71,16 +71,15 @@ public class DefaultPreposModelConstructorTest {
         assertThat(preposModels).isNotNull().isEmpty();
     }
 
-    @Test
-    public void thatPreposModelBeingCorrectlyConvertedToPreposes() {
+	@Test
+	public void thatPreposModelBeingCorrectlyConvertedToPreposes() {
 
-        List<PreposModel> preposModels = getNewPreposModels();
+		List<PreposModel> preposModels = getNewPreposModels();
 
-        List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
+		List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
 
-        assertThat(preposes).isEqualTo(newPreposList());
-    }
-
+		assertThat(preposes).isEqualTo(newPreposList());
+	}
 
     private List<PreposModel> getNewPreposModels() {
         Prepos prepos = newPrepos();

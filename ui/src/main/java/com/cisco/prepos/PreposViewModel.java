@@ -10,7 +10,6 @@ import com.cisco.prepos.services.filter.PreposFilter;
 import com.cisco.prepos.services.totalsum.TotalSumCounter;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -21,14 +20,19 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Messagebox;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.dto.Prepos.Status.*;
-import static com.google.common.collect.Lists.*;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Created by Alf on 05.04.14.
@@ -37,7 +41,7 @@ import static com.google.common.collect.Lists.*;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
-    private static final String ALL_PREPOS_NOTIFY = "allPrepos";
+	private static final String ALL_PREPOS_NOTIFY = "allPrepos";
     private static final String FILTER_CHANGED_COMMAND = "filterChanged";
     private static final String STATUS_FILTER_CHANGED_COMMAND = "statusFilterChanged";
     private static final String SAVE_COMMAND = "save";
@@ -50,8 +54,9 @@ public class PreposViewModel {
 
     public static final String ALL_STATUS = "ALL";
     public static final String SET_STATUS_COMMAND = "setStatus";
+	public static final String EXPORT_POSREADY_COMMAND = "exportPosready";
 
-    private final List<String> preposStatuses =
+	private final List<String> preposStatuses =
             newArrayList(ALL_STATUS, NOT_PROCESSED.getName(), WAITING.getName(), PROCESSED.getName(),
                     CBN.getName(), NOT_FOR_REPORT.getName());
 
@@ -201,6 +206,27 @@ public class PreposViewModel {
         });
     }
 
+	@Command(EXPORT_POSREADY_COMMAND)
+	@NotifyChange(ALL_PREPOS_NOTIFY)
+	public void exportPosready() {
+
+		Collection<PreposModel> preposes = checkedPreposMap.values();
+
+		if(!preposes.isEmpty()) {
+
+			String filePath = preposService.exportPosready(preposes);
+
+			try {
+				InputStream is = new FileInputStream(filePath);
+				Filedownload.save(is, "xls", Paths.get(filePath).getFileName().toString());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+
+
+	}
+
     private void notifyChange(Object bean, String... properties) {
 
         for (String property : properties) {
@@ -218,10 +244,10 @@ public class PreposViewModel {
             Comboitem itemAtIndex = comboItem.getItemAtIndex(i);
             Dart value = itemAtIndex.getValue();
             if (secondPromo.equals(value.getAuthorizationNumber())) {
-                comboItem.setSelectedItem(itemAtIndex);
-                preposModel.setSelectedDart(value);
-                return;
-            }
+		        comboItem.setSelectedItem(itemAtIndex);
+		        preposModel.setSelectedDart(value);
+		        return;
+	        }
         }
     }
 

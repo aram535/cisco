@@ -1,17 +1,25 @@
 package com.cisco.prepos.services;
 
+import com.cisco.clients.dto.Client;
+import com.cisco.clients.service.ClientsService;
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.service.DartsService;
+import com.cisco.exception.CiscoException;
+import com.cisco.posready.service.PosreadyService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.recount.DartApplier;
+import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.service.PricelistsService;
+import com.cisco.promos.dto.Promo;
 import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Table;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -19,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static com.cisco.prepos.dto.Prepos.Status;
 import static com.cisco.sales.dto.Sale.Status.NEW;
@@ -62,6 +71,12 @@ public final class DefaultPreposService implements PreposService {
     @Autowired
     private PreposValidator preposValidator;
 
+	@Autowired
+	private PosreadyService posreadyService;
+
+	@Autowired
+	private ClientsService clientsService;
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public List<PreposModel> getAllData(final Status... statuses) {
@@ -94,6 +109,35 @@ public final class DefaultPreposService implements PreposService {
         List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
         preposesDao.update(preposes);
     }
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Override
+	public String exportPosready(Collection<PreposModel> preposModels) {
+
+		if(preposModels.isEmpty()) {
+			throw new CiscoException("Nothing to export. Preposes list is empty");
+		}
+
+		List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
+
+		Map<String, Client> clientsMap = clientsService.getClientsMap();
+		Table<String, String, Dart> dartsTable = dartsService.getDartsTable();
+		Map<String, Promo> promosMap = promosService.getPromosMap();
+		Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
+
+		String path = posreadyService.exportPosready(preposes, clientsMap, pricelistsMap, dartsTable, promosMap);
+
+		String posreadyId = FilenameUtils.getBaseName(path).replace(posreadyService.posreadyFilePrefix, "");
+
+		for (Prepos prepos : preposes) {
+			prepos.setPosreadyId(posreadyId);
+			prepos.setStatus(Status.WAITING);
+		}
+
+		preposesDao.update(preposes);
+
+		return path;
+	}
 
     //TODO maybe db updates should be produced by sending events to needed services
 

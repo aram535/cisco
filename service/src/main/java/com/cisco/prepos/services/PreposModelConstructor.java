@@ -3,6 +3,7 @@ package com.cisco.prepos.services;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +15,6 @@ public interface PreposModelConstructor {
 
     List<PreposModel> construct(List<Prepos> preposes);
 
-    List<Prepos> getPreposes(List<PreposModel> preposModels);
+	List<Prepos> getPreposes(Collection<PreposModel> preposModels);
 
 }

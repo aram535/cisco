@@ -1,8 +1,12 @@
 package com.cisco.prepos.services;
 
+import com.cisco.clients.dto.Client;
+import com.cisco.clients.service.ClientsService;
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartAssistant;
 import com.cisco.darts.service.DartsService;
+import com.cisco.exception.CiscoException;
+import com.cisco.posready.service.PosreadyService;
 import com.cisco.prepos.dao.PreposesDao;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
@@ -28,6 +32,7 @@ import java.util.Map;
 
 import static com.cisco.darts.dto.DartAssistant.BLANK_AUTHORIZATION_NUMBER;
 import static com.cisco.sales.dto.Sale.Status.NEW;
+import static com.cisco.testtools.TestObjects.ClientsFactory.newClient;
 import static com.cisco.testtools.TestObjects.DartsFactory.getDartsTable;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
 import static com.cisco.testtools.TestObjects.PART_NUMBER;
@@ -36,6 +41,7 @@ import static com.cisco.testtools.TestObjects.PricelistsFactory.newPricelist;
 import static com.cisco.testtools.TestObjects.PromosFactory.newPromo;
 import static com.cisco.testtools.TestObjects.SalesFactory.newSaleList;
 import static com.google.common.collect.ImmutableMap.of;
+import static junitx.framework.ComparableAssert.assertEquals;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -81,6 +87,16 @@ public class DefaultPreposServiceTest {
     @Mock
     private PreposValidator preposValidator;
 
+	@Mock
+	private ClientsService clientsService;
+
+	@Mock
+	private PosreadyService posreadyService;
+
+	private Map<String, Pricelist> pricelistMap = of(PART_NUMBER, newPricelist());
+	private Table<String, String, Dart> dartsTable = getDartsTable();
+	private Map<String, Promo> promosMap = of(PART_NUMBER, newPromo());
+	private Map<String, Client> clientsMap = of(PART_NUMBER, newClient());
 
     @Test
     public void thatIfAllPreposAreEmptyAndNoNewSalesReturnEmptyList() {
@@ -149,7 +165,7 @@ public class DefaultPreposServiceTest {
 
         when(preposModelConstructor.getPreposes(preposModels)).thenReturn(preposes);
 
-        preposService.update(preposModels);
+	    preposService.update(preposModels);
 
         verify(preposesDao).update(preposes);
     }
@@ -199,6 +215,50 @@ public class DefaultPreposServiceTest {
 
 		verify(preposesDao).update(allNotProcessedPreposes);
 		assertThat(allData).isEqualTo(allPreposModels);
+	}
+
+	@Test
+	public void thatPreposAreUpdatedAfterPosreadyExport() {
+
+		List<PreposModel> allPreposModels = getAllPreposModels();
+
+		List<Prepos> allPreposes = getAllPreposes();
+
+		when(preposModelConstructor.getPreposes(allPreposModels)).thenReturn(allPreposes);
+		when(pricelistsService.getPricelistsMap()).thenReturn(pricelistMap);
+		when(promosService.getPromosMap()).thenReturn(promosMap);
+		when(dartsService.getDartsTable()).thenReturn(dartsTable);
+		when(clientsService.getClientsMap()).thenReturn(clientsMap);
+
+		String posreadyId = "123456";
+		String expectedFilename = String.format("C:\\test\\%s.xls", posreadyId);
+		when(posreadyService.exportPosready(allPreposes, clientsMap, pricelistMap, dartsTable, promosMap)).thenReturn(expectedFilename);
+
+		String filename = preposService.exportPosready(allPreposModels);
+
+		assertEquals(expectedFilename, filename);
+
+		for (Prepos prepos : allPreposes) {
+			assertEquals(Prepos.Status.WAITING, prepos.getStatus());
+			assertEquals(posreadyId, prepos.getPosreadyId());
+		}
+
+		verify(preposesDao, times(1)).update(updatedAfterPosreadyPreposes());
+
+	}
+
+	@Test(expected = CiscoException.class)
+	public void thatExceptionIsThrownWhenTryingToExportPosreadyFromEmptyList() throws Exception {
+
+		preposService.exportPosready(Lists.<PreposModel>newArrayList());
+
+	}
+
+	private List<Prepos> updatedAfterPosreadyPreposes() {
+		Prepos prepos = newPrepos();
+		prepos.setStatus(Prepos.Status.WAITING);
+		prepos.setPosreadyId("123456");
+		return Lists.newArrayList(prepos);
 	}
 
     private Prepos getExpectedPrepos() {

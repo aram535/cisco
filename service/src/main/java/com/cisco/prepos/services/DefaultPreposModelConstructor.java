@@ -5,11 +5,13 @@ import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.model.PreposModel;
 import com.cisco.prepos.services.recount.PreposRecounter;
 import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.javatuples.Quartet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +22,6 @@ import java.util.Map;
  */
 @Component
 public class DefaultPreposModelConstructor implements PreposModelConstructor {
-
-    private final Function<PreposModel, Prepos> toPreposTransformFunction = new Function<PreposModel, Prepos>() {
-        @Override
-        public Prepos apply(PreposModel preposModel) {
-            return preposModel.getPrepos();
-        }
-    };
 
     @Autowired
     private PreposRecounter preposRecounter;
@@ -52,9 +47,18 @@ public class DefaultPreposModelConstructor implements PreposModelConstructor {
         return preposModels;
     }
 
-    @Override
-    public List<Prepos> getPreposes(List<PreposModel> preposModels) {
-        List<Prepos> preposes = Lists.newArrayList(Lists.transform(preposModels, toPreposTransformFunction));
-        return preposes;
-    }
+	@Override
+	public List<Prepos> getPreposes(Collection<PreposModel> preposModels) {
+		List<Prepos> preposes = Lists.newArrayList(Collections2.transform(preposModels, toPreposTransformFunction));
+		return preposes;
+	}
+
+	private final Function<PreposModel, Prepos> toPreposTransformFunction = new Function<PreposModel, Prepos>() {
+		@Override
+		public Prepos apply(PreposModel preposModel) {
+			return preposModel.getPrepos();
+		}
+	};
+
+
 }
