@@ -53,7 +53,6 @@ public class DefaultAccountManagerServiceTest {
         assertThat(accountManagers)
                 .isNotNull()
                 .isEmpty();
-        verifyNoMoreInteractions(accountManagerModelFactory);
     }
 
     @Test

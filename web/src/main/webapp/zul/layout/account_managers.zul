@@ -19,16 +19,17 @@
         <vbox>
             Name:
             <textbox id="txtName" value="@bind(manager.name)"/>
-            <vbox>
+            <hbox>
                 <button id="add" label="Add" onClick="@command('add')"/>
                 <button id="update" label="Update" onClick="@command('update')"
                         disabled="@load(empty vm.selectedAccountManagerModel)"/>
                 <button id="delete" label="Delete" onClick="@command('delete')"
                         disabled="@load(empty vm.selectedAccountManagerModel)"/>
-            </vbox>
+            </hbox>
             <hbox>
                 <vbox>
-                    <listbox id="partners" multiple="true" model="@bind(manager.partners)">
+                    <listbox id="partners" multiple="true" model="@bind(manager.partners)"
+                             selectedItem="@bind(vm.selectedPartner)" rows="3">
                         <listhead sizable="true">
                             <listheader hflex="1" label="Partner"/>
                         </listhead>
@@ -39,13 +40,14 @@
                         </template>
                     </listbox>
                     Name:
-                    <textbox id="partnerName" value="@bind(partner)"/>
+                    <textbox id="partnerName" value="@bind(vm.newPartner)"/>
                     <button id="addPartner" label="Add partner" onClick="@command('addPartner')"/>
                     <button id="deletePartner" label="Delete partner" onClick="@command('deletePartner')"
                             disabled="@load(empty vm.selectedPartner)"/>
                 </vbox>
                 <vbox>
-                    <listbox id="endUsers" multiple="true" model="@bind(manager.endUsers)">
+                    <listbox id="endUsers" multiple="true" model="@bind(manager.endUsers)"
+                             selectedItem="@bind(vm.selectedEndUser)" rows="3">
                         <listhead sizable="true">
                             <listheader hflex="1" label="End user"/>
                         </listhead>
@@ -56,7 +58,7 @@
                         </template>
                     </listbox>
                     Name:
-                    <textbox id="endUserName" value="@bind(endUser)"/>
+                    <textbox id="endUserName" value="@bind(vm.newEndUser)"/>
                     <button id="addEndUser" label="Add end user" onClick="@command('addEndUser')"/>
                     <button id="deleteEndUser" label="Delete end user" onClick="@command('deleteEndUser')"
                             disabled="@load(empty vm.selectedEndUser)"/>

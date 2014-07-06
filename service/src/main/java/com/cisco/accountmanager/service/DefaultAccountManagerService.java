@@ -37,7 +37,7 @@ public class DefaultAccountManagerService implements AccountManagerService {
 
     @Override
     public List<AccountManagerModel> getAccountManagers() {
-        return accountManagerModels;
+        return newArrayList(accountManagerModels);
     }
 
     @Override
@@ -85,11 +85,8 @@ public class DefaultAccountManagerService implements AccountManagerService {
 
     private void fetchModels() {
         List<AccountManager> accountManagers = accountManagerDao.getAccountManagers();
-        boolean accountManagersListIsNotEmpty = !CollectionUtils.isEmpty(accountManagers);
-        if (accountManagersListIsNotEmpty) {
-            accountManagerModels = accountManagerModelFactory.createModels(accountManagers);
-            initMaps();
-        }
+        accountManagerModels = accountManagerModelFactory.createModels(accountManagers);
+        initMaps();
     }
 
     private void initMaps() {

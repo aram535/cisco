@@ -1,16 +1,11 @@
 package com.cisco.accountmanager.service;
 
 import com.cisco.accountmanager.model.AccountManagerModel;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Sets.newHashSet;
-import static junitparams.JUnitParamsRunner.$;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,7 +15,6 @@ import static org.mockito.Mockito.when;
  * Date: 28.06.2014
  * Time: 15:44
  */
-@RunWith(JUnitParamsRunner.class)
 public class AccountManagerProviderTest {
 
     private static final String SECOND_END_USER = "second end user";
@@ -30,6 +24,7 @@ public class AccountManagerProviderTest {
     private static final String MANAGER_NAME = "Manager";
     private static final long MANAGER_ID = 1L;
     private static final String UNKNOWN_NAME = "unknown";
+    private final AccountManagerModel accountManagerModel = createAccountManagerModel();
 
 
     private DefaultAccountManagerProvider accountManagerProvider;
@@ -37,7 +32,7 @@ public class AccountManagerProviderTest {
     @Before
     public void init() {
         AccountManagerService accountManagerService = mock(AccountManagerService.class);
-        AccountManagerModel accountManagerModel = createAccountManagerModel();
+        AccountManagerModel accountManagerModel = this.accountManagerModel;
         when(accountManagerService.getAccountManagerByPartner(FIRST_PARTNER)).thenReturn(accountManagerModel);
         when(accountManagerService.getAccountManagerByPartner(UNKNOWN_NAME)).thenReturn(DEFAULT_MANAGER);
         when(accountManagerService.getAccountManagerByEndUser(FIRST_END_USER)).thenReturn(accountManagerModel);
@@ -47,19 +42,22 @@ public class AccountManagerProviderTest {
         accountManagerProvider.setAccountManagerService(accountManagerService);
     }
 
-	//TODO надо починить эту хуйню
-	@Ignore
     @Test
-    @Parameters(method = "parameters")
-    public void thatReturnsAccountManagerAccordingToRules(String partnerName, String endUserName, AccountManagerModel result) {
-        AccountManagerModel accountManager = accountManagerProvider.getAccountManager(partnerName, endUserName);
-        assertThat(accountManager).isEqualTo(result);
+    public void thatReturnsAccountManagerAccordingToPartnerName() {
+        AccountManagerModel accountManager = accountManagerProvider.getAccountManager(FIRST_PARTNER, FIRST_END_USER);
+        assertThat(accountManager).isEqualTo(accountManagerModel);
     }
 
-    private Object[] parameters() {
-        return $($(FIRST_PARTNER, FIRST_END_USER, createAccountManagerModel()),
-                $(UNKNOWN_NAME, FIRST_END_USER, createAccountManagerModel()),
-                $(UNKNOWN_NAME, UNKNOWN_NAME, DEFAULT_MANAGER));
+    @Test
+    public void thatReturnsAccountManagerAccordingToEndUser() {
+        AccountManagerModel accountManager = accountManagerProvider.getAccountManager(UNKNOWN_NAME, FIRST_END_USER);
+        assertThat(accountManager).isEqualTo(accountManagerModel);
+    }
+
+    @Test
+    public void thatReturnsDefaultManagerIfPartnerAndEndUserNotFound() {
+        AccountManagerModel accountManager = accountManagerProvider.getAccountManager(UNKNOWN_NAME, UNKNOWN_NAME);
+        assertThat(accountManager).isEqualTo(DEFAULT_MANAGER);
     }
 
     private AccountManagerModel createAccountManagerModel() {
