@@ -56,8 +56,8 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
 
                 String partNumber = fieldsExtractor.extractStringValue(row, PART_NUMBER_COLUMN);
                 String description = fieldsExtractor.extractStringValue(row, DESCRIPTION_COLUMN);
-                int gpl = fieldsExtractor.extractIntValue(row, GPL_COLUMN);
-                int discount = fieldsExtractor.extractIntValue(row, DISCOUNT_COLUMN);
+                int gpl = (int) fieldsExtractor.extractNumericValue(row, GPL_COLUMN);
+                int discount = (int) fieldsExtractor.extractNumericValue(row, DISCOUNT_COLUMN);
                 double wpl = calculateWpl(gpl, discount);
 	            double fractionalDiscount = getRoundedDouble((double)discount / 100);
 	            Pricelist price = newPricelistBuilder().setPartNumber(partNumber).setDescription(description).

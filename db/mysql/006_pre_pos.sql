@@ -23,4 +23,6 @@ CREATE TABLE PRE_POS (
   account_manager_name VARCHAR(1000),
   status VARCHAR(45),
   posready_id varchar(45) DEFAULT NULL,
+  claim_id BIGINT DEFAULT 0,
+  batch_id BIGINT DEFAULT 0
 );

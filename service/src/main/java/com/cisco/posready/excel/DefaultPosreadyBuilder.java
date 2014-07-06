@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,7 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 			Pricelist pricelist = pricelistsMap.get(prepos.getPartNumber());
 			checkNotNull(pricelist, String.format("No pricelist was found for prepos with PN: %s", prepos.getPartNumber()));
 
+			posreadyFieldsBuilder.setStringCellValue(dataRow, DISTR_WH_NUMBER_COLUMN, DISTR_WH_NUMBER);
 			posreadyFieldsBuilder.setStringCellValue(dataRow, PARTNER_NAME_COLUMN, prepos.getPartnerName());
 			posreadyFieldsBuilder.setStringCellValue(dataRow, CLIENT_NUMBER_COLUMN, prepos.getClientNumber());
 			posreadyFieldsBuilder.setStringCellValue(dataRow, CLIENT_ADRESS_COLUMN_1, client.getAddress());
@@ -66,7 +68,10 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 			posreadyFieldsBuilder.setStringCellValue(dataRow, CLIENT_CITY_COLUMN, client.getCity());
 			posreadyFieldsBuilder.setStringCellValue(dataRow, ZIP_CODE_COLUMN, String.valueOf(prepos.getZip()));
 			posreadyFieldsBuilder.setStringCellValue(dataRow, RESELLER_COUNTRY_COLUMN, RESELLER_COUNTRY);
-			posreadyFieldsBuilder.setStringCellValue(dataRow, SHIPPED_DATE_COLUMN, prepos.getShippedDate().toString());
+
+			String formatedShippedDate = new SimpleDateFormat("MM-dd-yyyy").format(prepos.getShippedDate());
+			posreadyFieldsBuilder.setStringCellValue(dataRow, SHIPPED_DATE_COLUMN, formatedShippedDate);
+
 			posreadyFieldsBuilder.setStringCellValue(dataRow, SHIPPED_BN_COLUMN, prepos.getShippedBillNumber());
 			posreadyFieldsBuilder.setStringCellValue(dataRow, PART_NUMBER_COLUMN, prepos.getPartNumber());
 			posreadyFieldsBuilder.setStringCellValue(dataRow, PROD_DESC_COLUMN, prepos.getPartNumber());
@@ -141,7 +146,6 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 		return "";
 	}
 
-	//TODO что если промо1 тоже пустое?
 	private String getPromoVersion(Prepos prepos, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap) {
 
 		String secondPromo = prepos.getSecondPromo();
@@ -188,7 +192,7 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 		return StringUtils.isNotBlank(endUser) ? endUser : prepos.getPartnerName();
 	}
 
-	private HSSFRow createTitleRow(HSSFSheet sheet) {
+	private Row createTitleRow(HSSFSheet sheet) {
 
 		if(sheet.getPhysicalNumberOfRows() != 0) {
 			throw new CiscoException("Sheet should be empty for title row creation");
@@ -276,5 +280,4 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 		return row;
 	}
 
-	//TODO что если нет клиента?
 }

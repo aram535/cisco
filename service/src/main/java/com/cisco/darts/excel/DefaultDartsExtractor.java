@@ -69,7 +69,7 @@ public class DefaultDartsExtractor implements DartsExtractor {
 
                 String autorizationNumber = fieldsExtractor.extractStringValue(row, AUTORIZATION_NUMBER_COLUMN);
 
-                int version = fieldsExtractor.extractIntValue(row, VERSION_COLUMN);
+                int version = (int) fieldsExtractor.extractNumericValue(row, VERSION_COLUMN);
 
                 String distributorInfo = fieldsExtractor.extractStringValue(row, DISTRIBUTOR_INFO_COLUMN);
 
@@ -83,13 +83,13 @@ public class DefaultDartsExtractor implements DartsExtractor {
 
                 String resellerCountry = fieldsExtractor.extractStringValue(row, RESELLER_COUNTRY_COLUMN);
 
-                int resellerAcct = fieldsExtractor.extractIntValue(row, RESELLER_ACCT_COLUMN);
+                int resellerAcct = (int) fieldsExtractor.extractNumericValue(row, RESELLER_ACCT_COLUMN);
 
                 String endUserName = fieldsExtractor.extractStringValue(row, END_USER_NAME_COLUMN);
 
                 String endUserCountry = fieldsExtractor.extractStringValue(row, END_USER_COUNTRY_COLUMN);
 
-                int quantity = fieldsExtractor.extractIntValue(row, QUANTITY_COLUMN);
+                int quantity = (int) fieldsExtractor.extractNumericValue(row, QUANTITY_COLUMN);
 
                 String ciscoSku = fieldsExtractor.extractStringValue(row, CISKO_SKU_COLUMN);
 

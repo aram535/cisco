@@ -50,7 +50,9 @@ public class DefaultDartApplier implements DartApplier {
 
         double buyPrice = getBuyPrice(buyDiscount, gpl);
         double posSum = getRoundedDouble(buyPrice * quantity);
-        boolean isOk = (salePrice / buyPrice) > threshold;
+	    double detlaAsDouble = salePrice / buyPrice;
+	    boolean isOk = detlaAsDouble > threshold;
+		int delta = (int) ((detlaAsDouble * 100) - 100);
 
         if (firstPromo != null) {
             preposBuilder.firstPromo(firstPromo.getCode());
@@ -65,6 +67,7 @@ public class DefaultDartApplier implements DartApplier {
         preposBuilder.buyPrice(buyPrice);
         preposBuilder.posSum(posSum);
         preposBuilder.ok(isOk);
+	    preposBuilder.delta(delta);
 
         Prepos prepos = preposBuilder.build();
         return prepos;

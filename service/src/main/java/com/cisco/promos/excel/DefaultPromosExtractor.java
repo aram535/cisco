@@ -65,10 +65,10 @@ public class DefaultPromosExtractor implements PromosExtractor {
                 double discount = calculateDiscount(row);
 
                 String name = fieldsExtractor.extractStringValue(row, NAME_COLUMN);
-                int gpl = fieldsExtractor.extractIntValue(row, GPL_COLUMN);
+                int gpl = (int) fieldsExtractor.extractNumericValue(row, GPL_COLUMN);
                 String code = fieldsExtractor.extractStringValue(row, CODE_COLUMN);
                 double claimPerUnit = fieldsExtractor.extractDoubleValue(row, CLAIM_PER_UNIT_COLUMN);
-                int version = fieldsExtractor.extractIntValue(row, VERSION_COLUMN);
+                int version = (int) fieldsExtractor.extractNumericValue(row, VERSION_COLUMN);
 	            Timestamp endDate = fieldsExtractor.extractTimestamp(row, END_DATE_COLUMN);
 
                 Promo promo = newPromoBuilder().

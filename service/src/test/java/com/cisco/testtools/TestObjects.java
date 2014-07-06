@@ -111,6 +111,35 @@ public class TestObjects {
 
             return prepos;
         }
+        public static Prepos newPreposWithoutPromos() {
+
+            Prepos prepos = new Prepos();
+
+            prepos.setPartNumber(PART_NUMBER);
+            prepos.setPartnerName(PARTNER_NAME);
+            prepos.setStatus(NOT_PROCESSED);
+            prepos.setClientNumber(CLIENT_NUMBER);
+            prepos.setShippedDate(SHIPPED_DATE);
+            prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
+            prepos.setComment(COMMENT);
+            prepos.setSerials(SERIALS);
+            prepos.setZip(ZIP);
+            prepos.setType(CISCO_TYPE);
+            prepos.setQuantity(QUANTITY);
+            prepos.setSalePrice(SALE_PRICE);
+            prepos.setFirstPromo("");
+            prepos.setSecondPromo("");
+            prepos.setEndUser(END_USER_NAME);
+            prepos.setSaleDiscount(SALE_DISCOUNT);
+            prepos.setBuyDiscount(BUY_DISCOUNT);
+            prepos.setBuyPrice(BUY_PRICE);
+            double posSum = (double) Math.round(BUY_PRICE * QUANTITY * 100) / 100;
+            prepos.setPosSum(posSum);
+            prepos.setOk(true);
+
+
+            return prepos;
+        }
 
         public static List<Prepos> newPreposList() {
 

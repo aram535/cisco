@@ -1,0 +1,8 @@
+<zk>
+	<!-- free to access template, without sidebar  -->
+	<borderlayout hflex="1" vflex="1">
+		<center id="mainContent" autoscroll="true" border="none" self="@insert(content)">
+			<!-- the main content will be insert to here -->
+		</center>
+	</borderlayout>
+</zk>

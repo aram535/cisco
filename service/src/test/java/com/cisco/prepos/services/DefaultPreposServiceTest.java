@@ -18,10 +18,13 @@ import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
 import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import org.fest.assertions.api.Assertions;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -98,6 +101,9 @@ public class DefaultPreposServiceTest {
 	private Map<String, Promo> promosMap = of(PART_NUMBER, newPromo());
 	private Map<String, Client> clientsMap = of(PART_NUMBER, newClient());
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
     @Test
     public void thatIfAllPreposAreEmptyAndNoNewSalesReturnEmptyList() {
         List<PreposModel> allData = preposService.getAllData();
@@ -165,7 +171,7 @@ public class DefaultPreposServiceTest {
 
         when(preposModelConstructor.getPreposes(preposModels)).thenReturn(preposes);
 
-	    preposService.update(preposModels);
+	    preposService.updateFromModels(preposModels);
 
         verify(preposesDao).update(preposes);
     }
@@ -247,11 +253,26 @@ public class DefaultPreposServiceTest {
 
 	}
 
-	@Test(expected = CiscoException.class)
+	@Test
+	public void thatExceptionIsThrownWhenPreposesWithIncorrectStatusPassedToExportPosready() {
+
+		List<PreposModel> preposes = getAllPreposModels();
+		Iterables.getOnlyElement(preposes).getPrepos().setStatus(Prepos.Status.WAITING);
+
+		expectedException.expect(CiscoException.class);
+		expectedException.expectMessage("All preposes should be in " + Prepos.Status.NOT_PROCESSED.toString() + " status");
+
+		preposService.exportPosready(preposes);
+
+	}
+
+	@Test
 	public void thatExceptionIsThrownWhenTryingToExportPosreadyFromEmptyList() throws Exception {
 
-		preposService.exportPosready(Lists.<PreposModel>newArrayList());
+		expectedException.expect(CiscoException.class);
+		expectedException.expectMessage("Nothing to export. Preposes list is empty");
 
+		preposService.exportPosready(Lists.<PreposModel>newArrayList());
 	}
 
 	private List<Prepos> updatedAfterPosreadyPreposes() {

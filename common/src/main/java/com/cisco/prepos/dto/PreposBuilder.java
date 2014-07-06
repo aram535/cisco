@@ -34,7 +34,9 @@ public class PreposBuilder {
     private int zip;
     private String accountManagerName;
     private Status status;
-	private String posready_id;
+	private String posreadyId;
+	private long claimId;
+	private long batchId;
 
     private PreposBuilder() {
     }
@@ -158,13 +160,23 @@ public class PreposBuilder {
         this.status = status;
         return this;
     }
-	public PreposBuilder posreadyId(String posready_id) {
-		this.posready_id = posready_id;
+	public PreposBuilder posreadyId(String posreadyId) {
+		this.posreadyId = posreadyId;
+		return this;
+	}
+
+	public PreposBuilder claimId(long claimId) {
+		this.claimId = claimId;
+		return this;
+	}
+
+	public PreposBuilder batchId(long batchId) {
+		this.batchId = batchId;
 		return this;
 	}
 
     public Prepos build() {
-        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip, accountManagerName, status, posready_id);
+        Prepos prepos = new Prepos(id, type, partnerName, partNumber, posSum, quantity, ok, delta, saleDiscount, buyDiscount, salePrice, buyPrice, firstPromo, secondPromo, endUser, clientNumber, shippedDate, shippedBillNumber, comment, serials, zip, accountManagerName, status, posreadyId, claimId, batchId);
         return prepos;
     }
 
@@ -192,7 +204,9 @@ public class PreposBuilder {
         this.zip = prepos.getZip();
         this.accountManagerName = prepos.getAccountManagerName();
         this.status = prepos.getStatus();
-	    this.posready_id = prepos.getPosreadyId();
+	    this.posreadyId = prepos.getPosreadyId();
+	    this.claimId = prepos.getClaimId();
+	    this.batchId = prepos.getBatchId();
         return this;
     }
 }

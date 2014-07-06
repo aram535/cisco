@@ -86,9 +86,11 @@ public class PosreadyConstants {
 	public static final String COMMENTS_4 = "Comments 4";
 
 	public static final String RESELLER_COUNTRY = "UA";
+	public static final String DISTR_WH_NUMBER = "UA-Kiev";
 
 	public static class ColumnId {
 
+		public static final int DISTR_WH_NUMBER_COLUMN = 0;
 		public static final int PARTNER_NAME_COLUMN = 1;
 		public static final int CLIENT_NUMBER_COLUMN = 2;
 		public static final int CLIENT_ADRESS_COLUMN_1 = 3;

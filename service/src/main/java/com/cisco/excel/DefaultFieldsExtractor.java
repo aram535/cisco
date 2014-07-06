@@ -25,7 +25,7 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_PATTERN).withLocale(Locale.US);
 
     @Override
-    public int extractIntValue(Row row, int column) {
+    public long extractNumericValue(Row row, int column) {
         Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
         return getIntValueFromCell(cell, column);
     }
@@ -105,7 +105,7 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
         return new Timestamp(dateTime.getMillis());
     }
 
-    private int getIntValueFromCell(Cell cell, int column) {
+    private long getIntValueFromCell(Cell cell, int column) {
 
 	    if (cell == null) {
             throw new CiscoException(String.format("Column number %s is required", column));
@@ -113,7 +113,7 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
 
 	    switch(cell.getCellType()) {
 		    case Cell.CELL_TYPE_NUMERIC: {
-			    return (int) cell.getNumericCellValue();
+			    return (long) cell.getNumericCellValue();
 		    }
 		    case Cell.CELL_TYPE_STRING: {
 			    try {

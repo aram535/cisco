@@ -16,7 +16,9 @@ public interface PreposService {
 
     public List<PreposModel> getAllData(final Status... status);
 
-    public void update(List<PreposModel> prePos);
+    public void updateFromModels(List<PreposModel> preposModels);
+
+    public void update(List<Prepos> preposes);
 
     public Prepos recountPrepos(Prepos prepos, Dart selectedDart);
 
@@ -24,4 +26,5 @@ public interface PreposService {
 
 	public String exportPosready(Collection<PreposModel> preposes);
 
+	public List<Prepos> getPreposes(final Status... statuses);
 }

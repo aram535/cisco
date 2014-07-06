@@ -37,40 +37,43 @@ public class Prepos {
     private int zip;
     private String accountManagerName;
     private Status status;
-    private String posready_id;
-
+    private String posreadyId;
+    private long claimId;
+    private long batchId;
 
     public Prepos() {
     }
 
-    public Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip, String accountManagerName, Status status, String posready_id) {
-        this.id = id;
-        this.type = type;
-        this.partnerName = partnerName;
-        this.partNumber = partNumber;
-        this.posSum = posSum;
-        this.quantity = quantity;
-        this.ok = ok;
-        this.delta = delta;
-        this.saleDiscount = saleDiscount;
-        this.buyDiscount = buyDiscount;
-        this.salePrice = salePrice;
-        this.buyPrice = buyPrice;
-        this.firstPromo = firstPromo;
-        this.secondPromo = secondPromo;
-        this.endUser = endUser;
-        this.clientNumber = clientNumber;
-        this.shippedDate = shippedDate;
-        this.shippedBillNumber = shippedBillNumber;
-        this.comment = comment;
-        this.serials = serials;
-        this.zip = zip;
-        this.accountManagerName = accountManagerName;
-        this.status = status;
-	    this.posready_id = posready_id;
-    }
+	public Prepos(long id, String type, String partnerName, String partNumber, double posSum, int quantity, boolean ok, int delta, double saleDiscount, double buyDiscount, double salePrice, double buyPrice, String firstPromo, String secondPromo, String endUser, String clientNumber, Timestamp shippedDate, String shippedBillNumber, String comment, String serials, int zip, String accountManagerName, Status status, String posreadyId, long claimId, long batchId) {
+		this.id = id;
+		this.type = type;
+		this.partnerName = partnerName;
+		this.partNumber = partNumber;
+		this.posSum = posSum;
+		this.quantity = quantity;
+		this.ok = ok;
+		this.delta = delta;
+		this.saleDiscount = saleDiscount;
+		this.buyDiscount = buyDiscount;
+		this.salePrice = salePrice;
+		this.buyPrice = buyPrice;
+		this.firstPromo = firstPromo;
+		this.secondPromo = secondPromo;
+		this.endUser = endUser;
+		this.clientNumber = clientNumber;
+		this.shippedDate = shippedDate;
+		this.shippedBillNumber = shippedBillNumber;
+		this.comment = comment;
+		this.serials = serials;
+		this.zip = zip;
+		this.accountManagerName = accountManagerName;
+		this.status = status;
+		this.posreadyId = posreadyId;
+		this.claimId = claimId;
+		this.batchId = batchId;
+	}
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
@@ -188,10 +191,19 @@ public class Prepos {
 
 	@Column(name = "posready_id")
 	public String getPosreadyId() {
-		return posready_id;
+		return posreadyId;
 	}
 
-    public void setId(long id) {
+	@Column(name = "claim_id")
+	public long getClaimId() {
+		return claimId;
+	}
+	@Column(name = "batch_id")
+	public long getBatchId() {
+		return batchId;
+	}
+
+	public void setId(long id) {
         this.id = id;
     }
 
@@ -283,8 +295,16 @@ public class Prepos {
         this.status = status;
     }
 
-	public void setPosreadyId(String posready_id) {
-		this.posready_id = posready_id;
+	public void setPosreadyId(String posreadyId) {
+		this.posreadyId = posreadyId;
+	}
+
+	public void setClaimId(long claimId) {
+		this.claimId = claimId;
+	}
+
+	public void setBatchId(long batchId) {
+		this.batchId = batchId;
 	}
 
 	@Override
@@ -323,7 +343,9 @@ public class Prepos {
 				.append(this.zip, rhs.zip)
 				.append(this.accountManagerName, rhs.accountManagerName)
 				.append(this.status, rhs.status)
-				.append(this.posready_id, rhs.posready_id)
+				.append(this.posreadyId, rhs.posreadyId)
+				.append(this.claimId, rhs.claimId)
+				.append(this.batchId, rhs.batchId)
 				.isEquals();
 	}
 
@@ -353,7 +375,9 @@ public class Prepos {
 				.append(zip)
 				.append(accountManagerName)
 				.append(status)
-				.append(posready_id)
+				.append(posreadyId)
+				.append(claimId)
+				.append(batchId)
 				.toHashCode();
 	}
 
@@ -383,7 +407,9 @@ public class Prepos {
 				.append("zip", zip)
 				.append("accountManagerName", accountManagerName)
 				.append("status", status)
-				.append("posready_id", posready_id)
+				.append("posreadyId", posreadyId)
+				.append("claimId", claimId)
+				.append("batchId", batchId)
 				.toString();
 	}
 

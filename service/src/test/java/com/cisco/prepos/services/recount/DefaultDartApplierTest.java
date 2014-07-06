@@ -5,6 +5,7 @@ import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
+import com.cisco.testtools.TestObjects;
 import com.google.common.collect.Table;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +82,7 @@ public class DefaultDartApplierTest {
         expectedPrepos.setSaleDiscount(SALE_DISCOUNT_FROM_PROVIDER);
         expectedPrepos.setBuyDiscount(BUY_DISCOUNT_FROM_PROVIDER);
         expectedPrepos.setBuyPrice(BUY_PRICE);
+	    expectedPrepos.setDelta((int) ((TestObjects.SALE_PRICE / BUY_PRICE * 100) - 100));
         expectedPrepos.setPosSum(getRoundedDouble(BUY_PRICE * expectedPrepos.getQuantity()));
 
         boolean isOk = expectedPrepos.getSalePrice() / expectedPrepos.getBuyPrice() > THRESHOLD;

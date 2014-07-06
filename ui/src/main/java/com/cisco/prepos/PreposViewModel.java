@@ -1,5 +1,6 @@
 package com.cisco.prepos;
 
+import com.cisco.claims.ClaimsImporter;
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
@@ -8,13 +9,15 @@ import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.services.PreposService;
 import com.cisco.prepos.services.filter.PreposFilter;
 import com.cisco.prepos.services.totalsum.TotalSumCounter;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.bind.annotation.*;
+import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
@@ -51,10 +54,11 @@ public class PreposViewModel {
     private static final String RECOUNT_TOTAL_POS_SUM_NOTIFY = "totalPosSum";
     private static final String PREPOS_IN_MODEL_NOTIFY = "prepos";
     private static final String PREPOS_MODEL_BINDING_PARAM = "preposModel";
-
     public static final String ALL_STATUS = "ALL";
     public static final String SET_STATUS_COMMAND = "setStatus";
 	public static final String EXPORT_POSREADY_COMMAND = "exportPosready";
+	public static final String CHECK_ALL_COMMAND = "checkAll";
+	public static final String IMPORT_CLAIMS_COMMAND = "importClaims";
 
 	private final List<String> preposStatuses =
             newArrayList(ALL_STATUS, NOT_PROCESSED.getName(), WAITING.getName(), PROCESSED.getName(),
@@ -62,9 +66,10 @@ public class PreposViewModel {
 
     private String selectedStatus = ALL_STATUS;
     private String statusToChange = PROCESSED.toString();
+	private boolean checkAll = false;
 
-    private List<PreposModel> preposes;
-    private List<PreposModel> filteredPreposes;
+    private List<PreposModel> preposes = Lists.newArrayList();
+    private List<PreposModel> filteredPreposes = Lists.newArrayList();
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
     private Iterable<PreposModel> filteredCheckedPreposes;
 
@@ -76,11 +81,23 @@ public class PreposViewModel {
     @WireVariable
     private PreposFilter preposFilter;
 
+	@WireVariable
+	private ClaimsImporter claimsImporter;
+
     @WireVariable
     private TotalSumCounter totalSumCounter;
     private List<PreposModel> freshPreposes;
 
-    public String getStatusToChange() {
+
+	public boolean getCheckAll() {
+		return checkAll;
+	}
+
+	public void setCheckAll(boolean checkAll) {
+		this.checkAll = checkAll;
+	}
+
+	public String getStatusToChange() {
         return statusToChange;
     }
 
@@ -110,7 +127,7 @@ public class PreposViewModel {
     @NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
     public List<PreposModel> getAllPrepos() {
         try {
-            if (preposes == null) {
+            if (preposes.isEmpty()) {
                 refreshAndFilterPreposes();
             }
 
@@ -144,7 +161,7 @@ public class PreposViewModel {
 
     @Command(SAVE_COMMAND)
     public void save() {
-        preposService.update(preposes);
+        preposService.updateFromModels(preposes);
     }
 
     @Command(PROMO_SELECTED_COMMAND)
@@ -224,6 +241,41 @@ public class PreposViewModel {
 			}
 		}
 
+
+	}
+
+	@Command
+	@NotifyChange(ALL_PREPOS_NOTIFY)
+	public void importClaims(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
+
+		Media media = event.getMedia();
+		if (media.isBinary()) {
+			InputStream inputStream = media.getStreamData();
+			claimsImporter.importClaims(inputStream);
+		} else {
+			throw new CiscoException("media is not binary");
+		}
+	}
+
+	@Command(CHECK_ALL_COMMAND)
+	@NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
+	public void preposChecked() {
+		if(checkAll) {
+			Map<Long, PreposModel> allCheckPreposes = Maps.uniqueIndex(filteredPreposes, new Function<PreposModel, Long>() {
+				@Override
+				public Long apply(PreposModel model) {
+					model.setChecked(true);
+					return model.getPrepos().getId();
+				}
+			});
+
+			checkedPreposMap.putAll(allCheckPreposes);
+		} else {
+			for (PreposModel preposModel : filteredPreposes) {
+				preposModel.setChecked(false);
+			}
+			checkedPreposMap.clear();
+		}
 
 	}
 

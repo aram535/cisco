@@ -22,6 +22,7 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.ByteArrayInputStream;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import static com.cisco.posready.excel.PosreadyConstants.ColumnId.*;
@@ -101,7 +102,10 @@ public class DefaultPosreadyBuilderTest {
 		assertEquals(row.getCell(CLIENT_CITY_COLUMN).getStringCellValue(), client.getCity());
 		assertEquals(row.getCell(ZIP_CODE_COLUMN).getStringCellValue(), String.valueOf(prepos.getZip()));
 		assertEquals(row.getCell(RESELLER_COUNTRY_COLUMN).getStringCellValue(), RESELLER_COUNTRY);
-		assertEquals(row.getCell(SHIPPED_DATE_COLUMN).getStringCellValue(), prepos.getShippedDate().toString());
+
+		String formatedShippedDate = new SimpleDateFormat("MM-dd-yyyy").format(prepos.getShippedDate());
+		assertEquals(row.getCell(SHIPPED_DATE_COLUMN).getStringCellValue(), formatedShippedDate);
+
 		assertEquals(row.getCell(SHIPPED_BN_COLUMN).getStringCellValue(), prepos.getShippedBillNumber());
 		assertEquals(row.getCell(PART_NUMBER_COLUMN).getStringCellValue(), prepos.getPartNumber());
 		assertEquals(row.getCell(PROD_DESC_COLUMN).getStringCellValue(), prepos.getPartNumber());

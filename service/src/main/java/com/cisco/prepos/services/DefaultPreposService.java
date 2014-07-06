@@ -104,11 +104,16 @@ public final class DefaultPreposService implements PreposService {
     }
 
     @Override
-    public void update(List<PreposModel> preposModels) {
+    public void updateFromModels(List<PreposModel> preposModels) {
 
         List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
         preposesDao.update(preposes);
     }
+
+	@Override
+	public void update(List<Prepos> preposes) {
+		preposesDao.update(preposes);
+	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
@@ -116,6 +121,12 @@ public final class DefaultPreposService implements PreposService {
 
 		if(preposModels.isEmpty()) {
 			throw new CiscoException("Nothing to export. Preposes list is empty");
+		}
+
+		for (PreposModel preposModel : preposModels) {
+			if(preposModel.getPrepos().getStatus() != Status.NOT_PROCESSED) {
+				throw new CiscoException("All preposes should be in " + Prepos.Status.NOT_PROCESSED.toString() + " status");
+			}
 		}
 
 		List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
@@ -139,9 +150,10 @@ public final class DefaultPreposService implements PreposService {
 		return path;
 	}
 
-    //TODO maybe db updates should be produced by sending events to needed services
+	//TODO maybe db updates should be produced by sending events to needed services
 
-    private List<Prepos> getPreposes(final Status... statuses) {
+	@Override
+    public List<Prepos> getPreposes(final Status... statuses) {
 
         List preposes = preposesDao.getPreposes();
 

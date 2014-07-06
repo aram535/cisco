@@ -43,7 +43,7 @@ public class DefaultFieldsExtractorTest {
         when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getStringCellValue()).thenReturn("20");
 
-		int value = fieldsExtractor.extractIntValue(row, 1);
+		int value = (int) fieldsExtractor.extractNumericValue(row, 1);
 
 		assertThat(value).isEqualTo(20);
 
@@ -52,7 +52,7 @@ public class DefaultFieldsExtractorTest {
     @Test(expected = CiscoException.class)
     public void thatExtractIntValueThrowsCiscoExceptionIfCellIsNull() {
         when(row.getCell(anyInt(), eq(Row.CREATE_NULL_AS_BLANK))).thenReturn(null);
-        fieldsExtractor.extractIntValue(row, 1);
+        fieldsExtractor.extractNumericValue(row, 1);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class DefaultFieldsExtractorTest {
         when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_NUMERIC);
         when(cell.getNumericCellValue()).thenReturn(expectedResult);
 
-        int result = fieldsExtractor.extractIntValue(row, 1);
+        int result = (int) fieldsExtractor.extractNumericValue(row, 1);
 
         assertThat(expectedResult).isEqualTo(result);
     }
@@ -138,7 +138,7 @@ public class DefaultFieldsExtractorTest {
 		when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
 		when(cell.getStringCellValue()).thenReturn("20text");
 
-		fieldsExtractor.extractIntValue(row, 1);
+		fieldsExtractor.extractNumericValue(row, 1);
 	}
 
 	@Test(expected = CiscoException.class)

@@ -10,7 +10,10 @@
     <grid sizedByContent="true"
           model="@load(vmPrePos.allPrepos)" vflex="95%"  mold="paging" pageSize="100"> <!-- --><!--autopaging="true"-->
         <auxhead sclass="category-center">
-            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <checkbox width="auto" checked="@bind(vmPrePos.checkAll)"
+                          onCheck="@command('checkAll')"/>
+            </auxheader>
             <auxheader colspan="1">
                 <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->
                 <combobox hflex="100%" readonly="true"
@@ -122,6 +125,7 @@
             </template>
         </combobox>
         <button id="setStatus" label="Set status" onClick="@command('setStatus')"/>
-        <button id="exportPosready" label="Get POS READY" onClick="@command('exportPosready')"/>
+        <button id="exportPosready" label="Export POS READY" onClick="@command('exportPosready')"/>
+        <button id="loadClaims" label="Import Claims" upload="true" onUpload="@command('importClaims', upload=event)"/>
     </groupbox>
 </window>

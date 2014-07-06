@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 public interface FieldsExtractor {
 
-    int extractIntValue(Row row, int column);
+	long extractNumericValue(Row row, int column);
 
     Timestamp extractTimestamp(Row row, int column);
 
