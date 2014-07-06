@@ -3,13 +3,14 @@ package com.cisco.clients.service;
 import com.cisco.clients.dao.ClientsDao;
 import com.cisco.clients.dto.Client;
 import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.collect.Maps.uniqueIndex;
 
 /**
  * Created by Alf on 08.04.14.
@@ -18,9 +19,9 @@ import java.util.Map;
 public class DefaultClientsService implements ClientsService {
 
     @Autowired
-    ClientsDao clientsDao;
+    private ClientsDao clientsDao;
 
-	@Transactional
+    @Transactional
     @Override
     public List<Client> getClients() {
         return clientsDao.getClients();
@@ -31,7 +32,7 @@ public class DefaultClientsService implements ClientsService {
 
         List<Client> clients = clientsDao.getClients();
 
-        return Maps.uniqueIndex(clients, new Function<Client, String>() {
+        return uniqueIndex(clients, new Function<Client, String>() {
             @Override
             public String apply(Client client) {
                 return client.getClientNumber();
@@ -39,19 +40,19 @@ public class DefaultClientsService implements ClientsService {
         });
     }
 
-	@Transactional
+    @Transactional
     @Override
     public void save(Client client) {
-			clientsDao.save(client);
-	}
+        clientsDao.save(client);
+    }
 
-	@Transactional
+    @Transactional
     @Override
     public void update(Client client) {
         clientsDao.update(client);
     }
 
-	@Transactional
+    @Transactional
     @Override
     public void delete(Client client) {
         clientsDao.delete(client);
