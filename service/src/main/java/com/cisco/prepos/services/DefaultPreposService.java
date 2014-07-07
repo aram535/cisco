@@ -124,8 +124,8 @@ public final class DefaultPreposService implements PreposService {
 		}
 
 		for (PreposModel preposModel : preposModels) {
-			if(preposModel.getPrepos().getStatus() != Status.NOT_PROCESSED) {
-				throw new CiscoException("All preposes should be in " + Prepos.Status.NOT_PROCESSED.toString() + " status");
+			if(preposModel.getPrepos().getStatus() != Status.NOT_POS) {
+				throw new CiscoException("All preposes should be in " + Prepos.Status.NOT_POS.toString() + " status");
 			}
 		}
 
@@ -142,7 +142,7 @@ public final class DefaultPreposService implements PreposService {
 
 		for (Prepos prepos : preposes) {
 			prepos.setPosreadyId(posreadyId);
-			prepos.setStatus(Status.WAITING);
+			prepos.setStatus(Status.WAIT);
 		}
 
 		preposesDao.update(preposes);

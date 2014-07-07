@@ -91,7 +91,9 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 
 			String promoVersion = getPromoVersion(prepos, dartsTable, promosMap);
 			posreadyFieldsBuilder.setStringCellValue(dataRow, PROMO_VERSION_COLUMN, promoVersion);
-			posreadyFieldsBuilder.setStringCellValue(dataRow, QUANTITY_COLUMN_2, String.valueOf(prepos.getQuantity()));
+
+			String claimEligibleQuantity = getClaimEligQuantity(prepos);
+			posreadyFieldsBuilder.setStringCellValue(dataRow, QUANTITY_COLUMN_2, claimEligibleQuantity);
 
 			String claimPerUnit = getClaimPerUnit(prepos, dartsTable, promosMap);
 			posreadyFieldsBuilder.setStringCellValue(dataRow, CLAIM_PER_UNIT_COLUMN, claimPerUnit);
@@ -111,6 +113,14 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 			throw new CiscoException("Error while getting bytes from workbook", e);
 		}
 
+	}
+
+	private String getClaimEligQuantity(Prepos prepos) {
+		if(StringUtils.isNotBlank(prepos.getFirstPromo()) && StringUtils.isNotBlank(prepos.getSecondPromo())) {
+			return String.valueOf(prepos.getQuantity());
+		} else {
+			return "";
+		}
 	}
 
 	private String getClaimAmout(int quantity, String claimPerUnit) {

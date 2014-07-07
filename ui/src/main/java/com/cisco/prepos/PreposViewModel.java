@@ -61,11 +61,11 @@ public class PreposViewModel {
 	public static final String IMPORT_CLAIMS_COMMAND = "importClaims";
 
 	private final List<String> preposStatuses =
-            newArrayList(ALL_STATUS, NOT_PROCESSED.getName(), WAITING.getName(), PROCESSED.getName(),
-                    CBN.getName(), NOT_FOR_REPORT.getName());
+            newArrayList(ALL_STATUS, NOT_POS.getName(), WAIT.getName(), POS_OK.getName(),
+                    CBN.getName(), CANCEL.getName());
 
     private String selectedStatus = ALL_STATUS;
-    private String statusToChange = PROCESSED.toString();
+    private String statusToChange = POS_OK.toString();
 	private boolean checkAll = false;
 
     private List<PreposModel> preposes = Lists.newArrayList();
@@ -73,7 +73,8 @@ public class PreposViewModel {
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
     private Iterable<PreposModel> filteredCheckedPreposes;
 
-    private PreposRestrictions preposRestrictions = new PreposRestrictions();
+	@WireVariable
+    private PreposRestrictions preposRestrictions;
 
     @WireVariable
     private PreposService preposService;
@@ -160,6 +161,7 @@ public class PreposViewModel {
     }
 
     @Command(SAVE_COMMAND)
+    @NotifyChange(ALL_PREPOS_NOTIFY)
     public void save() {
         preposService.updateFromModels(preposes);
     }
@@ -244,7 +246,7 @@ public class PreposViewModel {
 
 	}
 
-	@Command
+	@Command(IMPORT_CLAIMS_COMMAND)
 	@NotifyChange(ALL_PREPOS_NOTIFY)
 	public void importClaims(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
 
@@ -255,11 +257,14 @@ public class PreposViewModel {
 		} else {
 			throw new CiscoException("media is not binary");
 		}
+
+		Messagebox.show("Claims were successfuly imported", null, 0, Messagebox.INFORMATION);
+		refresh();
 	}
 
 	@Command(CHECK_ALL_COMMAND)
-	@NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
-	public void preposChecked() {
+	@NotifyChange({RECOUNT_TOTAL_POS_SUM_NOTIFY, ALL_PREPOS_NOTIFY})
+	public void checkAll() {
 		if(checkAll) {
 			Map<Long, PreposModel> allCheckPreposes = Maps.uniqueIndex(filteredPreposes, new Function<PreposModel, Long>() {
 				@Override

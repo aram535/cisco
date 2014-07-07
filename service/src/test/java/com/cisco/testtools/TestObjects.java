@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
-import static com.cisco.prepos.dto.Prepos.Status.NOT_PROCESSED;
+import static com.cisco.prepos.dto.Prepos.Status.NOT_POS;
 
 /**
  * Created by Alf on 05.05.2014.
@@ -46,7 +46,7 @@ public class TestObjects {
     public static final double PROMO_DISCOUNT = 0.35;
     public static final double PRICE_LIST_DISCOUNT = 0.21;
 
-    public static final int GPL = 250;
+    public static final Double GPL = 250d;
 
     public static final String CLIENT_CITY = "client city";
     public static final String CLIENT_ADDRESS = "client address";
@@ -68,7 +68,7 @@ public class TestObjects {
 
             prepos.setPartNumber(PART_NUMBER);
             prepos.setPartnerName(PARTNER_NAME);
-            prepos.setStatus(NOT_PROCESSED);
+            prepos.setStatus(NOT_POS);
             prepos.setClientNumber(CLIENT_NUMBER);
             prepos.setShippedDate(SHIPPED_DATE);
             prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
@@ -88,7 +88,7 @@ public class TestObjects {
 
             prepos.setPartNumber(PART_NUMBER);
             prepos.setPartnerName(PARTNER_NAME);
-            prepos.setStatus(NOT_PROCESSED);
+            prepos.setStatus(NOT_POS);
             prepos.setClientNumber(CLIENT_NUMBER);
             prepos.setShippedDate(SHIPPED_DATE);
             prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
@@ -117,7 +117,7 @@ public class TestObjects {
 
             prepos.setPartNumber(PART_NUMBER);
             prepos.setPartnerName(PARTNER_NAME);
-            prepos.setStatus(NOT_PROCESSED);
+            prepos.setStatus(NOT_POS);
             prepos.setClientNumber(CLIENT_NUMBER);
             prepos.setShippedDate(SHIPPED_DATE);
             prepos.setShippedBillNumber(SHIPPED_BILL_NUMBER);
@@ -177,7 +177,7 @@ public class TestObjects {
                     setDescription("description").setDiscount(0.3).setGpl(GPL).setWpl(400).build();
         }
 
-        public static Pricelist newPricelist(int gpl) {
+        public static Pricelist newPricelist(Double gpl) {
 
             return PricelistBuilder.newPricelistBuilder().setId(2L).setPartNumber(PART_NUMBER).
                     setDescription("description").setDiscount(0.3).setGpl(gpl).setWpl(400).build();

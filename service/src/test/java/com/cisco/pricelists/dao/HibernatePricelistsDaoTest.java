@@ -79,7 +79,7 @@ public class HibernatePricelistsDaoTest extends BasicDb {
         pricelist.setId(1L);
         pricelist.setPartNumber("SPA112");
         pricelist.setDescription("2 Port Phone Adapter");
-        pricelist.setGpl(69);
+        pricelist.setGpl(69d);
         pricelist.setWpl(43.47);
         pricelist.setDiscount(37);
         return pricelist;
@@ -96,7 +96,7 @@ public class HibernatePricelistsDaoTest extends BasicDb {
         Pricelist pricelist = new Pricelist();
         pricelist.setPartNumber("SPA114");
         pricelist.setDescription("4 Port Phone Adapter");
-        pricelist.setGpl(60);
+        pricelist.setGpl(60d);
         pricelist.setWpl(43.47);
         pricelist.setDiscount(37);
         return pricelist;

@@ -68,7 +68,7 @@ public class DefaultClaimsImporterTest {
 		prepos.setPosreadyId(POSREADY_ID);
 
 		when(claimsExtractor.extract(inputStream)).thenReturn(claims);
-		when(preposService.getPreposes(Prepos.Status.WAITING)).thenReturn(Lists.newArrayList(prepos));
+		when(preposService.getPreposes(Prepos.Status.WAIT)).thenReturn(Lists.newArrayList(prepos));
 
 		expectedException.expect(CiscoException.class);
 		expectedException.expectMessage(String.format("No prepos found for claim with PN=%s and SBN=%s", ANOTHER_PART_NUMBER, ANOTHER_SHIPPED_BN));
@@ -82,7 +82,7 @@ public class DefaultClaimsImporterTest {
 		List<Claim> claims = getClaims();
 
 		when(claimsExtractor.extract(inputStream)).thenReturn(claims);
-		when(preposService.getPreposes(Prepos.Status.WAITING)).thenReturn(Lists.newArrayList(newPrepos()));
+		when(preposService.getPreposes(Prepos.Status.WAIT)).thenReturn(Lists.newArrayList(newPrepos()));
 
 		expectedException.expect(CiscoException.class);
 		expectedException.expectMessage(String.format("Prepos posreadyId shouldn`t be empty! Please contact support (PN  = %s)", PART_NUMBER));
@@ -96,11 +96,11 @@ public class DefaultClaimsImporterTest {
 		List<Claim> claims = getClaims();
 
 		when(claimsExtractor.extract(inputStream)).thenReturn(claims);
-		when(preposService.getPreposes(Prepos.Status.WAITING)).thenReturn(getPreposes());
+		when(preposService.getPreposes(Prepos.Status.WAIT)).thenReturn(getPreposes());
 
 		claimsImporter.importClaims(inputStream);
 
-		verify(preposService, times(1)).getPreposes(Prepos.Status.WAITING);
+		verify(preposService, times(1)).getPreposes(Prepos.Status.WAIT);
 		verify(preposService, times(1)).update(getUpdatedPreposes());
 		verifyNoMoreInteractions(preposService);
 	}
@@ -111,11 +111,11 @@ public class DefaultClaimsImporterTest {
 		List<Claim> claims = getClaims();
 
 		when(claimsExtractor.extract(inputStream)).thenReturn(claims);
-		when(preposService.getPreposes(Prepos.Status.WAITING)).thenReturn(getPreposesWithoutPromos());
+		when(preposService.getPreposes(Prepos.Status.WAIT)).thenReturn(getPreposesWithoutPromos());
 
 		claimsImporter.importClaims(inputStream);
 
-		verify(preposService, times(1)).getPreposes(Prepos.Status.WAITING);
+		verify(preposService, times(1)).getPreposes(Prepos.Status.WAIT);
 		verify(preposService, times(1)).update(getUpdatedPreposesWithoutPromos());
 		verifyNoMoreInteractions(preposService);
 	}
@@ -160,14 +160,14 @@ public class DefaultClaimsImporterTest {
 		firstPrepos.setPosreadyId(POSREADY_ID);
 		firstPrepos.setClaimId(CLAIM_ID);
 		firstPrepos.setBatchId(BATCH_ID);
-		firstPrepos.setStatus(Prepos.Status.PROCESSED);
+		firstPrepos.setStatus(Prepos.Status.POS_OK);
 		Prepos secondPrepos = newPrepos();
 		secondPrepos.setPosreadyId(POSREADY_ID);
 		secondPrepos.setPartNumber(ANOTHER_PART_NUMBER);
 		secondPrepos.setShippedBillNumber(ANOTHER_SHIPPED_BN);
 		secondPrepos.setClaimId(ANOTHER_CLAIM_ID);
 		secondPrepos.setBatchId(ANOTHER_BATCH_ID);
-		secondPrepos.setStatus(Prepos.Status.PROCESSED);
+		secondPrepos.setStatus(Prepos.Status.POS_OK);
 
 		return Lists.newArrayList(firstPrepos, secondPrepos);
 	}
@@ -178,14 +178,14 @@ public class DefaultClaimsImporterTest {
 		firstPrepos.setPosreadyId(POSREADY_ID);
 		firstPrepos.setClaimId(CLAIM_ID);
 		firstPrepos.setBatchId(BATCH_ID);
-		firstPrepos.setStatus(Prepos.Status.PROCESSED);
+		firstPrepos.setStatus(Prepos.Status.POS_OK);
 		Prepos secondPrepos = newPrepos();
 		secondPrepos.setPosreadyId(POSREADY_ID);
 		secondPrepos.setPartNumber(ANOTHER_PART_NUMBER);
 		secondPrepos.setShippedBillNumber(ANOTHER_SHIPPED_BN);
 		secondPrepos.setClaimId(ANOTHER_CLAIM_ID);
 		secondPrepos.setBatchId(ANOTHER_BATCH_ID);
-		secondPrepos.setStatus(Prepos.Status.PROCESSED);
+		secondPrepos.setStatus(Prepos.Status.POS_OK);
 
 		return Lists.newArrayList(firstPrepos, secondPrepos);
 	}

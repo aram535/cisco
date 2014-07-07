@@ -49,14 +49,14 @@ public class DefaultDiscountProvider implements DiscountProvider {
     }
 
     @Override
-    public int getGpl(String partNumber, Map<String, Pricelist> pricelistsMap) {
+    public double getGpl(String partNumber, Map<String, Pricelist> pricelistsMap) {
         Pricelist pricelist = pricelistsMap.get(partNumber);
 
         if (pricelist == null) {
             throw new CiscoException(String.format("NO price found for part number %s", partNumber));
         }
 
-        int gpl = pricelist.getGpl();
+        double gpl = pricelist.getGpl();
 
         return gpl;
     }

@@ -217,7 +217,7 @@ public class DefaultPreposServiceTest {
 		when(dartsService.getDartsTable()).thenReturn(dartsTable);
 		when(preposModelConstructor.construct(allNotProcessedPreposes)).thenReturn(allPreposModels);
 
-		List<PreposModel> allData = preposService.getAllData(Prepos.Status.NOT_PROCESSED);
+		List<PreposModel> allData = preposService.getAllData(Prepos.Status.NOT_POS);
 
 		verify(preposesDao).update(allNotProcessedPreposes);
 		assertThat(allData).isEqualTo(allPreposModels);
@@ -245,7 +245,7 @@ public class DefaultPreposServiceTest {
 		assertEquals(expectedFilename, filename);
 
 		for (Prepos prepos : allPreposes) {
-			assertEquals(Prepos.Status.WAITING, prepos.getStatus());
+			assertEquals(Prepos.Status.WAIT, prepos.getStatus());
 			assertEquals(posreadyId, prepos.getPosreadyId());
 		}
 
@@ -257,10 +257,10 @@ public class DefaultPreposServiceTest {
 	public void thatExceptionIsThrownWhenPreposesWithIncorrectStatusPassedToExportPosready() {
 
 		List<PreposModel> preposes = getAllPreposModels();
-		Iterables.getOnlyElement(preposes).getPrepos().setStatus(Prepos.Status.WAITING);
+		Iterables.getOnlyElement(preposes).getPrepos().setStatus(Prepos.Status.WAIT);
 
 		expectedException.expect(CiscoException.class);
-		expectedException.expectMessage("All preposes should be in " + Prepos.Status.NOT_PROCESSED.toString() + " status");
+		expectedException.expectMessage("All preposes should be in " + Prepos.Status.NOT_POS.toString() + " status");
 
 		preposService.exportPosready(preposes);
 
@@ -277,7 +277,7 @@ public class DefaultPreposServiceTest {
 
 	private List<Prepos> updatedAfterPosreadyPreposes() {
 		Prepos prepos = newPrepos();
-		prepos.setStatus(Prepos.Status.WAITING);
+		prepos.setStatus(Prepos.Status.WAIT);
 		prepos.setPosreadyId("123456");
 		return Lists.newArrayList(prepos);
 	}
@@ -312,7 +312,7 @@ public class DefaultPreposServiceTest {
 	private List<Prepos> getAllPreposesWithDifferentSatuses() {
 		List<Prepos> allPreposes = getAllPreposes();
 		Prepos prepos = newPrepos();
-		prepos.setStatus(Prepos.Status.PROCESSED);
+		prepos.setStatus(Prepos.Status.POS_OK);
 		allPreposes.add(prepos);
 
 		return allPreposes;

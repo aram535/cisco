@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public class DefaultDiscountProviderTest {
 
     private static final String OTHER_PART_NUMBER = "other part number";
-    private static final int GPL = 270;
+    private static final Double GPL = 270d;
     private final long shippedDateInMillis = 500L;
 
     @InjectMocks

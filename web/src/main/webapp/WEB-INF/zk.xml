@@ -1,3 +1,5 @@
 <zk>
-    <fasdileupload maxsize="1000000"/>
+    <system-config>
+        <max-upload-size>-1</max-upload-size>
+    </system-config>
 </zk>

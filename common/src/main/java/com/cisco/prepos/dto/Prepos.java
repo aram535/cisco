@@ -415,11 +415,11 @@ public class Prepos {
 
 
 	public enum Status {
-        NOT_PROCESSED("NOT_PROCESSED"),
-        PROCESSED("PROCESSED"),
-        WAITING("WAITING"),
+        NOT_POS("NOT_POS"),
+        POS_OK("POS_OK"),
+        WAIT("WAIT"),
         CBN("CBN"),
-        NOT_FOR_REPORT("NOT_FOR_REPORT");
+        CANCEL("CANCEL");
 
         private final String name;
 

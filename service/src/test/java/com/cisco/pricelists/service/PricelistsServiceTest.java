@@ -34,12 +34,12 @@ public class PricelistsServiceTest {
     private static final String FIRST_PART_NUMBER = "First part number";
 
     private static final Pricelist FIRST_PRICE = PricelistBuilder.newPricelistBuilder().setId(1L).setPartNumber(FIRST_PART_NUMBER).
-            setDescription("description").setDiscount(30).setGpl(500).setWpl(300).build();
+            setDescription("description").setDiscount(30).setGpl(500d).setWpl(300).build();
 
     private static final String SECOND_PART_NUMBER = "Second part number";
 
     private static final Pricelist SECOND_PRICE = PricelistBuilder.newPricelistBuilder().setId(2L).setPartNumber(SECOND_PART_NUMBER).
-            setDescription("description").setDiscount(30).setGpl(500).setWpl(400).build();
+            setDescription("description").setDiscount(30).setGpl(500d).setWpl(400).build();
 
     @Test
     public void thetPricelistsMapReturnedAccordingToDao() {

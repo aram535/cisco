@@ -1,4 +1,4 @@
-<zk>
+<zk ctrlKeys="#bak">
 	<borderlayout apply="com.cisco.main.BookmarkChangeController">
 		<north border="none" collapsible="true" splittable="true" flex="true">
 			<include src="/zul/ajaxbased/sidebar/sidebar.zul"/>
@@ -6,6 +6,12 @@
 		<center id="mainContent" border="none" self="@insert(content)" flex="true">
 			<!-- the main content will be insert to here -->
 		</center>
-
+    <south>
+        <hbox apply="com.cisco.main.services.authentication.LogoutController"
+              hflex="1" vflex="1" pack="end" align="end" >
+            <!--<label value="${sessionScope.userCredential.name}" if="${not sessionScope.userCredential.anonymous}"/>-->
+            <label id="logout" value="Logout" if="${not sessionScope.userCredential.anonymous}" sclass="logout"/>
+        </hbox>
+    </south>
 	</borderlayout>
 </zk>

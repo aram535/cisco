@@ -7,7 +7,7 @@ public class PricelistBuilder {
 	private long id;
 	private String partNumber;
 	private String description;
-	private int gpl;
+	private Double gpl;
 	private double wpl;
 	private double discount;
 
@@ -33,7 +33,7 @@ public class PricelistBuilder {
 		return this;
 	}
 
-	public PricelistBuilder setGpl(int gpl) {
+	public PricelistBuilder setGpl(Double gpl) {
 		this.gpl = gpl;
 		return this;
 	}

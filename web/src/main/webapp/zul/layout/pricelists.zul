@@ -1,4 +1,4 @@
-<window id="win" title="Names" border="normal"
+<window id="win" title="Pricelists" border="normal"
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.pricelists.PricelistsViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">

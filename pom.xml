@@ -18,7 +18,7 @@
 
     <properties>
         <project.version>1.0-SNAPSHOT</project.version>
-        <zk.version>7.0.2</zk.version>
+        <zk.version>6.5.2</zk.version>
         <spring.version>4.0.2.RELEASE</spring.version>
         <hibernate.version>4.3.5.Final</hibernate.version>
         <unitils.version>3.3</unitils.version>

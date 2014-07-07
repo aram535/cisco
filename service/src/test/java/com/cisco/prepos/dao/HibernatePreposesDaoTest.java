@@ -73,7 +73,7 @@ public class HibernatePreposesDaoTest extends BasicDb {
                 .buyDiscount(48).salePrice(383).buyPrice(337.48).firstPromo("PP-FAST70694-120128").secondPromo("")
                 .endUser("").clientNumber("158").shippedDate(someDate).shippedBillNumber("1/2606761")
                 .comment("КИЕВ 14/03 + DDP АКЦИЯ 8641").serials("SFCZ1805C4AV").zip(61052)
-		        .status(Prepos.Status.NOT_PROCESSED)
+		        .status(Prepos.Status.NOT_POS)
                 .build();
 
         return newPrepos;
@@ -88,7 +88,7 @@ public class HibernatePreposesDaoTest extends BasicDb {
                 .buyDiscount(48).salePrice(383).buyPrice(337.48).firstPromo("PP-FAST70694-120128").secondPromo("")
                 .endUser("").clientNumber("158").shippedDate(someDate).shippedBillNumber("1/2606761")
                 .comment("КИЕВ 14/03 + DDP АКЦИЯ 8641").serials("SFCZ1805C4AV").zip(61052)
-		        .status(Prepos.Status.NOT_PROCESSED)
+		        .status(Prepos.Status.NOT_POS)
                 .build();
 
         return newPrepos;

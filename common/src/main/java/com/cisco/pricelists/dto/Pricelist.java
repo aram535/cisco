@@ -15,11 +15,11 @@ public class Pricelist {
 	private long id;
 	private String partNumber;
 	private String description;
-	private int gpl;
+	private double gpl;
 	private double wpl;
 	private double discount;
 
-	public Pricelist(long id, String partNumber, String description, int gpl, double wpl, int discount) {
+	public Pricelist(long id, String partNumber, String description, double gpl, double wpl, int discount) {
 		this.id = id;
 		this.partNumber = partNumber;
 		this.description = description;
@@ -48,7 +48,7 @@ public class Pricelist {
 	}
 
 	@Column(name = "gpl")
-	public int getGpl() {
+	public double getGpl() {
 		return gpl;
 	}
 
@@ -74,7 +74,7 @@ public class Pricelist {
 		this.description = description;
 	}
 
-	public void setGpl(int gpl) {
+	public void setGpl(double gpl) {
 		this.gpl = gpl;
 	}
 

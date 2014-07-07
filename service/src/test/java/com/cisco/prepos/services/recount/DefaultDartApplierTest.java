@@ -37,7 +37,7 @@ public class DefaultDartApplierTest {
 
     private static final String SELECTED_DART_AUTHORIZATION_NUMBER = "other authorization number";
     private static final String SELECTED_DART_END_USER_NAME = "other end user name";
-    private static final int OTHER_GPL = 270;
+    private static final Double OTHER_GPL = 270d;
     private static final double SALE_DISCOUNT_FROM_PROVIDER = 0.26;
     private static final double BUY_DISCOUNT_FROM_PROVIDER = 0.38;
     private static final double BUY_PRICE = 167.4;

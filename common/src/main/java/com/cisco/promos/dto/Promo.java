@@ -19,13 +19,13 @@ public class Promo {
 	private String description;
 	private double discount;
 	private String name;
-	private int gpl;
+	private double gpl;
 	private String code;
 	private double claimPerUnit;
 	private int version;
 	private Timestamp endDate;
 
-	public Promo(long id, String partNumber, String description, double discount, String name, int gpl, String code, double claimPerUnit, int version, Timestamp endDate) {
+	public Promo(long id, String partNumber, String description, double discount, String name, double gpl, String code, double claimPerUnit, int version, Timestamp endDate) {
 		this.id = id;
 		this.partNumber = partNumber;
 		this.description = description;
@@ -68,7 +68,7 @@ public class Promo {
 	}
 
 	@Column(name = "gpl")
-	public int getGpl() {
+	public double getGpl() {
 		return gpl;
 	}
 
@@ -112,7 +112,7 @@ public class Promo {
 		this.name = name;
 	}
 
-	public void setGpl(int gpl) {
+	public void setGpl(double gpl) {
 		this.gpl = gpl;
 	}
 

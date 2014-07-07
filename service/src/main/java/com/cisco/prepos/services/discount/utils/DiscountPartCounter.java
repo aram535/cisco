@@ -2,7 +2,7 @@ package com.cisco.prepos.services.discount.utils;
 
 public class DiscountPartCounter {
 
-    public static double getDiscountPart(double first, int second) {
+    public static double getDiscountPart(double first, double second) {
         return getRoundedDouble(1 - (first / second));
     }
 

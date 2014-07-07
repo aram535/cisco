@@ -20,8 +20,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
-import static com.cisco.prepos.dto.Prepos.Status.PROCESSED;
-import static com.cisco.prepos.dto.Prepos.Status.WAITING;
+import static com.cisco.prepos.dto.Prepos.Status.POS_OK;
+import static com.cisco.prepos.dto.Prepos.Status.WAIT;
 
 /**
  * Created by Alf on 05.07.2014.
@@ -46,7 +46,7 @@ public class DefaultClaimsImporter implements ClaimsImporter {
 			throw new CiscoException("Exported from excel claims are null or empty. Please, check file.");
 		}
 
-		List<Prepos> preposes = preposService.getPreposes(WAITING);
+		List<Prepos> preposes = preposService.getPreposes(WAIT);
 		Table<String, String, Prepos> preposTable = PreposAssistant.asTable(preposes);
 
 		Set<String> posreadyIdSet = Sets.newHashSet();
@@ -92,7 +92,7 @@ public class DefaultClaimsImporter implements ClaimsImporter {
 		List<Prepos> preposesPerPosready = posreadyIdMultimap.get(posreadyId);
 		for (Prepos prepos : preposesPerPosready) {
 			if(preposStatusShouldBeChangedToProcessed(prepos)) {
-				prepos.setStatus(PROCESSED);
+				prepos.setStatus(POS_OK);
 			}
 		}
 	}

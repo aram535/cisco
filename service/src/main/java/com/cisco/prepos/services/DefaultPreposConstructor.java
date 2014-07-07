@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static com.cisco.prepos.dto.Prepos.Status.NOT_PROCESSED;
+import static com.cisco.prepos.dto.Prepos.Status.NOT_POS;
 
 /**
  * Created by Alf on 03.05.2014.
@@ -46,7 +46,7 @@ public class DefaultPreposConstructor implements PreposConstructor {
             prepos.setSalePrice(sale.getPrice());
             prepos.setPartNumber(sale.getPartNumber());
             prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
-            prepos.setStatus(NOT_PROCESSED);
+            prepos.setStatus(NOT_POS);
             prepos.setClientNumber(sale.getClientNumber());
             prepos.setShippedDate(sale.getShippedDate());
             prepos.setShippedBillNumber(sale.getShippedBillNumber());

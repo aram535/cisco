@@ -43,7 +43,7 @@ public class DefaultDartApplier implements DartApplier {
 
         String newSecondPromo = selectedDart.getAuthorizationNumber();
 
-        int gpl = discountProvider.getGpl(partNumber, pricelistsMap);
+        double gpl = discountProvider.getGpl(partNumber, pricelistsMap);
         double saleDiscount = getDiscountPart(salePrice, gpl);
 
         double buyDiscount = discountProvider.getDiscount(selectedDart, firstPromo, pricelist, shippedDateInMillis);

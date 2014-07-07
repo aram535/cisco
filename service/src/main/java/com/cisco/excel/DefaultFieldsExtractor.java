@@ -52,6 +52,7 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
     public Workbook getWorkbook(InputStream inputStream) {
         Workbook workbook;
         try {
+
             workbook = WorkbookFactory.create(inputStream);
         } catch (Exception e) {
             throw new CiscoException(e);

@@ -1,13 +1,20 @@
 package com.cisco.prepos.model;
 
 import org.joda.time.DateTimeUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 /**
  * Created by Alf on 01.05.2014.
  */
+
+@Component
+@PropertySource("classpath:prepos.properties")
 public class PreposRestrictions {
 
     private String partnerName;
@@ -15,19 +22,32 @@ public class PreposRestrictions {
     private Timestamp toDate;
     private Timestamp fromDate;
 
-	//TODO move to & from date to properties
-    public PreposRestrictions() {
+	@Value("${years.interval}")
+	private int yearsInterval;
 
-	    Timestamp currentTime = new Timestamp(DateTimeUtils.currentTimeMillis());
+	@Value("${months.interval}")
+	private int monthsInterval;
 
-	    Calendar cal = Calendar.getInstance();
-	    cal.setTime(currentTime);
-	    cal.add(Calendar.YEAR, -2);
+	@Value("${days.interval}")
+	private int daysInterval;
 
-	    fromDate = new Timestamp(cal.getTime().getTime());
-	    cal.add(Calendar.YEAR, 4);
-	    toDate  = new Timestamp(cal.getTime().getTime());
-    }
+	public PreposRestrictions() {
+	}
+
+	@PostConstruct
+	public void init() {
+		Timestamp currentTime = new Timestamp(DateTimeUtils.currentTimeMillis());
+
+		toDate = currentTime;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(currentTime);
+		cal.add(Calendar.YEAR, -yearsInterval);
+		cal.add(Calendar.MONTH, -monthsInterval);
+		cal.add(Calendar.DAY_OF_MONTH, -daysInterval);
+
+		fromDate = new Timestamp(cal.getTime().getTime());
+	}
 
     public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate) {
         this.partnerName = partnerName;

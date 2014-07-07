@@ -56,7 +56,7 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
 
                 String partNumber = fieldsExtractor.extractStringValue(row, PART_NUMBER_COLUMN);
                 String description = fieldsExtractor.extractStringValue(row, DESCRIPTION_COLUMN);
-                int gpl = (int) fieldsExtractor.extractNumericValue(row, GPL_COLUMN);
+                Double gpl =  fieldsExtractor.extractDoubleValue(row, GPL_COLUMN);
                 int discount = (int) fieldsExtractor.extractNumericValue(row, DISCOUNT_COLUMN);
                 double wpl = calculateWpl(gpl, discount);
 	            double fractionalDiscount = getRoundedDouble((double)discount / 100);
@@ -77,10 +77,12 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
         return pricelistMap;
     }
 
-    private double calculateWpl(int gpl, int discount) {
-        double wpl = gpl * (1 - (discount / 100d));
-        BigDecimal bd = new BigDecimal(wpl);
-        BigDecimal rounded = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
-        return rounded.doubleValue();
-    }
+	private double calculateWpl(Double gpl, int discount) {
+
+		double wpl = gpl * (1 - (discount / 100d));
+		BigDecimal bd = new BigDecimal(wpl);
+		BigDecimal rounded = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+		return rounded.doubleValue();
+
+	}
 }

@@ -11,7 +11,7 @@ public class PromoBuilder {
 	private String description;
 	private double discount;
 	private String name;
-	private int gpl;
+	private double gpl;
 	private String code;
 	private double claimPerUnit;
 	private int version;
@@ -49,7 +49,7 @@ public class PromoBuilder {
 		return this;
 	}
 
-	public PromoBuilder setGpl(int gpl) {
+	public PromoBuilder setGpl(double gpl) {
 		this.gpl = gpl;
 		return this;
 	}
