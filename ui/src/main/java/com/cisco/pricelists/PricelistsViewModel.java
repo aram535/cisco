@@ -26,121 +26,116 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PricelistsViewModel {
 
-	private static final String ALL_PRICELISTS_CHANGE = "allPricelists";
-	private static final String SELECTED_EVENT_CHANGE = "selectedEvent";
+    private static final String ALL_PRICELISTS_CHANGE = "allPricelists";
+    private static final String SELECTED_EVENT_CHANGE = "selectedEvent";
 
-	private Pricelist selectedPricelistModel;
-	private Pricelist newPricelistModel = new Pricelist();
+    private Pricelist selectedPricelistModel;
+    private Pricelist newPricelistModel = new Pricelist();
 
-	@WireVariable
-	private PricelistsService pricelistsService;
+    @WireVariable
+    private PricelistsService pricelistsService;
 
-	@WireVariable
-	private PricelistImporter pricelistImporter;
+    @WireVariable
+    private PricelistImporter pricelistImporter;
 
-	private List<Pricelist> allPricelists;
+    private List<Pricelist> allPricelists;
 
-	public Pricelist getSelectedPricelistModel() {
-		return selectedPricelistModel;
-	}
+    public Pricelist getSelectedPricelistModel() {
+        return selectedPricelistModel;
+    }
 
-	public Pricelist getNewPricelistModel() {
-		return newPricelistModel;
-	}
+    public Pricelist getNewPricelistModel() {
+        return newPricelistModel;
+    }
 
-	public void setSelectedPricelistModel(Pricelist selectedPricelistModel) {
-		this.selectedPricelistModel = selectedPricelistModel;
-	}
+    public void setSelectedPricelistModel(Pricelist selectedPricelistModel) {
+        this.selectedPricelistModel = selectedPricelistModel;
+    }
 
-	public void setNewPricelistModel(Pricelist newPricelistModel) {
-		this.newPricelistModel = newPricelistModel;
-	}
+    public void setNewPricelistModel(Pricelist newPricelistModel) {
+        this.newPricelistModel = newPricelistModel;
+    }
 
-	public void setPricelistsService(PricelistsService pricelistsService) {
-		this.pricelistsService = pricelistsService;
-	}
+    public void setPricelistsService(PricelistsService pricelistsService) {
+        this.pricelistsService = pricelistsService;
+    }
 
-	public List<Pricelist> getAllPricelists() {
-		try {
-			allPricelists = pricelistsService.getPricelists();
-			return allPricelists;
-		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
-			return Lists.newArrayList();
-		}
-	}
+    public List<Pricelist> getAllPricelists() {
+        try {
+            allPricelists = pricelistsService.getPricelists();
+            return allPricelists;
+        } catch (Exception e) {
+            Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+            return Lists.newArrayList();
+        }
+    }
 
-	@Command("add")
-	@NotifyChange(ALL_PRICELISTS_CHANGE)
-	public void add() {
+    @Command("add")
+    @NotifyChange(ALL_PRICELISTS_CHANGE)
+    public void add() {
 
-		try {
-			pricelistsService.save(newPricelistModel);
-			this.newPricelistModel = new Pricelist();
-		} catch (Exception e) {
-			throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
-		}
+        try {
+            pricelistsService.save(newPricelistModel);
+            this.newPricelistModel = new Pricelist();
+        } catch (Exception e) {
+            throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
+        }
 
-	}
+    }
 
-	@Command("update")
-	@NotifyChange(ALL_PRICELISTS_CHANGE)
-	public void update() {
-		try {
-			pricelistsService.update(selectedPricelistModel);
-		} catch (Exception e) {
-			throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
-		}
-	}
+    @Command("update")
+    @NotifyChange(ALL_PRICELISTS_CHANGE)
+    public void update() {
+        try {
+            pricelistsService.update(selectedPricelistModel);
+        } catch (Exception e) {
+            throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
+        }
+    }
 
-	@Command("delete")
-	@NotifyChange({ALL_PRICELISTS_CHANGE, SELECTED_EVENT_CHANGE})
-	public void delete() {
-		try {
-			//shouldn't be able to delete with selectedEvent being null anyway
-			//unless trying to hack the system, so just ignore the request
-			if (this.selectedPricelistModel != null) {
-				pricelistsService.delete(this.selectedPricelistModel);
-				this.selectedPricelistModel = null;
-			}
-		} catch (Exception e) {
-			throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
-		}
+    @Command("delete")
+    @NotifyChange({ALL_PRICELISTS_CHANGE, SELECTED_EVENT_CHANGE})
+    public void delete() {
+        try {
+            //shouldn't be able to delete with selectedEvent being null anyway
+            //unless trying to hack the system, so just ignore the request
+            if (this.selectedPricelistModel != null) {
+                pricelistsService.delete(this.selectedPricelistModel);
+                this.selectedPricelistModel = null;
+            }
+        } catch (Exception e) {
+            throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
+        }
 
-	}
+    }
 
-	@Command("deleteAll")
-	@NotifyChange({ALL_PRICELISTS_CHANGE, SELECTED_EVENT_CHANGE})
-	public void deleteAll() {
+    @Command("deleteAll")
+    @NotifyChange({ALL_PRICELISTS_CHANGE, SELECTED_EVENT_CHANGE})
+    public void deleteAll() {
 
-		try {
-			pricelistsService.deleteAll();
-			this.selectedPricelistModel = null;
-		} catch (Exception e) {
-			throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
-		}
+        try {
+            pricelistsService.deleteAll();
+            this.selectedPricelistModel = null;
+        } catch (Exception e) {
+            throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
+        }
 
-	}
+    }
 
-	@Command
-	@NotifyChange({ALL_PRICELISTS_CHANGE})
-	public void importPricelist(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
+    @Command
+    @NotifyChange({ALL_PRICELISTS_CHANGE})
+    public void importPricelist(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
 
-		try {
-			Media media = event.getMedia();
-			if (media.isBinary()) {
-				InputStream inputStream = media.getStreamData();
-				pricelistImporter.importPricelist(inputStream);
-			} else {
-				throw new CiscoException("media is not binary");
-			}
-		} catch (Exception e) {
-			throw new CiscoException(ExceptionUtils.getRootCause(e).getMessage());
-		}
+        Media media = event.getMedia();
+        if (media.isBinary()) {
+            InputStream inputStream = media.getStreamData();
+            pricelistImporter.importPricelist(inputStream);
+        } else {
+            throw new CiscoException("media is not binary");
+        }
+    }
 
-	}
-
-	void setPricelistImporter(PricelistImporter pricelistImporter) {
-		this.pricelistImporter = pricelistImporter;
-	}
+    void setPricelistImporter(PricelistImporter pricelistImporter) {
+        this.pricelistImporter = pricelistImporter;
+    }
 }
