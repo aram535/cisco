@@ -165,7 +165,8 @@ public class DefaultPosreadyBuilderTest {
 	public void thatExceptionIsThrownWnenNoClientFound() throws Exception {
 
 		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage(String.format("No client was found for prepos with PN: %s", prepos.getPartNumber()));
+		expectedException.expectMessage(String.format("No client with number: %s was found for prepos with PN: %s",
+				prepos.getClientNumber(), prepos.getPartNumber()));
 
 		posreadyExporter.buildPosready(Lists.newArrayList(prepos), Maps.<String, Client>newHashMap(), pricelistMap, dartsTable, promosMap);
 	}

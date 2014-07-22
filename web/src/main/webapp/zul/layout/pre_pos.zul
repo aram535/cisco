@@ -73,6 +73,9 @@
             <column label="Serials"/>
             <column label="Zip"/>
             <column label="Manager"/>
+            <column label="PosreadyID"/>
+            <column label="ClaimID"/>
+            <column label="BatchID"/>
         </columns>
         <template name="model">
             <row>
@@ -96,16 +99,19 @@
                         <comboitem label="@load(each.authorizationNumber)" description="@load(each.endUserName)"/>
                     </template>
                 </combobox>
-                <textbox width="auto" value="@bind(each.prepos.endUser)"/>
+                <label width="auto" value="@bind(each.prepos.endUser)"/>
                 <label width="auto" value="@bind(each.prepos.posSum)"/>
                 <label width="auto" value="@bind(each.prepos.quantity)"/>
                 <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
                 <label width="auto" value="@bind(each.prepos.delta)"/>
                 <label width="auto" value="@bind(each.prepos.clientNumber)"/>
                 <label width="auto" value="@bind(each.prepos.comment)"/>
-                <label width="auto" value="@bind(each.prepos.serials)"/>
+                <textbox width="auto" value="@bind(each.prepos.serials)"/>
                 <label width="auto" value="@bind(each.prepos.zip)"/>
                 <label width="auto" value="@bind(each.prepos.accountManagerName)"/>
+                <label width="auto" value="@bind(each.prepos.posreadyId)"/>
+                <label width="auto" value="@bind(each.prepos.claimId)"/>
+                <label width="auto" value="@bind(each.prepos.batchId)"/>
             </row>
         </template>
     </grid>

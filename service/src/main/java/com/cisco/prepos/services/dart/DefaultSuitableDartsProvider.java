@@ -61,7 +61,8 @@ public class DefaultSuitableDartsProvider implements SuitableDartsProvider {
 
                 boolean nameSuits = partnerName.equals(resellerName);
                 boolean quantitySuits = dartQuantity >= quantity;
-                boolean dateSuits = dart.getStartDate().before(saleDate) && dart.getEndDate().after(saleDate);
+
+                boolean dateSuits = (dart.getStartDate().compareTo(saleDate) <= 0 && dart.getEndDate().compareTo(saleDate) >= 0);
 
                 return nameSuits && quantitySuits && dateSuits;
             }

@@ -273,7 +273,8 @@ public class TestObjects {
 
         public static Table<String, String, Dart> getDartsTable() {
             Table<String, String, Dart> table = HashBasedTable.create();
-            Dart dart = DartBuilder.builder().setDistiDiscount(DART_DISTI_DISCOUNT).build();
+            Dart dart = DartBuilder.builder().setDistiDiscount(DART_DISTI_DISCOUNT).setQuantity(1)
+		            .setCiscoSku(PART_NUMBER).setAuthorizationNumber(AUTHORIZATION_NUMBER).build();
             table.put(PART_NUMBER, AUTHORIZATION_NUMBER, dart);
             return table;
         }

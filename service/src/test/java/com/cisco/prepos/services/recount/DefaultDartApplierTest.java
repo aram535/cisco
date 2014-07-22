@@ -1,19 +1,25 @@
 package com.cisco.prepos.services.recount;
 
 import com.cisco.darts.dto.Dart;
+import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.cisco.testtools.TestObjects;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
@@ -25,6 +31,7 @@ import static com.cisco.testtools.TestObjects.PricelistsFactory.newPricelist;
 import static com.cisco.testtools.TestObjects.PromosFactory.newPromo;
 import static com.google.common.collect.ImmutableMap.of;
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 /**
@@ -58,7 +65,10 @@ public class DefaultDartApplierTest {
     @Mock
     private DiscountProvider discountProvider;
 
-    @Before
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
+	@Before
     public void init() {
         when(discountProvider.getGpl(PART_NUMBER, pricelistMap)).thenReturn(OTHER_GPL);
 
@@ -74,7 +84,36 @@ public class DefaultDartApplierTest {
         assertThat(result).isEqualTo(createExpectedPrepos());
     }
 
-    private Prepos createExpectedPrepos() {
+	@Test
+	public void thatDartQuantityUpdatedCorrectlyForPreposesList() {
+
+		Prepos expectedPrepos = newPrepos();
+		expectedPrepos.setQuantity(1);
+
+		List<Dart> darts = defaultDartApplier.updateDartQuantity(Lists.newArrayList(expectedPrepos), dartsTable);
+
+		Dart dart = Iterables.getOnlyElement(darts);
+		assertEquals(0, dart.getQuantity());
+	}
+
+	@Test
+	public void thatExceptionIsThrownWhenNotEnoughDartQuantity() throws Exception {
+
+		Prepos expectedPrepos = newPrepos();
+		expectedPrepos.setQuantity(2);
+
+		Dart dart = dartsTable.get(expectedPrepos.getPartNumber(), expectedPrepos.getSecondPromo());
+
+		expectedException.expect(CiscoException.class);
+		expectedException.expectMessage(String.format(
+				"Not enough available quantity for Dart with PN:%s and AN:%s. Please contact support",
+				dart.getCiscoSku(), dart.getAuthorizationNumber()));
+
+		defaultDartApplier.updateDartQuantity(Lists.newArrayList(expectedPrepos), dartsTable);
+
+	}
+
+	private Prepos createExpectedPrepos() {
         Prepos expectedPrepos = newPrepos();
         expectedPrepos.setFirstPromo(promo.getCode());
         expectedPrepos.setSecondPromo(SELECTED_DART_AUTHORIZATION_NUMBER);

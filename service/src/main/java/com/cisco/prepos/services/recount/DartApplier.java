@@ -6,6 +6,7 @@ import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
 import com.google.common.collect.Table;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,4 +16,6 @@ import java.util.Map;
  */
 public interface DartApplier {
     Prepos getPrepos(Prepos inputPrepos, Dart selectedDart, Map<String, Pricelist> pricelistsMap, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap);
+
+	List<Dart> updateDartQuantity(List<Prepos> preposes,  Table<String, String, Dart> dartsTable);
 }

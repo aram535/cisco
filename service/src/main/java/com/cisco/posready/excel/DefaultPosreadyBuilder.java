@@ -55,7 +55,8 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 			Row dataRow = posreadyFieldsBuilder.createEmptyDataRow(sheet, i++, TOTAL_CELL_COUNT);
 
 			Client client = clientMap.get(prepos.getClientNumber());
-			checkNotNull(client, String.format("No client was found for prepos with PN: %s", prepos.getPartNumber()));
+			checkNotNull(client, String.format("No client with number: %s was found for prepos with PN: %s",
+					prepos.getClientNumber(), prepos.getPartNumber()));
 
 			Pricelist pricelist = pricelistsMap.get(prepos.getPartNumber());
 			checkNotNull(pricelist, String.format("No pricelist was found for prepos with PN: %s", prepos.getPartNumber()));
@@ -116,7 +117,7 @@ public class DefaultPosreadyBuilder implements PosreadyBuilder {
 	}
 
 	private String getClaimEligQuantity(Prepos prepos) {
-		if(StringUtils.isNotBlank(prepos.getFirstPromo()) && StringUtils.isNotBlank(prepos.getSecondPromo())) {
+		if(StringUtils.isNotBlank(prepos.getFirstPromo()) || StringUtils.isNotBlank(prepos.getSecondPromo())) {
 			return String.valueOf(prepos.getQuantity());
 		} else {
 			return "";

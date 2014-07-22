@@ -33,6 +33,17 @@ public class DartsExtractorTest {
         assertThat(extractedDarts).containsAll(createExpectedDarts());
     }
 
+	@Test
+	public void thatDartsExtractionStopsWhenEmptyRowApears() throws URISyntaxException {
+
+		InputStream inputStream = this.getClass().getResourceAsStream("/templates/DartsWithEmptyRows.xlsx");
+
+		List<Dart> extractedDarts = dartsExtractor.extract(inputStream);
+
+		assertThat(extractedDarts).isNotNull().isNotEmpty().hasSize(8);
+		assertThat(extractedDarts).containsAll(createExpectedDarts());
+	}
+
     private List<Dart> createExpectedDarts() {
 
         long startDateMillis = new DateTime(2014, 3, 28, 0, 0, 0, 0).getMillis();

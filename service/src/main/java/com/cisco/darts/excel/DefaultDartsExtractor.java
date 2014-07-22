@@ -4,6 +4,7 @@ import com.cisco.darts.dto.Dart;
 import com.cisco.darts.dto.DartBuilder;
 import com.cisco.excel.DefaultFieldsExtractor;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -68,6 +69,10 @@ public class DefaultDartsExtractor implements DartsExtractor {
                 Row row = rowIterator.next();
 
                 String autorizationNumber = fieldsExtractor.extractStringValue(row, AUTORIZATION_NUMBER_COLUMN);
+
+	            if(StringUtils.isBlank(autorizationNumber)) {
+		            break;
+	            }
 
                 int version = (int) fieldsExtractor.extractNumericValue(row, VERSION_COLUMN);
 

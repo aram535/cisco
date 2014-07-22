@@ -136,6 +136,8 @@ public final class DefaultPreposService implements PreposService {
 		Map<String, Promo> promosMap = promosService.getPromosMap();
 		Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
 
+		List<Dart> dartsToUpdate = dartApplier.updateDartQuantity(preposes, dartsTable);
+
 		String path = posreadyService.exportPosready(preposes, clientsMap, pricelistsMap, dartsTable, promosMap);
 
 		String posreadyId = FilenameUtils.getBaseName(path).replace(posreadyService.posreadyFilePrefix, "");
@@ -145,6 +147,7 @@ public final class DefaultPreposService implements PreposService {
 			prepos.setStatus(Status.WAIT);
 		}
 
+		dartsService.update(dartsToUpdate);
 		preposesDao.update(preposes);
 
 		return path;

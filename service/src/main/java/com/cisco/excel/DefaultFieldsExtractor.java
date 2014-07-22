@@ -26,26 +26,45 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
 
     @Override
     public long extractNumericValue(Row row, int column) {
-        Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
-        return getIntValueFromCell(cell, column);
+	    try {
+		    Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
+		    return getIntValueFromCell(cell, column);
+	    } catch (Exception e) {
+		    throw new CiscoException(String.format("Row number %d:%s", row.getRowNum(), e.getMessage()));
+	    }
+
     }
 
     @Override
     public Timestamp extractTimestamp(Row row, int column) {
-        Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
-        return getTimestampValueFromCell(cell, column);
+	    try {
+		    Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
+		    return getTimestampValueFromCell(cell, column);
+	    } catch (Exception e) {
+		    throw new CiscoException(String.format("Row number %d:%s", row.getRowNum(), e.getMessage()));
+	    }
     }
 
     @Override
     public double extractDoubleValue(Row row, int column) {
-        Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
-        return getDoubleValueFromCell(cell, column);
+	    try {
+		    Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
+		    return getDoubleValueFromCell(cell, column);
+	    } catch (Exception e) {
+		    throw new CiscoException(String.format("Row number %d:%s", row.getRowNum(), e.getMessage()));
+	    }
+
     }
 
     @Override
     public String extractStringValue(Row row, int column) {
-        Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
-        return getStringValueFromCell(cell, column);
+	    try {
+		    Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
+		    return getStringValueFromCell(cell, column);
+	    } catch (Exception e) {
+		    throw new CiscoException(String.format("Row number %d:%s", row.getRowNum(), e.getMessage()));
+	    }
+
     }
 
     @Override

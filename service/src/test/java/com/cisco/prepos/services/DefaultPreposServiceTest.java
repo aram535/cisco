@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static com.cisco.darts.dto.DartAssistant.BLANK_AUTHORIZATION_NUMBER;
 import static com.cisco.sales.dto.Sale.Status.NEW;
+import static com.cisco.testtools.TestObjects.AUTHORIZATION_NUMBER;
 import static com.cisco.testtools.TestObjects.ClientsFactory.newClient;
 import static com.cisco.testtools.TestObjects.DartsFactory.getDartsTable;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
@@ -224,7 +225,7 @@ public class DefaultPreposServiceTest {
 	}
 
 	@Test
-	public void thatPreposAreUpdatedAfterPosreadyExport() {
+	public void thatPreposAndDartsAreUpdatedAfterPosreadyExport() {
 
 		List<PreposModel> allPreposModels = getAllPreposModels();
 
@@ -235,6 +236,9 @@ public class DefaultPreposServiceTest {
 		when(promosService.getPromosMap()).thenReturn(promosMap);
 		when(dartsService.getDartsTable()).thenReturn(dartsTable);
 		when(clientsService.getClientsMap()).thenReturn(clientsMap);
+
+		Dart dartToUpdate = dartsTable.get(PART_NUMBER, AUTHORIZATION_NUMBER);
+		when(dartApplier.updateDartQuantity(allPreposes, dartsTable)).thenReturn(Lists.newArrayList(dartToUpdate));
 
 		String posreadyId = "123456";
 		String expectedFilename = String.format("C:\\test\\%s.xls", posreadyId);
@@ -249,6 +253,9 @@ public class DefaultPreposServiceTest {
 			assertEquals(posreadyId, prepos.getPosreadyId());
 		}
 
+
+
+		verify(dartsService, times(1)).update(Lists.newArrayList(dartToUpdate));
 		verify(preposesDao, times(1)).update(updatedAfterPosreadyPreposes());
 
 	}

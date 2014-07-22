@@ -63,7 +63,7 @@ public class DefaultPreposFilter implements PreposFilter {
                 }
                 Prepos prepos = preposModel.getPrepos();
                 Timestamp shippedDate = prepos.getShippedDate();
-                return shippedDate.getTime() > fromDate.getTime();
+                return shippedDate.getTime() >= fromDate.getTime();
             }
         };
     }
@@ -77,7 +77,7 @@ public class DefaultPreposFilter implements PreposFilter {
                 }
                 Prepos prepos = preposModel.getPrepos();
                 Timestamp shippedDate = prepos.getShippedDate();
-                return shippedDate.getTime() < toDate.getTime();
+                return shippedDate.getTime() <= toDate.getTime();
             }
         };
     }

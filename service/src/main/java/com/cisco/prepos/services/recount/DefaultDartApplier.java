@@ -1,17 +1,21 @@
 package com.cisco.prepos.services.recount;
 
 import com.cisco.darts.dto.Dart;
+import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.dto.PreposBuilder;
 import com.cisco.prepos.services.discount.DiscountProvider;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.promos.dto.Promo;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.cisco.prepos.dto.PreposBuilder.builder;
@@ -73,7 +77,43 @@ public class DefaultDartApplier implements DartApplier {
         return prepos;
     }
 
-    void setThreshold(double threshold) {
+	@Override
+	public List<Dart> updateDartQuantity(List<Prepos> preposes, Table<String, String, Dart> dartsTable) {
+
+		List<Dart> dartsToUpdate = Lists.newArrayList();
+		for (Prepos prepos : preposes) {
+			if(StringUtils.isNotBlank(prepos.getSecondPromo())) {
+				Dart selectedDart = dartsTable.get(prepos.getPartNumber(), prepos.getSecondPromo());
+				if(selectedDart == null) {
+					throw new CiscoException(String.format(
+							"Dart was not found ion Darts table for PN: %s and AN: %s but it should be there",
+							prepos.getPartNumber(), prepos.getSecondPromo()));
+				}
+
+				updateQuantity(selectedDart, prepos);
+				dartsToUpdate.add(selectedDart);
+			}
+		}
+
+		return dartsToUpdate;
+	}
+
+	private void updateQuantity(Dart selectedDart, Prepos prepos) {
+
+		int currentQuantity = selectedDart.getQuantity();
+		int preposQuantity = prepos.getQuantity();
+		int newQuantity = currentQuantity - preposQuantity;
+
+		if(newQuantity < 0) {
+			throw new CiscoException(String.format(
+					"Not enough available quantity for Dart with PN:%s and AN:%s. Please contact support",
+					prepos.getPartNumber(), prepos.getSecondPromo()));
+		}
+
+		selectedDart.setQuantity(newQuantity);
+	}
+
+	void setThreshold(double threshold) {
         this.threshold = threshold;
     }
 

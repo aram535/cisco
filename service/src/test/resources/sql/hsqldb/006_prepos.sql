@@ -18,7 +18,7 @@ CREATE TABLE PRE_POS (
   shipped_date DATE,
   shipped_bill_number  VARCHAR(1000),
   comment VARCHAR(1000),
-  serials VARCHAR(1000),
+  serials VARCHAR(100000),
   zip INT,
   account_manager_name VARCHAR(1000),
   status VARCHAR(45),
