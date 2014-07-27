@@ -1,0 +1,5 @@
+<!DOCTYPE dataset SYSTEM "../../../../../db-schema/database.dtd">
+<dataset>
+    <SERIAL SERIAL_NUMBER="ABC123456"/>
+    <SERIAL SERIAL_NUMBER="EFG123456"/>
+</dataset>

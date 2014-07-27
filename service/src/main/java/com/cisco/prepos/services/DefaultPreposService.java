@@ -16,8 +16,10 @@ import com.cisco.promos.dto.Promo;
 import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
+import com.cisco.serials.service.SerialsService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.cisco.prepos.dto.Prepos.Status;
 import static com.cisco.sales.dto.Sale.Status.NEW;
@@ -76,6 +76,9 @@ public final class DefaultPreposService implements PreposService {
 
 	@Autowired
 	private ClientsService clientsService;
+
+	@Autowired
+	private SerialsService serialsService;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
@@ -131,6 +134,8 @@ public final class DefaultPreposService implements PreposService {
 
 		List<Prepos> preposes = preposModelConstructor.getPreposes(preposModels);
 
+		validatePreposesSerials(preposes);
+
 		Map<String, Client> clientsMap = clientsService.getClientsMap();
 		Table<String, String, Dart> dartsTable = dartsService.getDartsTable();
 		Map<String, Promo> promosMap = promosService.getPromosMap();
@@ -174,6 +179,25 @@ public final class DefaultPreposService implements PreposService {
 
         return newArrayList(filteredPreposes);
     }
+
+	private void validatePreposesSerials(List<Prepos> preposes) {
+		Set<String> restrictedSerials = serialsService.getAllSerialsStrings();
+
+		for (Prepos prepos : preposes) {
+
+			String serials = prepos.getSerials();
+			List<String> serialsList = Lists.newArrayList(serials.split(","));
+
+			serialsList.retainAll(restrictedSerials);
+			if(!serialsList.isEmpty()) {
+
+				throw new CiscoException(
+						String.format("Prepos with PN:%s and SBN:%s have following restricted serials: %s",
+								prepos.getPartNumber(), prepos.getShippedBillNumber(), serialsList.toString()));
+			}
+
+		}
+	}
 
     private void updateData(List<Sale> newSales, List<Prepos> newPreposes, List<Prepos> updatedPreposes) {
         preposesDao.update(updatedPreposes);

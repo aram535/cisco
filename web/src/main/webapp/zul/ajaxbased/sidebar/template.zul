@@ -1,4 +1,4 @@
-<zk ctrlKeys="#bak">
+<zk>
 	<borderlayout apply="com.cisco.main.BookmarkChangeController">
 		<north border="none" collapsible="true" splittable="true" flex="true">
 			<include src="/zul/ajaxbased/sidebar/sidebar.zul"/>

@@ -7,7 +7,7 @@ CREATE TABLE sale (
   client_zip   VARCHAR(1000),
   part_number  VARCHAR(1000),
   quantity     INT,
-  serials      VARCHAR(100000),
+  serials      TEXT,
   price        DOUBLE,
   cisco_type   VARCHAR(1000),
   comment      VARCHAR(1000),
