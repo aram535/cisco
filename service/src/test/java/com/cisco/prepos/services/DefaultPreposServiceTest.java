@@ -17,6 +17,7 @@ import com.cisco.promos.dto.Promo;
 import com.cisco.promos.service.PromosService;
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
+import com.cisco.serials.service.SerialsService;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -96,6 +97,9 @@ public class DefaultPreposServiceTest {
 
 	@Mock
 	private PosreadyService posreadyService;
+
+	@Mock
+	private SerialsService serialsService;
 
 	private Map<String, Pricelist> pricelistMap = of(PART_NUMBER, newPricelist());
 	private Table<String, String, Dart> dartsTable = getDartsTable();
