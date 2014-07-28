@@ -3,6 +3,7 @@ package com.cisco.pricelists.excel;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
 import com.google.common.collect.ImmutableMap;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -13,18 +14,19 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * User: Rost
- * Date: 29.04.2014
- * Time: 21:24
+ * Date: 07.07.2014
+ * Time: 20:02
  */
-public class PricelistExtractorTest {
+@Ignore
+public class BasePricelistExtractor {
 
-    private PricelistExtractor pricelistExtractor = new DefaultPricelistExtractor();
+    PricelistExtractor pricelistExtractor;
 
     @Test
     public void thatExtractReturnsAllDataFromExcelFile() throws URISyntaxException {
         InputStream inputStream = this.getClass().getResourceAsStream("/templates/Pricelist.xlsx");
 
-	    Map<String, Pricelist> extractedPrices = pricelistExtractor.extract(inputStream);
+        Map<String, Pricelist> extractedPrices = pricelistExtractor.extract(inputStream);
 
         assertThat(extractedPrices).isNotNull().isNotEmpty().hasSize(4);
         assertThat(extractedPrices).isEqualTo(createExpectedPricelist());
@@ -45,8 +47,8 @@ public class PricelistExtractorTest {
                 .setWpl(376.42).setGpl(649d).setDiscount(0.42).build();
 
         return ImmutableMap.of(firstPrice.getPartNumber(), firstPrice,
-		        secondPrice.getPartNumber(), secondPrice,
-		        thirdPrice.getPartNumber(), thirdPrice,
-		        fourthPrice.getPartNumber(), fourthPrice);
+                secondPrice.getPartNumber(), secondPrice,
+                thirdPrice.getPartNumber(), thirdPrice,
+                fourthPrice.getPartNumber(), fourthPrice);
     }
 }
