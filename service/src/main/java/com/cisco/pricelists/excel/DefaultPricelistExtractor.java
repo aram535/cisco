@@ -9,7 +9,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,6 @@ import static com.cisco.pricelists.dto.PricelistBuilder.newPricelistBuilder;
  * Date: 29.04.2014
  * Time: 21:24
  */
-@Component
 public class DefaultPricelistExtractor implements PricelistExtractor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -56,11 +54,11 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
 
                 String partNumber = fieldsExtractor.extractStringValue(row, PART_NUMBER_COLUMN);
                 String description = fieldsExtractor.extractStringValue(row, DESCRIPTION_COLUMN);
-                Double gpl =  fieldsExtractor.extractDoubleValue(row, GPL_COLUMN);
+                Double gpl = fieldsExtractor.extractDoubleValue(row, GPL_COLUMN);
                 int discount = (int) fieldsExtractor.extractNumericValue(row, DISCOUNT_COLUMN);
                 double wpl = calculateWpl(gpl, discount);
-	            double fractionalDiscount = getRoundedDouble((double)discount / 100);
-	            Pricelist price = newPricelistBuilder().setPartNumber(partNumber).setDescription(description).
+                double fractionalDiscount = getRoundedDouble((double) discount / 100);
+                Pricelist price = newPricelistBuilder().setPartNumber(partNumber).setDescription(description).
                         setWpl(wpl).setGpl(gpl).setDiscount(fractionalDiscount).build();
 
                 pricelistMap.put(price.getPartNumber(), price);
@@ -77,12 +75,12 @@ public class DefaultPricelistExtractor implements PricelistExtractor {
         return pricelistMap;
     }
 
-	private double calculateWpl(Double gpl, int discount) {
+    private double calculateWpl(Double gpl, int discount) {
 
-		double wpl = gpl * (1 - (discount / 100d));
-		BigDecimal bd = new BigDecimal(wpl);
-		BigDecimal rounded = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
-		return rounded.doubleValue();
+        double wpl = gpl * (1 - (discount / 100d));
+        BigDecimal bd = new BigDecimal(wpl);
+        BigDecimal rounded = bd.setScale(2, BigDecimal.ROUND_HALF_UP);
+        return rounded.doubleValue();
 
-	}
+    }
 }

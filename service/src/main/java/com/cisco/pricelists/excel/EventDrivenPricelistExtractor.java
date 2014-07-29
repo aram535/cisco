@@ -9,6 +9,7 @@ import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -26,6 +27,7 @@ import static org.xml.sax.helpers.XMLReaderFactory.createXMLReader;
  * Date: 07.07.2014
  * Time: 20:01
  */
+@Component
 public class EventDrivenPricelistExtractor implements PricelistExtractor {
 
     private static final String ERROR_DURING_IMPORTING_PRICELIST_MESSAGE = "error during importing pricelist";

@@ -27,7 +27,7 @@ public class DefaultPricelistImporter implements PricelistImporter {
     @Autowired
     private PricelistsDao pricelistsDao;
 
-	@Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void importPricelist(InputStream inputStream) {
         Map<String, Pricelist> pricelistMap = pricelistExtractor.extract(inputStream);
@@ -37,6 +37,6 @@ public class DefaultPricelistImporter implements PricelistImporter {
         }
 
         pricelistsDao.deleteAll();
-		pricelistsDao.saveAll(Lists.newArrayList(pricelistMap.values()));
+        pricelistsDao.saveAll(Lists.newArrayList(pricelistMap.values()));
     }
 }
