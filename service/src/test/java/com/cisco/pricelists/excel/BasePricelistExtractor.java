@@ -32,6 +32,15 @@ public class BasePricelistExtractor {
         assertThat(extractedPrices).isEqualTo(createExpectedPricelist());
     }
 
+    @Test
+    public void thatExtractReturnsAllDataFromBigExcelFile() throws URISyntaxException {
+        InputStream inputStream = this.getClass().getResourceAsStream("/templates/price_ERROR.xlsx");
+
+        Map<String, Pricelist> extractedPrices = pricelistExtractor.extract(inputStream);
+
+        assertThat(extractedPrices).isNotNull().isNotEmpty().hasSize(2965);
+    }
+
     private Map<String, Pricelist> createExpectedPricelist() {
 
         Pricelist firstPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")

@@ -1,8 +1,8 @@
 package com.cisco.pricelists.excel;
 
-import com.cisco.exception.CiscoException;
 import com.cisco.pricelists.dto.Pricelist;
 import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.slf4j.Logger;
@@ -102,36 +102,59 @@ public class SheetHandler extends DefaultHandler {
     }
 
     private Pricelist appendPricelistAccordingToColumn(String column, String value, Pricelist pricelist) {
+
         if (column.equals(PART_NUMBER_COLUMN)) {
             pricelist.setPartNumber(value);
             return pricelist;
         }
+
         if (column.equals(DESCRIPTION_COLUMN)) {
             pricelist.setDescription(value);
             return pricelist;
         }
-        try {
-            if (column.equals(GPL_COLUMN)) {
-                pricelist.setGpl(parseDouble(value));
-                return pricelist;
-            }
 
-            if (column.equals(DISCOUNT_COLUMN)) {
-                int discount = parseInt(value);
-                double fractionalDiscount = getRoundedDouble((double) discount / 100);
-                pricelist.setDiscount(fractionalDiscount);
-
-                double gpl = pricelist.getGpl();
-                pricelist.setWpl(calculateWpl(gpl, discount));
-
-                return pricelist;
-            }
-        } catch (NumberFormatException ex) {
-            String message = String.format("Error during parsing column=%s, value=%s", column, value);
-            logger.error(message, ex);
-            throw new CiscoException(message, ex);
+        if (column.equals(GPL_COLUMN)) {
+            double gpl = getGpl(column, value);
+            pricelist.setGpl(gpl);
+            return pricelist;
         }
+
+        if (column.equals(DISCOUNT_COLUMN)) {
+            int discount = getDiscount(column, value);
+            double fractionalDiscount = getRoundedDouble((double) discount / 100);
+            pricelist.setDiscount(fractionalDiscount);
+
+            double gpl = pricelist.getGpl();
+            pricelist.setWpl(calculateWpl(gpl, discount));
+
+            return pricelist;
+        }
+
         return pricelist;
+    }
+
+    private int getDiscount(String column, String value) {
+        int discount;
+        try {
+            discount = (int) parseDouble(value);
+        } catch (NumberFormatException e) {
+            String message = String.format("Error during parsing column=%s, value=%s", column, value);
+            logger.error(message, e);
+            discount = 0;
+        }
+        return discount;
+    }
+
+    private double getGpl(String column, String value) {
+        double gpl;
+        try {
+            gpl = parseDouble(value);
+        } catch (NumberFormatException e) {
+            String message = String.format("Error during parsing column=%s, value=%s", column, value);
+            logger.error(message, e);
+            gpl = 0.0d;
+        }
+        return gpl;
     }
 
     public void characters(char[] ch, int start, int length)
@@ -150,11 +173,11 @@ public class SheetHandler extends DefaultHandler {
     }
 
     public Map<String, Pricelist> getPricelist() {
-        return newLinkedHashMap(uniqueIndex(pricelist, new Function<Pricelist, String>() {
-            @Override
-            public String apply(Pricelist input) {
-                return input.getPartNumber();
-            }
-        }));
+
+        Map<String, Pricelist> pricelistMap = Maps.newLinkedHashMap();
+        for (Pricelist price : pricelist) {
+            pricelistMap.put(price.getPartNumber(), price);
+        }
+        return pricelistMap;
     }
 }
