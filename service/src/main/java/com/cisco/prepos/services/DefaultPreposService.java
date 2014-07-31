@@ -158,8 +158,6 @@ public final class DefaultPreposService implements PreposService {
 		return path;
 	}
 
-	//TODO maybe db updates should be produced by sending events to needed services
-
 	@Override
     public List<Prepos> getPreposes(final Status... statuses) {
 

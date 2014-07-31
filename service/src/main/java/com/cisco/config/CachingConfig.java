@@ -6,7 +6,6 @@ import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,13 +19,20 @@ import org.springframework.context.annotation.Configuration;
 public class CachingConfig implements CachingConfigurer {
     @Bean(destroyMethod = "shutdown")
     public net.sf.ehcache.CacheManager ehCacheManager() {
-        CacheConfiguration cacheConfiguration = new CacheConfiguration();
-        cacheConfiguration.setName("ciscoCache");
-        cacheConfiguration.setMemoryStoreEvictionPolicy("LRU");
-        cacheConfiguration.setMaxEntriesLocalHeap(100);
+        CacheConfiguration ciscoCacheConfiguration = new CacheConfiguration();
+        ciscoCacheConfiguration.setName("ciscoCache");
+        ciscoCacheConfiguration.setMemoryStoreEvictionPolicy("LRU");
+        ciscoCacheConfiguration.setMaxEntriesLocalHeap(100);
+
+        CacheConfiguration salesCacheConfiguration = new CacheConfiguration();
+        salesCacheConfiguration.setName("salesCache");
+        salesCacheConfiguration.setMemoryStoreEvictionPolicy("LRU");
+        salesCacheConfiguration.setMaxEntriesLocalHeap(10);
+
 
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-        config.addCache(cacheConfiguration);
+        config.addCache(ciscoCacheConfiguration);
+        config.addCache(salesCacheConfiguration);
 
         return net.sf.ehcache.CacheManager.newInstance(config);
     }
@@ -40,6 +46,6 @@ public class CachingConfig implements CachingConfigurer {
     @Bean
     @Override
     public KeyGenerator keyGenerator() {
-        return new SimpleKeyGenerator();
+        return null;
     }
 }

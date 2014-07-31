@@ -4,6 +4,8 @@ import com.cisco.clients.dao.ClientsDao;
 import com.cisco.clients.dto.Client;
 import com.google.common.base.Function;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,7 @@ public class DefaultClientsService implements ClientsService {
     @Autowired
     private ClientsDao clientsDao;
 
+    @Cacheable(value = "ciscoCache", key = "'clients'")
     @Transactional
     @Override
     public List<Client> getClients() {
@@ -30,7 +33,7 @@ public class DefaultClientsService implements ClientsService {
     @Override
     public Map<String, Client> getClientsMap() {
 
-        List<Client> clients = clientsDao.getClients();
+        List<Client> clients = getClients();
 
         return uniqueIndex(clients, new Function<Client, String>() {
             @Override
@@ -40,27 +43,25 @@ public class DefaultClientsService implements ClientsService {
         });
     }
 
+    @CacheEvict(value = "ciscoCache", key = "'clients'")
     @Transactional
     @Override
     public void save(Client client) {
         clientsDao.save(client);
     }
 
+    @CacheEvict(value = "ciscoCache", key = "'clients'")
     @Transactional
     @Override
     public void update(Client client) {
         clientsDao.update(client);
     }
 
+    @CacheEvict(value = "ciscoCache", key = "'clients'")
     @Transactional
     @Override
     public void delete(Client client) {
         clientsDao.delete(client);
-    }
-
-
-    public void setClientsDao(ClientsDao clientsDao) {
-        this.clientsDao = clientsDao;
     }
 
 }

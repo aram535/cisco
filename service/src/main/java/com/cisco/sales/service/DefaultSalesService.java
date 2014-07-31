@@ -3,12 +3,10 @@ package com.cisco.sales.service;
 import com.cisco.sales.dao.SalesDao;
 import com.cisco.sales.dto.Sale;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +14,12 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.cisco.sales.dto.Sale.Status;
+import static com.cisco.sales.dto.Sale.Status.OLD;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.HashBasedTable.create;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.ArrayUtils.contains;
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 /**
  * User: Rost
@@ -25,86 +29,86 @@ import static com.cisco.sales.dto.Sale.Status;
 @Service("salesService")
 public class DefaultSalesService implements SalesService {
 
-	private Table<String, String, Sale> salesTable;
-
     @Autowired
     private SalesDao salesDao;
 
-	@Transactional
+    @Cacheable(value = "salesCache")
+    @Transactional
     @Override
     public List<Sale> getSales(final Status... statuses) {
 
         List sales = salesDao.getSales();
 
-        if (ArrayUtils.isEmpty(statuses)) {
-            return Lists.newArrayList(sales);
+        if (isEmpty(statuses)) {
+            return newArrayList(sales);
         }
 
-        Collection<Sale> filteredSales = Collections2.filter(sales, new Predicate<Sale>() {
+        Collection<Sale> filteredSales = filter(sales, new Predicate<Sale>() {
             @Override
             public boolean apply(Sale sale) {
                 Status status = sale.getStatus();
-                return ArrayUtils.contains(statuses, status);
+                return contains(statuses, status);
             }
         });
-        return Lists.newArrayList(filteredSales);
+        return newArrayList(filteredSales);
     }
 
-	@Transactional
-	@Override
-	public void save(Sale sale) {
-		salesDao.save(sale);
-	}
+    @CacheEvict(value = "salesCache")
+    @Transactional
+    @Override
+    public void save(Sale sale) {
+        salesDao.save(sale);
+    }
 
-	@Transactional
-	@Override
- 	public void update(Sale sale) {
-		salesDao.update(sale);
-	}
+    @CacheEvict(value = "salesCache")
+    @Transactional
+    @Override
+    public void update(Sale sale) {
+        salesDao.update(sale);
+    }
 
-	@Transactional
-	@Override
-	public void update(List<Sale> sales) {
-		salesDao.update(sales);
-	}
+    @CacheEvict(value = "salesCache")
+    @Transactional
+    @Override
+    public void update(List<Sale> sales) {
+        salesDao.update(sales);
+    }
 
-	@Transactional
-	@Override
-	public void delete(Sale sale) {
-		salesDao.delete(sale);
-	}
+    @CacheEvict(value = "salesCache")
+    @Transactional
+    @Override
+    public void delete(Sale sale) {
+        salesDao.delete(sale);
+    }
 
-	@Transactional
-	@Override
-	public Table<String, String, Sale> getSalesTable() {
+    @Transactional
+    @Override
+    public Table<String, String, Sale> getSalesTable() {
 
-		List<Sale> sales = salesDao.getSales();
+        List<Sale> sales = salesDao.getSales();
 
-		return salesListToTable(sales);
+        return salesListToTable(sales);
+    }
 
+    @Override
+    public void updateSalesStatuses(List<Sale> sales) {
 
-	}
+        for (Sale sale : sales) {
+            sale.setStatus(OLD);
+        }
 
-	@Transactional
-	@Override
-	public void updateSalesStatuses(List<Sale> sales) {
+        update(sales);
+    }
 
-		for (Sale sale : sales) {
-			sale.setStatus(Status.OLD);
-		}
+    private Table<String, String, Sale> salesListToTable(List<Sale> sales) {
 
-		update(sales);
-	}
+        Table<String, String, Sale> salesTable = create();
 
-	private Table<String, String, Sale> salesListToTable(List<Sale> sales) {
+        for (Sale sale : sales) {
+            salesTable.put(sale.getPartNumber(), sale.getShippedBillNumber(), sale);
+        }
 
-		HashBasedTable<String, String, Sale> salesTable = HashBasedTable.create();
-
-		for (Sale sale : sales) {
-			salesTable.put(sale.getPartNumber(), sale.getShippedBillNumber(), sale);
-		}
-
-		return salesTable;
-	}
+        return salesTable;
+    }
 
 }

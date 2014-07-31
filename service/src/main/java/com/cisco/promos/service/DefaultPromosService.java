@@ -5,6 +5,8 @@ import com.cisco.promos.dto.Promo;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,50 +20,54 @@ import java.util.Map;
 @Service("promosService")
 public class DefaultPromosService implements PromosService {
 
-	@Autowired
-	PromosDao promosDao;
+    @Autowired
+    private PromosDao promosDao;
 
-	@Transactional
-	@Override
-	public List<Promo> getPromos() {
-		return promosDao.getPromos();
-	}
+    @Cacheable(value = "ciscoCache", key = "'promos'")
+    @Transactional
+    @Override
+    public List<Promo> getPromos() {
+        return promosDao.getPromos();
+    }
 
-	@Transactional
-	@Override
-	public void save(Promo promo) {
-		promosDao.save(promo);
-	}
+    @CacheEvict(value = "ciscoCache", key = "'promos'")
+    @Transactional
+    @Override
+    public void save(Promo promo) {
+        promosDao.save(promo);
+    }
 
-	@Transactional
-	@Override
-	public void update(Promo promo) {
-		promosDao.update(promo);
-	}
+    @CacheEvict(value = "ciscoCache", key = "'promos'")
+    @Transactional
+    @Override
+    public void update(Promo promo) {
+        promosDao.update(promo);
+    }
 
-	@Transactional
-	@Override
-	public void delete(Promo promo) {
-		promosDao.delete(promo);
-	}
+    @CacheEvict(value = "ciscoCache", key = "'promos'")
+    @Transactional
+    @Override
+    public void delete(Promo promo) {
+        promosDao.delete(promo);
+    }
 
-	@Transactional
-	@Override
-	public Map<String, Promo> getPromosMap() {
+    @Override
+    public Map<String, Promo> getPromosMap() {
 
-		List<Promo> promos = promosDao.getPromos();
+        List<Promo> promos = getPromos();
 
-		return Maps.uniqueIndex(promos, new Function<Promo, String>() {
-			@Override
-			public String apply(Promo promo) {
-				return promo.getPartNumber();
-			}
-		});
-	}
+        return Maps.uniqueIndex(promos, new Function<Promo, String>() {
+            @Override
+            public String apply(Promo promo) {
+                return promo.getPartNumber();
+            }
+        });
+    }
 
-	@Transactional
-	@Override
-	public void deleteAll() {
-		promosDao.deleteAll();
-	}
+    @CacheEvict(value = "ciscoCache", key = "'promos'")
+    @Transactional
+    @Override
+    public void deleteAll() {
+        promosDao.deleteAll();
+    }
 }
