@@ -3,6 +3,7 @@ package com.cisco.accountmanager.service;
 import com.cisco.accountmanager.dao.AccountManagerDao;
 import com.cisco.accountmanager.dto.AccountManager;
 import com.cisco.accountmanager.model.AccountManagerModel;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,11 +12,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * User: Rost
@@ -31,6 +32,7 @@ public class DefaultAccountManagerServiceTest {
     private static final String FIRST_PARTNER = "first partner";
     private static final String MANAGER_NAME = "Manager";
     private static final long MANAGER_ID = 1L;
+    private static final String DEFAULT_MANAGER_NAME = "Default Manager";
     private final String jsonPartners = "partners";
     private final String jsonEndUsers = "endUsers";
 
@@ -43,9 +45,15 @@ public class DefaultAccountManagerServiceTest {
     @Mock
     private AccountManagerModelFactory accountManagerModelFactory;
 
+    @Before
+    public void initDefaultManagerName() {
+        accountManagerService.setDefaultManagerName(DEFAULT_MANAGER_NAME);
+    }
+
     @Test
     public void thatReturnsEmptyListOfModelsIfDaoReturnsNull() {
         when(accountManagerDao.getAccountManagers()).thenReturn(null);
+        accountManagerService.setDefaultManagerName(DEFAULT_MANAGER_NAME);
         accountManagerService.init();
 
         List<AccountManagerModel> accountManagers = accountManagerService.getAccountManagers();
@@ -71,7 +79,7 @@ public class DefaultAccountManagerServiceTest {
         initNotNullManagers();
 
         AccountManagerModel manager = accountManagerService.getAccountManagerByPartner("unknown partner");
-        assertThat(manager).isEqualTo(DEFAULT_MANAGER);
+        assertThat(manager.getName()).isEqualTo(DEFAULT_MANAGER_NAME);
     }
 
     @Test
@@ -87,7 +95,7 @@ public class DefaultAccountManagerServiceTest {
         initNotNullManagers();
 
         AccountManagerModel manager = accountManagerService.getAccountManagerByEndUser("unknown end user");
-        assertThat(manager).isEqualTo(DEFAULT_MANAGER);
+        assertThat(manager.getName()).isEqualTo(DEFAULT_MANAGER_NAME);
     }
 
     @Test

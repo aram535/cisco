@@ -5,6 +5,8 @@ import com.cisco.accountmanager.dto.AccountManager;
 import com.cisco.accountmanager.model.AccountManagerModel;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -21,9 +23,13 @@ import static com.google.common.collect.Maps.newHashMap;
  * Time: 22:44
  */
 @Service("accountManagerService")
+@PropertySource("classpath:prepos.properties")
 public class DefaultAccountManagerService implements AccountManagerService {
 
-    final static AccountManagerModel DEFAULT_MANAGER = new AccountManagerModel(-1L, "Default manager", Sets.<String>newHashSet(), Sets.<String>newHashSet());
+    private AccountManagerModel defaultManager;
+
+    @Value("${default.manager}")
+    private String defaultManagerName;
 
     @Autowired
     private AccountManagerDao accountManagerDao;
@@ -32,9 +38,9 @@ public class DefaultAccountManagerService implements AccountManagerService {
     private AccountManagerModelFactory accountManagerModelFactory;
 
     private List<AccountManagerModel> accountManagerModels = newArrayList();
+
     private Map<String, AccountManagerModel> partnerNameToManagersMap = newHashMap();
     private Map<String, AccountManagerModel> endUserNameToManagersMap = newHashMap();
-
     @Override
     public List<AccountManagerModel> getAccountManagers() {
         return newArrayList(accountManagerModels);
@@ -48,6 +54,11 @@ public class DefaultAccountManagerService implements AccountManagerService {
     @Override
     public AccountManagerModel getAccountManagerByEndUser(String endUserName) {
         return getAccountManagerModelFromMap(endUserNameToManagersMap, endUserName);
+    }
+
+    @Override
+    public AccountManagerModel getDefaultAccountManager() {
+        return defaultManager;
     }
 
     @Override
@@ -70,7 +81,12 @@ public class DefaultAccountManagerService implements AccountManagerService {
 
     @PostConstruct
     public void init() {
+        defaultManager = new AccountManagerModel(-1L, defaultManagerName, Sets.<String>newHashSet(), Sets.<String>newHashSet());
         fetchModels();
+    }
+
+    void setDefaultManagerName(String defaultManagerName) {
+        this.defaultManagerName = defaultManagerName;
     }
 
     private AccountManagerModel getAccountManagerModelFromMap(Map<String, AccountManagerModel> map, String key) {
@@ -80,7 +96,7 @@ public class DefaultAccountManagerService implements AccountManagerService {
             return accountManagerModel;
         }
 
-        return DEFAULT_MANAGER;
+        return defaultManager;
     }
 
     private void fetchModels() {

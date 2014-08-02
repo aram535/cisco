@@ -17,6 +17,8 @@ public interface AccountManagerService {
 
     AccountManagerModel getAccountManagerByEndUser(String endUserName);
 
+    AccountManagerModel getDefaultAccountManager();
+
     void saveOrUpdate(List<AccountManagerModel> accountManagerModels);
 
     void delete(AccountManagerModel accountManagerModel);

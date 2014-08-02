@@ -1,10 +1,10 @@
 package com.cisco.accountmanager.service;
 
 import com.cisco.accountmanager.model.AccountManagerModel;
+import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.cisco.accountmanager.service.DefaultAccountManagerService.DEFAULT_MANAGER;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -22,6 +22,8 @@ public class AccountManagerProviderTest {
     private static final String SECOND_PARTNER = "second partner";
     private static final String FIRST_PARTNER = "first partner";
     private static final String MANAGER_NAME = "Manager";
+    private static final String DEFAULT_MANAGER_NAME = "Default manager";
+    private static final AccountManagerModel DEFAULT_MANAGER = new AccountManagerModel(-1L, DEFAULT_MANAGER_NAME, Sets.<String>newHashSet(), Sets.<String>newHashSet());
     private static final long MANAGER_ID = 1L;
     private static final String UNKNOWN_NAME = "unknown";
     private final AccountManagerModel accountManagerModel = createAccountManagerModel();
@@ -37,7 +39,7 @@ public class AccountManagerProviderTest {
         when(accountManagerService.getAccountManagerByPartner(UNKNOWN_NAME)).thenReturn(DEFAULT_MANAGER);
         when(accountManagerService.getAccountManagerByEndUser(FIRST_END_USER)).thenReturn(accountManagerModel);
         when(accountManagerService.getAccountManagerByEndUser(UNKNOWN_NAME)).thenReturn(DEFAULT_MANAGER);
-
+        when(accountManagerService.getDefaultAccountManager()).thenReturn(DEFAULT_MANAGER);
         accountManagerProvider = new DefaultAccountManagerProvider();
         accountManagerProvider.setAccountManagerService(accountManagerService);
     }
