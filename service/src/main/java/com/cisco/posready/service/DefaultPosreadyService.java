@@ -11,7 +11,6 @@ import com.google.common.collect.Table;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -26,7 +25,6 @@ import java.util.Map;
  * Created by Alf on 03.07.2014.
  */
 @Component("posreadyService")
-@PropertySource("classpath:db.properties")
 public class DefaultPosreadyService implements PosreadyService {
 
 	@Value("${posready.folder}")

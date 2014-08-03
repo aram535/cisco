@@ -41,6 +41,7 @@ public class TestObjects {
     public static final String CISCO_TYPE = "cisco type";
     public static final int QUANTITY = 5;
     public static final double SALE_PRICE = 200.5;
+    public static final String ACCOUNT_MANAGER_NAME = "Account manager name";
 
     public static final double DART_DISTI_DISCOUNT = 0.55;
     public static final double PROMO_DISCOUNT = 0.35;
@@ -104,6 +105,7 @@ public class TestObjects {
             prepos.setSaleDiscount(SALE_DISCOUNT);
             prepos.setBuyDiscount(BUY_DISCOUNT);
             prepos.setBuyPrice(BUY_PRICE);
+            prepos.setAccountManagerName(ACCOUNT_MANAGER_NAME);
             double posSum = (double) Math.round(BUY_PRICE * QUANTITY * 100) / 100;
             prepos.setPosSum(posSum);
             prepos.setOk(true);

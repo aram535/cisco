@@ -14,6 +14,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.springframework.util.CollectionUtils;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.*;
 import org.zkoss.util.media.Media;
@@ -68,7 +69,7 @@ public class PreposViewModel {
     private String statusToChange = POS_OK.toString();
 	private boolean checkAll = false;
 
-    private List<PreposModel> preposes = Lists.newArrayList();
+    private List<PreposModel> preposes;
     private List<PreposModel> filteredPreposes = Lists.newArrayList();
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
     private Iterable<PreposModel> filteredCheckedPreposes;
@@ -128,7 +129,7 @@ public class PreposViewModel {
     @NotifyChange(RECOUNT_TOTAL_POS_SUM_NOTIFY)
     public List<PreposModel> getAllPrepos() {
         try {
-            if (preposes.isEmpty()) {
+            if (CollectionUtils.isEmpty(preposes)) {
                 refreshAndFilterPreposes();
             }
 

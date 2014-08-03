@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +20,6 @@ import static com.cisco.prepos.dto.Prepos.Status.NOT_POS;
  * Created by Alf on 03.05.2014.
  */
 @Component
-@PropertySource("classpath:prepos.properties")
 public class DefaultPreposConstructor implements PreposConstructor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

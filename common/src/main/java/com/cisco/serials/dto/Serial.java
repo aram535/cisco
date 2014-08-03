@@ -1,10 +1,12 @@
 package com.cisco.serials.dto;
 
-import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * Created by Alf on 27.07.2014.
@@ -13,7 +15,6 @@ import javax.persistence.*;
 @Entity(name = "serial")
 public class Serial {
 
-	private long id;
 	private String serialNumber;
 
 	public Serial() {
@@ -23,24 +24,10 @@ public class Serial {
 		this.serialNumber = serialNumber;
 	}
 
-	public Serial(long id, String serialNumber) {
-		this.id = id;
-		this.serialNumber = serialNumber;
-	}
-
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public long getId() {
-		return id;
-	}
-
 	@Column(name = "serial_number")
 	public String getSerialNumber() {
 		return serialNumber;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public void setSerialNumber(String serialNumber) {
@@ -61,7 +48,6 @@ public class Serial {
 		}
 		Serial rhs = (Serial) obj;
 		return new EqualsBuilder()
-				.append(this.id, rhs.id)
 				.append(this.serialNumber, rhs.serialNumber)
 				.isEquals();
 	}
@@ -69,7 +55,6 @@ public class Serial {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder()
-				.append(id)
 				.append(serialNumber)
 				.toHashCode();
 	}
@@ -77,9 +62,8 @@ public class Serial {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this)
-				.add("id", id)
-				.add("serialNumber", serialNumber)
+		return new ToStringBuilder(this)
+				.append("serialNumber", serialNumber)
 				.toString();
 	}
 }

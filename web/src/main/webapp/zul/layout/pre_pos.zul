@@ -29,7 +29,11 @@
                 <textbox hflex="100%" instant="true"
                          value="@bind(vmPrePos.preposRestrictions.partnerName)" onChange="@command('filterChanged')"/>
             </auxheader>
-            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <!--<image src="/widgets/grid/data_filter/img/funnel.png" />-->
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vmPrePos.preposRestrictions.partNumber)" onChange="@command('filterChanged')"/>
+            </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
@@ -47,6 +51,21 @@
                 <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
             </auxheader>
             <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vmPrePos.preposRestrictions.ok)"
+                         onChange="@command('filterChanged')"/>
+            </auxheader>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vmPrePos.preposRestrictions.accountManagerName)"
+                         onChange="@command('filterChanged')"/>
+            </auxheader>
         </auxhead>
 
         <columns hflex="min" sizable="true">

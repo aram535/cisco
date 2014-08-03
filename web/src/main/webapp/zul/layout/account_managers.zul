@@ -29,7 +29,7 @@
             <hbox>
                 <vbox>
                     <listbox id="partners" multiple="true" model="@bind(manager.partners)"
-                             selectedItem="@bind(vm.selectedPartner)" rows="8">
+                             selectedItem="@bind(vm.selectedPartner)" rows="0">
                         <listhead sizable="true">
                             <listheader hflex="1" label="Partner"/>
                         </listhead>
@@ -48,7 +48,7 @@
                 </vbox>
                 <vbox>
                     <listbox id="endUsers" multiple="true" model="@bind(manager.endUsers)"
-                             selectedItem="@bind(vm.selectedEndUser)" rows="8">
+                             selectedItem="@bind(vm.selectedEndUser)" rows="0">
                         <listhead sizable="true">
                             <listheader hflex="1" label="End user"/>
                         </listhead>

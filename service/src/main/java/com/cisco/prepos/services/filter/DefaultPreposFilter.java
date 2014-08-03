@@ -27,7 +27,10 @@ import java.util.List;
 @Component("preposFilter")
 public class DefaultPreposFilter implements PreposFilter {
 
-    @Override
+	public static final String GOOD = "GOOD";
+	public static final String BAD = "BAD";
+
+	@Override
     public List<PreposModel> filter(List<PreposModel> preposes, PreposRestrictions preposRestrictions) {
 
         if (CollectionUtils.isEmpty(preposes)) {
@@ -38,15 +41,23 @@ public class DefaultPreposFilter implements PreposFilter {
         final String shippedBillNumber = preposRestrictions.getShippedBillNumber();
         final Timestamp fromDate = preposRestrictions.getFromDate();
         final Timestamp toDate = preposRestrictions.getToDate();
+		final String partNumber = preposRestrictions.getPartNumber();
+	    final String ok = preposRestrictions.getOk();
+	    final String accountManagerName = preposRestrictions.getAccountManagerName();
+
 
         Predicate<PreposModel> partnerNamePredicate = getPartnerNamePredicate(partnerName);
         Predicate<PreposModel> shippedBillNumberPredicate = getShippedBillNumberPredicate(shippedBillNumber);
         Predicate<PreposModel> shippedDateFromPredicate = getShippedDateFromPredicate(fromDate);
         Predicate<PreposModel> shippedDateToPredicate = getShippedDateToPredicate(toDate);
+        Predicate<PreposModel> partNumberPredicate = getPartNumberPredicate(partNumber);
+        Predicate<PreposModel> okPredicate = getOkPredicate(ok);
+        Predicate<PreposModel> accountManagerNamePredicate = getAccMangerNamePredicate(accountManagerName);
 
 
         Collection<PreposModel> filteredPreposes = Collections2.filter(preposes,
-                Predicates.and(partnerNamePredicate, shippedBillNumberPredicate, shippedDateFromPredicate, shippedDateToPredicate));
+                Predicates.and(partnerNamePredicate, shippedBillNumberPredicate, shippedDateFromPredicate,
+		                shippedDateToPredicate, partNumberPredicate, okPredicate, accountManagerNamePredicate));
 
         List<PreposModel> result = Lists.newArrayList();
         result.addAll(filteredPreposes);
@@ -107,4 +118,45 @@ public class DefaultPreposFilter implements PreposFilter {
             }
         };
     }
+
+	private Predicate<PreposModel> getPartNumberPredicate(final String partNumber) {
+		return new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+				if (StringUtils.isBlank(partNumber)) {
+					return true;
+				}
+				Prepos prepos = preposModel.getPrepos();
+				return StringUtils.containsIgnoreCase(prepos.getPartNumber(), partNumber);
+			}
+		};
+	}
+
+	private Predicate<PreposModel> getOkPredicate(final String ok) {
+		return new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+
+				Prepos prepos = preposModel.getPrepos();
+
+				if(GOOD.equals(ok)) {return prepos.getOk();}
+				if(BAD.equals(ok)) {return !prepos.getOk();}
+
+				return true;
+			}
+		};
+	}
+
+	private Predicate<PreposModel> getAccMangerNamePredicate(final String accountManagerName) {
+		return new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+				if (StringUtils.isBlank(accountManagerName)) {
+					return true;
+				}
+				Prepos prepos = preposModel.getPrepos();
+				return StringUtils.containsIgnoreCase(prepos.getAccountManagerName(), accountManagerName);
+			}
+		};
+	}
 }

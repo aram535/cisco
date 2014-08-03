@@ -2,9 +2,12 @@ package com.cisco.darts;
 
 import com.cisco.darts.dto.Dart;
 import com.cisco.darts.excel.DartsImporter;
+import com.cisco.darts.service.DartsFilter;
+import com.cisco.darts.service.DartsRestrictions;
 import com.cisco.darts.service.DartsService;
 import com.cisco.exception.CiscoException;
 import com.google.common.collect.Lists;
+import org.springframework.util.CollectionUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -32,6 +35,7 @@ public class DartsViewModel {
 	public static final String DELETE_COMMAND = "delete";
 	public static final String UPDATE_COMMAND = "update";
 	public static final String ADD_COMMAND = "add";
+	public static final String FILTER_CHANGED_COMMAND = "filterChanged";
 
 	private Dart selectedDartModel;
     private Dart newDartModel = new Dart();
@@ -42,7 +46,14 @@ public class DartsViewModel {
 	@WireVariable
 	private DartsImporter dartsImporter;
 
+	@WireVariable
+	private DartsRestrictions dartsRestrictions;
+
+	@WireVariable
+	private DartsFilter dartsFilter;
+
     private List<Dart> allDarts;
+    private List<Dart> filteredDarts = Lists.newArrayList();
 
     public Dart getSelectedDartModel() {
         return selectedDartModel;
@@ -52,7 +63,11 @@ public class DartsViewModel {
         return newDartModel;
     }
 
-    public void setSelectedDartModel(Dart selectedDartModel) {
+	public DartsRestrictions getDartsRestrictions() {
+		return dartsRestrictions;
+	}
+
+	public void setSelectedDartModel(Dart selectedDartModel) {
         this.selectedDartModel = selectedDartModel;
     }
 
@@ -64,11 +79,19 @@ public class DartsViewModel {
         this.dartsService = DartsService;
     }
 
-    public List<Dart> getAllDarts() {
+	public void setDartsRestrictions(DartsRestrictions dartsRestrictions) {
+		this.dartsRestrictions = dartsRestrictions;
+	}
+
+	public List<Dart> getAllDarts() {
 
 	    try {
-		    allDarts = dartsService.getDarts();
-		    return allDarts;
+		    if(CollectionUtils.isEmpty(allDarts)) {
+			    allDarts = dartsService.getDarts();
+			    filteredDarts = dartsFilter.filter(allDarts, dartsRestrictions);
+		    }
+
+		    return filteredDarts;
 	    } catch (Exception e) {
 		    Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
 		    return Lists.newArrayList();
@@ -117,5 +140,12 @@ public class DartsViewModel {
 		} else {
 			throw new CiscoException("media is not binary");
 		}
+	}
+
+	@Command(FILTER_CHANGED_COMMAND)
+	@NotifyChange(ALL_DARTS_CHANGE)
+	public void filterChanged() {
+		filteredDarts = dartsFilter.filter(allDarts, dartsRestrictions);
+
 	}
 }

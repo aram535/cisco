@@ -2,7 +2,6 @@ package com.cisco.prepos.model;
 
 import org.joda.time.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -14,13 +13,15 @@ import java.util.Calendar;
  */
 
 @Component
-@PropertySource("classpath:prepos.properties")
 public class PreposRestrictions {
 
     private String partnerName;
     private String shippedBillNumber;
     private Timestamp toDate;
     private Timestamp fromDate;
+	private String partNumber;
+	private String ok;
+	private String accountManagerName;
 
 	@Value("${years.interval}")
 	private int yearsInterval;
@@ -49,14 +50,17 @@ public class PreposRestrictions {
 		fromDate = new Timestamp(cal.getTime().getTime());
 	}
 
-    public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate) {
-        this.partnerName = partnerName;
-        this.shippedBillNumber = shippedBillNumber;
-        this.toDate = toDate;
-        this.fromDate = fromDate;
-    }
+	public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate, String partNumber, String ok, String accountManagerName) {
+		this.partnerName = partnerName;
+		this.shippedBillNumber = shippedBillNumber;
+		this.toDate = toDate;
+		this.fromDate = fromDate;
+		this.partNumber = partNumber;
+		this.ok = ok;
+		this.accountManagerName = accountManagerName;
+	}
 
-    public String getPartnerName() {
+	public String getPartnerName() {
         return partnerName;
     }
 
@@ -72,7 +76,19 @@ public class PreposRestrictions {
         return fromDate;
     }
 
-    public void setPartnerName(String partnerName) {
+	public String getPartNumber() {
+		return partNumber;
+	}
+
+	public String getOk() {
+		return ok;
+	}
+
+	public String getAccountManagerName() {
+		return accountManagerName;
+	}
+
+	public void setPartnerName(String partnerName) {
         this.partnerName = partnerName;
     }
 
@@ -87,4 +103,16 @@ public class PreposRestrictions {
     public void setFromDate(Timestamp fromDate) {
         this.fromDate = fromDate;
     }
+
+	public void setPartNumber(String partNumber) {
+		this.partNumber = partNumber;
+	}
+
+	public void setOk(String ok) {
+		this.ok = ok;
+	}
+
+	public void setAccountManagerName(String accountManagerName) {
+		this.accountManagerName = accountManagerName;
+	}
 }

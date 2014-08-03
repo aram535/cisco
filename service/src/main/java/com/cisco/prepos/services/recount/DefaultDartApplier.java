@@ -12,7 +12,6 @@ import com.google.common.collect.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,7 +22,6 @@ import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getDi
 import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 
 @Component
-@PropertySource("classpath:db.properties")
 public class DefaultDartApplier implements DartApplier {
 
     @Autowired
