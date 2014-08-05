@@ -1,28 +1,34 @@
 package com.cisco.serials;
 
 import com.cisco.serials.dto.Serial;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
+import com.google.common.base.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Created by Alf on 27.07.2014.
- */
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Lists.transform;
+import static org.apache.commons.lang3.StringUtils.split;
+
 @Component("serialsImporter")
 public class DefaultSerialsImporter implements SerialsImporter {
 
-	@Override
-	public List<Serial> importSerials(String serialsString) {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-		List<String> serialsStrings = serialsStrings = Lists.newArrayList(StringUtils.split(serialsString, "\n\r"));
+    @Override
+    public List<Serial> importSerials(String serialsString) {
 
-		List<Serial> serials = Lists.newArrayList();
-		for (String serial : serialsStrings) {
-			serials.add(new Serial(serial));
-		}
+        List<String> serialsStrings = newArrayList(split(serialsString, "\n\r"));
 
-		return serials;
-	}
+        List<Serial> serials = newArrayList(transform(serialsStrings, new Function<String, Serial>() {
+            @Override
+            public Serial apply(String input) {
+                return new Serial(input);
+            }
+        }));
+        logger.info("imported serials: {}", serials);
+        return serials;
+    }
 }

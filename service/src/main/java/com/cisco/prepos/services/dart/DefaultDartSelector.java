@@ -3,13 +3,13 @@ package com.cisco.prepos.services.dart;
 import com.cisco.darts.dto.Dart;
 import com.cisco.exception.CiscoException;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
 import static com.cisco.darts.dto.DartAssistant.EMPTY_DART;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * User: Rost
@@ -22,7 +22,7 @@ public class DefaultDartSelector implements DartSelector {
     @Override
     public Dart selectDart(Map<String, Dart> suitableDarts, String secondPromo) {
 
-        if (CollectionUtils.isEmpty(suitableDarts)) {
+        if (isEmpty(suitableDarts)) {
             throw new CiscoException("Cannot select dart among empty suitable darts. Should always have EMPTY_DART");
         }
 

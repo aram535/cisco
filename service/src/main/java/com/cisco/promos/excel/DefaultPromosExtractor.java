@@ -93,7 +93,7 @@ public class DefaultPromosExtractor implements PromosExtractor {
             e.printStackTrace();
         }
 
-        logger.debug("extracted promos {}", promos);
+        logger.info("extracted promos {}", promos);
 
         return promos;
     }

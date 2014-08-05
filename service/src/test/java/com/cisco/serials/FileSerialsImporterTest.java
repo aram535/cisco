@@ -1,35 +1,34 @@
 package com.cisco.serials;
 
 import com.cisco.serials.dto.Serial;
-import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 
 public class FileSerialsImporterTest {
 
-	SerialsImporter serialsImporter = new DefaultSerialsImporter();
+    private SerialsImporter serialsImporter = new DefaultSerialsImporter();
 
-	@Test
-	public void thatSerialsAreSuccessfullyImportedFromTxtFile() throws Exception {
+    @Test
+    public void thatSerialsAreSuccessfullyImportedFromTxtFile() {
 
-		String serialsString = "ABC123234\nCGF213123\nASDASD213";
+        String serialsString = "ABC123234\nCGF213123\nASDASD213";
 
-		List<Serial> expectedSerials = createExpectedSerials();
+        List<Serial> serials = serialsImporter.importSerials(serialsString);
 
-		List<Serial> serials = serialsImporter.importSerials(serialsString);
+        assertThat(serials).
+                hasSize(3).
+                isEqualTo(createExpectedSerials());
+    }
 
-		assertEquals(3, serials.size());
-		assertEquals(expectedSerials, serials);
-	}
-
-	private List<Serial> createExpectedSerials() {
-		return Lists.newArrayList(
-				new Serial("ABC123234"),
-				new Serial("CGF213123"),
-				new Serial("ASDASD213"));
-	}
+    private List<Serial> createExpectedSerials() {
+        return newArrayList(
+                new Serial("ABC123234"),
+                new Serial("CGF213123"),
+                new Serial("ASDASD213"));
+    }
 }
