@@ -4,6 +4,8 @@ import com.cisco.accountmanager.dao.AccountManagerDao;
 import com.cisco.accountmanager.dto.AccountManager;
 import com.cisco.accountmanager.model.AccountManagerModel;
 import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -26,6 +28,7 @@ import static com.google.common.collect.Maps.newHashMap;
 @PropertySource("classpath:prepos.properties")
 public class DefaultAccountManagerService implements AccountManagerService {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private AccountManagerModel defaultManager;
 
     @Value("${default.manager}")
@@ -41,6 +44,7 @@ public class DefaultAccountManagerService implements AccountManagerService {
 
     private Map<String, AccountManagerModel> partnerNameToManagersMap = newHashMap();
     private Map<String, AccountManagerModel> endUserNameToManagersMap = newHashMap();
+
     @Override
     public List<AccountManagerModel> getAccountManagers() {
         return newArrayList(accountManagerModels);
@@ -82,6 +86,7 @@ public class DefaultAccountManagerService implements AccountManagerService {
     @PostConstruct
     public void init() {
         defaultManager = new AccountManagerModel(-1L, defaultManagerName, Sets.<String>newHashSet(), Sets.<String>newHashSet());
+        logger.info("default account manager is {}", defaultManager);
         fetchModels();
     }
 
@@ -102,6 +107,7 @@ public class DefaultAccountManagerService implements AccountManagerService {
     private void fetchModels() {
         List<AccountManager> accountManagers = accountManagerDao.getAccountManagers();
         accountManagerModels = accountManagerModelFactory.createModels(accountManagers);
+        logger.info("Fetched account managers are {}", accountManagerModels);
         initMaps();
     }
 
