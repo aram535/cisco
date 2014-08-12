@@ -146,6 +146,5 @@ public class DartsViewModel {
 	@NotifyChange(ALL_DARTS_CHANGE)
 	public void filterChanged() {
 		filteredDarts = dartsFilter.filter(allDarts, dartsRestrictions);
-
 	}
 }

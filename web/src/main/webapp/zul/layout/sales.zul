@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.sales.SalesViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)" vflex="85%" mold="paging" pageSize="100">
+    <listbox nonselectableTags="datebox" id="box" multiple="true" model="@load(vm.notProcessedSales)" selectedItem="@bind(vm.selectedSaleModel)" vflex="95%" mold="paging" pageSize="100">
         <listhead sizable="true">
             <listheader hflex="1" label="Shipped date" sort="auto(shippedDate)"/>
             <listheader hflex="1" label="Shipped BN:" sort="auto(shippedBillNumber)"/>
@@ -19,7 +19,9 @@
 
         <template name="model" var="sale">
             <listitem value="@load(sale)">
-                <listcell label="@load(sale.shippedDate)"/>
+                <listcell>
+                    <datebox readonly="true" value="@load(sale.shippedDate)" buttonVisible="false"/>
+                </listcell>
                 <listcell label="@load(sale.shippedBillNumber)"/>
                 <listcell label="@load(sale.clientName)"/>
                 <listcell label="@load(sale.clientNumber)"/>
@@ -34,7 +36,7 @@
         </template>
     </listbox>
 
-    <groupbox id="mygrp" vflex="15%" form="@id('sales') @load(vm.selectedSaleModel) @save(vm.selectedSaleModel, before='update') @save(vm.newSaleModel, before='add') ">
+    <!--<groupbox id="mygrp" vflex="15%" form="@id('sales') @load(vm.selectedSaleModel) @save(vm.selectedSaleModel, before='update') @save(vm.newSaleModel, before='add') ">
         <caption label="Sale`s info" />
         Shipped date:
         <datebox value="@bind(sales.shippedDate)" />
@@ -65,5 +67,5 @@
         <button id="delete" label="Delete" onClick="@command('delete')"
                 disabled="@load(empty vm.selectedSaleModel)" />
 
-    </groupbox>
+    </groupbox>-->
 </window>

@@ -5,8 +5,6 @@ import com.cisco.sales.dto.Sale;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Table;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +30,6 @@ public class DefaultSalesService implements SalesService {
     @Autowired
     private SalesDao salesDao;
 
-    @Cacheable(value = "salesCache")
     @Transactional
     @Override
     public List<Sale> getSales(final Status... statuses) {
@@ -53,28 +50,24 @@ public class DefaultSalesService implements SalesService {
         return newArrayList(filteredSales);
     }
 
-    @CacheEvict(value = "salesCache")
     @Transactional
     @Override
     public void save(Sale sale) {
         salesDao.save(sale);
     }
 
-    @CacheEvict(value = "salesCache")
     @Transactional
     @Override
     public void update(Sale sale) {
         salesDao.update(sale);
     }
 
-    @CacheEvict(value = "salesCache")
     @Transactional
     @Override
     public void update(List<Sale> sales) {
         salesDao.update(sales);
     }
 
-    @CacheEvict(value = "salesCache")
     @Transactional
     @Override
     public void delete(Sale sale) {

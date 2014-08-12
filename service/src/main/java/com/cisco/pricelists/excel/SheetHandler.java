@@ -1,7 +1,6 @@
 package com.cisco.pricelists.excel;
 
 import com.cisco.pricelists.dto.Pricelist;
-import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -17,8 +16,6 @@ import java.util.Map;
 
 import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 import static com.google.common.collect.Lists.newLinkedList;
-import static com.google.common.collect.Maps.newLinkedHashMap;
-import static com.google.common.collect.Maps.uniqueIndex;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
@@ -120,8 +117,8 @@ public class SheetHandler extends DefaultHandler {
         }
 
         if (column.equals(DISCOUNT_COLUMN)) {
-            int discount = getDiscount(column, value);
-            double fractionalDiscount = getRoundedDouble((double) discount / 100);
+            double discount = getDiscount(column, value);
+            double fractionalDiscount = getRoundedDouble( discount / 100);
             pricelist.setDiscount(fractionalDiscount);
 
             double gpl = pricelist.getGpl();
@@ -133,10 +130,10 @@ public class SheetHandler extends DefaultHandler {
         return pricelist;
     }
 
-    private int getDiscount(String column, String value) {
-        int discount;
+    private double getDiscount(String column, String value) {
+	    double discount;
         try {
-            discount = (int) parseDouble(value);
+	        discount = parseDouble(value);
         } catch (NumberFormatException e) {
             String message = String.format("Error during parsing column=%s, value=%s", column, value);
             logger.error(message, e);
@@ -163,7 +160,7 @@ public class SheetHandler extends DefaultHandler {
     }
 
 
-    private double calculateWpl(Double gpl, int discount) {
+    private double calculateWpl(Double gpl, double discount) {
 
         double wpl = gpl * (1 - (discount / 100d));
         BigDecimal bd = new BigDecimal(wpl);

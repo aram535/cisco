@@ -1,12 +1,12 @@
 package com.cisco.prepos.model;
 
-import org.joda.time.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Alf on 01.05.2014.
@@ -37,7 +37,15 @@ public class PreposRestrictions {
 
 	@PostConstruct
 	public void init() {
-		Timestamp currentTime = new Timestamp(DateTimeUtils.currentTimeMillis());
+		// today
+		Calendar date = new GregorianCalendar();
+		// reset hour, minutes, seconds and millis
+		date.set(Calendar.HOUR_OF_DAY, 0);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+
+		Timestamp currentTime = new Timestamp(date.getTimeInMillis());
 
 		toDate = currentTime;
 

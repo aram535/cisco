@@ -5,8 +5,6 @@ import com.cisco.serials.dao.SerialsDao;
 import com.cisco.serials.dto.Serial;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,6 @@ public class DefaultSerialsService implements SerialsService {
     @Autowired
     private SerialsDao serialsDao;
 
-    @CacheEvict(value = "ciscoCache", key = "'serials'")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void saveOrUpdate(List<Serial> serials) {
@@ -35,7 +32,6 @@ public class DefaultSerialsService implements SerialsService {
         serialsDao.saveOrUpdate(serials);
     }
 
-    @Cacheable(value = "ciscoCache", key = "'serials'")
     @Override
     public List<Serial> getAllSerials() {
 

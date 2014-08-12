@@ -27,8 +27,8 @@ import java.util.List;
 @Component("preposFilter")
 public class DefaultPreposFilter implements PreposFilter {
 
-	public static final String GOOD = "GOOD";
-	public static final String BAD = "BAD";
+	public static final String GOOD = "G";
+	public static final String BAD = "B";
 
 	@Override
     public List<PreposModel> filter(List<PreposModel> preposes, PreposRestrictions preposRestrictions) {

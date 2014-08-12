@@ -61,6 +61,9 @@ public class PreposViewModel {
 	public static final String CHECK_ALL_COMMAND = "checkAll";
 	public static final String IMPORT_CLAIMS_COMMAND = "importClaims";
 
+	private final List<String> preposStatusesToChange =
+			newArrayList(CBN.getName(), CANCEL.getName());
+
 	private final List<String> preposStatuses =
             newArrayList(ALL_STATUS, NOT_POS.getName(), WAIT.getName(), POS_OK.getName(),
                     CBN.getName(), CANCEL.getName());
@@ -111,7 +114,11 @@ public class PreposViewModel {
         return preposStatuses;
     }
 
-    public PreposRestrictions getPreposRestrictions() {
+	public List<String> getPreposStatusesToChange() {
+		return preposStatusesToChange;
+	}
+
+	public PreposRestrictions getPreposRestrictions() {
         return preposRestrictions;
     }
 
@@ -151,7 +158,9 @@ public class PreposViewModel {
     public void setStatus() {
 
         for (PreposModel checkedPrepos : checkedPreposMap.values()) {
-            checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
+	        if(!statusToChange.equals(CBN.getName()) && !statusToChange.equals(CANCEL.getName())) {
+		        checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
+	        }
         }
     }
 
@@ -243,8 +252,6 @@ public class PreposViewModel {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
 
 	@Command(IMPORT_CLAIMS_COMMAND)
@@ -282,7 +289,6 @@ public class PreposViewModel {
 			}
 			checkedPreposMap.clear();
 		}
-
 	}
 
     private void notifyChange(Object bean, String... properties) {

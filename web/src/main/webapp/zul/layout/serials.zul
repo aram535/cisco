@@ -2,9 +2,12 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.serials.SerialsViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" model="@bind(vm.allSerials)" vflex="85%" mold="paging" pageSize="100">
+    <listbox id="box" multiple="true" model="@bind(vm.allSerials)" vflex="90%" mold="paging" pageSize="100">
         <auxhead sclass="category-center">
-            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vm.filterSerial)" onChange="@command('filterChanged')"/>
+            </auxheader>
         </auxhead>
         <listhead sizable="true">
             <listheader hflex="1" label="Serial number"  sort="auto(serialNumber)" />
@@ -15,9 +18,11 @@
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" vflex="15%" >
+    <groupbox id="mygrp" vflex="10%" >
         <caption label="Process serials" />
         <button id="import" label="Import" upload="true"
                 onUpload="@command('importSerials',upload=event)" />
+        <button id="load" label="Load" onClick="@command('loadSerials')" />
+        <button id="clear" label="Clear" onClick="@command('clearSerials')" />
     </groupbox>
 </window>

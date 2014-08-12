@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.darts.DartsViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)" vflex="80%" mold="paging" pageSize="100">
+    <listbox id="box" multiple="true" model="@bind(vm.allDarts)" selectedItem="@bind(vm.selectedDartModel)" vflex="90%" mold="paging" pageSize="100">
         <auxhead sclass="category-center">
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
@@ -67,8 +67,12 @@
                 <listcell label="@bind(darts.authorizationNumber)" />
                 <listcell label="@bind(darts.version)" />
                 <listcell label="@bind(darts.distributorInfo)" />
-                <listcell label="@bind(darts.startDate)" />
-                <listcell label="@bind(darts.endDate)" />
+                <listcell>
+                    <datebox readonly="true" value="@bind(darts.startDate)" buttonVisible="false"/>
+                </listcell>
+                <listcell>
+                    <datebox readonly="true" value="@bind(darts.endDate)" buttonVisible="false"/>
+                </listcell>
                 <listcell label="@bind(darts.distiDiscount)" />
                 <listcell label="@bind(darts.resellerName)" />
                 <listcell label="@bind(darts.resellerCountry)" />
@@ -89,8 +93,8 @@
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp" vflex="20%" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
-        <caption label="DART`s info" />
+    <groupbox id="mygrp" vflex="10%" form="@id('darts') @load(vm.selectedDartModel) @save(vm.selectedDartModel, before='update') @save(vm.newDartModel, before='add') @validator('com.cisco.darts.DartsValidator')" style="overflow: scroll;">
+        <!--<caption label="DART`s info" />
         AuthorizationNumber:
         <textbox value="@bind(darts.authorizationNumber)" />
         Version:
@@ -130,21 +134,21 @@
         IpNgnPartnerPricingEm:
         <textbox value="@bind(darts.ipNgnPartnerPricingEm)" />
         MdmFulfillment:
-        <textbox value="@bind(darts.mdmFulfillment)" />
+        <textbox value="@bind(darts.mdmFulfillment)" />-->
 
-        <button id="add" label="Add" onClick="@command('add')" />
+        <!--<button id="add" label="Add" onClick="@command('add')" />
         <button id="update" label="Update" onClick="@command('update')"
                 disabled="@load(empty vm.selectedDartModel)" />
         <button id="delete" label="Delete" onClick="@command('delete')"
                 disabled="@load(empty vm.selectedDartModel)" />
-        <button id="deleteAll" label="Delete All" onClick="@command('deleteAll')" />
+        <button id="deleteAll" label="Delete All" onClick="@command('deleteAll')" />-->
         <button id="importDarts" label="Import" upload="true"
                 onUpload="@command('importDarts',upload=event)"/>
-        <hlayout>
+        <!--<hlayout>
             <label style="color:red" value="@load(vmsgs['authorizationNumber'])" />
             <label style="color:red" value="@load(vmsgs['version'])" />
             <label style="color:red" value="@load(vmsgs['distributorInfo'])" />
             <label style="color:red" value="@load(vmsgs['startDate'])" />
-        </hlayout>
+        </hlayout>-->
     </groupbox>
 </window>

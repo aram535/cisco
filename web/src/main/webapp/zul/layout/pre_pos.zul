@@ -36,20 +36,16 @@
             </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
+                <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
+            </auxheader>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
                          value="@bind(vmPrePos.preposRestrictions.shippedBillNumber)"
                          onChange="@command('filterChanged')"/>
             </auxheader>
             <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-            <auxheader colspan="1">
-                <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
-            </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
@@ -59,6 +55,10 @@
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
+
+            <auxheader colspan="1"/>
+
+            <auxheader colspan="1"/>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
@@ -66,32 +66,37 @@
                          value="@bind(vmPrePos.preposRestrictions.accountManagerName)"
                          onChange="@command('filterChanged')"/>
             </auxheader>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+
         </auxhead>
 
         <columns hflex="min" sizable="true">
             <column/>
             <column label="Status"/>
-            <column label="Type"/>
+            <column label="Client №"/>
             <column label="Part name" sort="auto(prepos.partnerName)"/>
             <column label="Part №"/>
+            <column label="Quantity"/>
+            <column label="Pos sum"/>
+            <column label="End user" sort="auto(prepos.endUser)"/>
             <column label="Inv Date"/>
             <column label="Inv №"/>
+            <column label="Serials"/>
+            <column label="Comment"/>
+            <column label="Good" sort="auto(prepos.ok)"/>
+            <column label="Delta"/>
             <column label="S dis(%)"/>
             <column label="B dis(%)"/>
             <column label="S pr"/>
             <column label="B pr"/>
             <column label="Promo1"/>
             <column label="Promo2"/>
-            <column label="End user" sort="auto(prepos.endUser)"/>
-            <column label="Pos sum"/>
-            <column label="Quantity"/>
-            <column label="Good" sort="auto(prepos.ok)"/>
-            <column label="Delta"/>
-            <column label="Client №"/>
-            <column label="Comment"/>
-            <column label="Serials"/>
-            <column label="Zip"/>
             <column label="Manager"/>
+            <column label="Type"/>
+            <column label="Zip"/>
             <column label="PosreadyID"/>
             <column label="ClaimID"/>
             <column label="BatchID"/>
@@ -101,11 +106,18 @@
                 <checkbox width="auto" checked="@bind(each.checked)"
                           onCheck="@command('preposChecked', preposModel=each)"/>
                 <label width="auto" value="@bind(each.prepos.status)"/>
-                <label width="auto" value="@bind(each.prepos.type)"/>
+                <label width="auto" value="@bind(each.prepos.clientNumber)"/>
                 <label width="auto" value="@bind(each.prepos.partnerName)"/>
                 <label width="auto" value="@bind(each.prepos.partNumber)"/>
+                <label width="auto" value="@bind(each.prepos.quantity)"/>
+                <label width="auto" value="@bind(each.prepos.posSum)"/>
+                <textbox width="auto" value="@bind(each.prepos.endUser)"/>
                 <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
                 <label width="auto" value="@bind(each.prepos.shippedBillNumber)"/>
+                <textbox width="auto" value="@bind(each.prepos.serials)"/>
+                <label width="auto" value="@bind(each.prepos.comment)"/>
+                <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
+                <label width="auto" value="@bind(each.prepos.delta)"/>
                 <label width="auto" value="@bind(each.saleDiscount)"/>
                 <label width="auto" value="@bind(each.buyDiscount)"/>
                 <label width="auto" value="@bind(each.prepos.salePrice)"/>
@@ -118,16 +130,9 @@
                         <comboitem label="@load(each.authorizationNumber)" description="@load(each.endUserName)"/>
                     </template>
                 </combobox>
-                <label width="auto" value="@bind(each.prepos.endUser)"/>
-                <label width="auto" value="@bind(each.prepos.posSum)"/>
-                <label width="auto" value="@bind(each.prepos.quantity)"/>
-                <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
-                <label width="auto" value="@bind(each.prepos.delta)"/>
-                <label width="auto" value="@bind(each.prepos.clientNumber)"/>
-                <label width="auto" value="@bind(each.prepos.comment)"/>
-                <textbox width="auto" value="@bind(each.prepos.serials)"/>
-                <label width="auto" value="@bind(each.prepos.zip)"/>
                 <label width="auto" value="@bind(each.prepos.accountManagerName)"/>
+                <label width="auto" value="@bind(each.prepos.type)"/>
+                <label width="auto" value="@bind(each.prepos.zip)"/>
                 <label width="auto" value="@bind(each.prepos.posreadyId)"/>
                 <label width="auto" value="@bind(each.prepos.claimId)"/>
                 <label width="auto" value="@bind(each.prepos.batchId)"/>
@@ -144,7 +149,7 @@
         <button id="save" label="Save" onClick="@command('save')"/>
         <button id="refresh" label="Refresh" onClick="@command('refresh')"/>
         <combobox width="auto" readonly="true"
-                  model="@load(vmPrePos.preposStatuses)" selectedItem="@bind(vmPrePos.statusToChange)">
+                  model="@load(vmPrePos.preposStatusesToChange)" selectedItem="@bind(vmPrePos.statusToChange)">
             <template name="model">
                 <comboitem label="@load(each)"/>
             </template>

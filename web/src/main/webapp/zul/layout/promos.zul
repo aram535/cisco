@@ -2,7 +2,7 @@
         apply="org.zkoss.bind.BindComposer"
         viewModel="@id('vm') @init('com.cisco.promos.PromosViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
-    <listbox id="box" multiple="true" mold="paging"  pageSize="100" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)" sizedByContent="true" vflex="85%" span="true">
+    <listbox id="box" multiple="true" mold="paging"  pageSize="100" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)" sizedByContent="true" vflex="90%" span="true">
         <listhead sizable="true">
             <listheader hflex="min" label="Id" sort="auto(id)"/>
             <listheader hflex="2" label="Part nubmer" sort="auto(partNumber)"/>
@@ -26,13 +26,15 @@
                 <listcell label="@bind(promos.code)"/>
                 <listcell label="@bind(promos.claimPerUnit)"/>
                 <listcell label="@bind(promos.version)"/>
-                <listcell label="@bind(promos.endDate)"/>
+                <listcell>
+                    <datebox readonly="true" value="@bind(promos.endDate)" buttonVisible="false"/>
+                </listcell>
             </listitem>
         </template>
     </listbox>
-    <groupbox id="mygrp"
+   <!-- <groupbox id="mygrp"
               form="@id('promos') @load(vm.selectedPromoModel) @save(vm.selectedPromoModel, before='update') @save(vm.newPromoModel, before='add')" vflex="15%">
-        <caption label="Promo`s info"/>
+        &lt;!&ndash;<caption label="Promo`s info"/>
         Part nubmer:
         <textbox value="@bind(promos.partNumber)"/>
         Description:
@@ -57,8 +59,9 @@
                 disabled="@load(empty vm.selectedPromoModel)"/>
         <button id="delete" label="Delete" onClick="@command('delete')"
                 disabled="@load(empty vm.selectedPromoModel)"/>
-        <button id="deleteAll" label="Delete All" onClick="@command('deleteAll')"/>
-        <button id="importPromos" label="Import" upload="true"
-                onUpload="@command('importPromos',upload=event)"/>
-    </groupbox>
+        <button id="deleteAll" label="Delete All" onClick="@command('deleteAll')"/>&ndash;&gt;
+
+    </groupbox>-->
+    <button id="importPromos" label="Import" upload="true"
+            onUpload="@command('importPromos',upload=event)"/>
 </window>
