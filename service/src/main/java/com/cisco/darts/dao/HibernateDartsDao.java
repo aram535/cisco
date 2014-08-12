@@ -27,7 +27,7 @@ public class HibernateDartsDao implements DartsDao {
     public List<Dart> getDarts() {
         Session currentSession = sessionFactory.getCurrentSession();
         List<Dart> dartsList = currentSession.createCriteria(Dart.class).list();
-        logger.info("darts fetched from db: {}", dartsList);
+        logger.info("{} darts fetched from DB", dartsList.size());
         return dartsList;
     }
 

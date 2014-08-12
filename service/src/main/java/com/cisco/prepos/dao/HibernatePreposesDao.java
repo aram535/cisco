@@ -3,6 +3,8 @@ package com.cisco.prepos.dao;
 import com.cisco.prepos.dto.Prepos;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +18,8 @@ import java.util.List;
 @Repository
 public class HibernatePreposesDao implements PreposesDao {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -24,6 +28,8 @@ public class HibernatePreposesDao implements PreposesDao {
     public List<Prepos> getPreposes() {
         Session currentSession = sessionFactory.getCurrentSession();
         List<Prepos> preposesList = currentSession.createCriteria(Prepos.class).list();
+
+	    logger.info("{} preposes fetched from DB", preposesList.size());
         return preposesList;
     }
 

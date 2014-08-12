@@ -3,6 +3,8 @@ package com.cisco.sales.dao;
 import com.cisco.sales.dto.Sale;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,6 +20,8 @@ import java.util.List;
 @Repository
 public class HibernateSalesDao implements SalesDao {
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -25,7 +29,10 @@ public class HibernateSalesDao implements SalesDao {
     @Override
     public List<Sale> getSales() {
         Session currentSession = sessionFactory.getCurrentSession();
-        return currentSession.createCriteria(Sale.class).list();
+	    List salesList = currentSession.createCriteria(Sale.class).list();
+
+	    logger.info("{} sales fetched from DB", salesList.size());
+	    return salesList;
     }
 
 	@Transactional(propagation = Propagation.REQUIRED)

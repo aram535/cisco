@@ -4,6 +4,8 @@ import com.cisco.pricelists.dto.Pricelist;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,6 +18,9 @@ import java.util.List;
  */
 @Repository
 public class HibernatePricelistsDao implements PricelistsDao {
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private static final String DELETE_ALL_HQL = String.format("delete from %s", Pricelist.class.getSimpleName().toLowerCase());
 
     @Autowired
@@ -25,7 +30,10 @@ public class HibernatePricelistsDao implements PricelistsDao {
     @Override
     public List<Pricelist> getPricelists() {
         Session currentSession = sessionFactory.getCurrentSession();
-        return currentSession.createCriteria(Pricelist.class).list();
+	    List pricelistList = currentSession.createCriteria(Pricelist.class).list();
+
+	    logger.info("{} pricelists fetched from DB", pricelistList.size());
+	    return pricelistList;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

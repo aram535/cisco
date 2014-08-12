@@ -31,7 +31,7 @@ public class HibernateClientsDao implements ClientsDao {
         Session currentSession = sessionFactory.getCurrentSession();
 
         List<Client> clients = currentSession.createCriteria(Client.class).list();
-        logger.info("Client fetched from db: {}", clients);
+        logger.info("{} clients fetched from DB", clients.size());
         return clients;
     }
 

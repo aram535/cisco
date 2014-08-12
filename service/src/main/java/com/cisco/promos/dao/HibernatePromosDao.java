@@ -27,7 +27,7 @@ public class HibernatePromosDao implements PromosDao {
         Session currentSession = sessionFactory.getCurrentSession();
 
         List<Promo> promos = currentSession.createCriteria(Promo.class).list();
-        logger.info("promos fetched from db: {}", promos);
+        logger.info("{} promos fetched from DB", promos.size());
         return promos;
     }
 
