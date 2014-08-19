@@ -1,9 +1,9 @@
 package com.cisco.pricelists.excel;
 
 import com.cisco.exception.CiscoException;
-import com.cisco.pricelists.dao.PricelistsDao;
 import com.cisco.pricelists.dto.Pricelist;
 import com.cisco.pricelists.dto.PricelistBuilder;
+import com.cisco.pricelists.service.PricelistsService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -37,7 +37,7 @@ public class DefaultPricelistImporterTest {
     private InputStream inputStream;
 
     @Mock
-    private PricelistsDao pricelistsDao;
+    private PricelistsService pricelistsService;
 
 
     @Before
@@ -57,54 +57,54 @@ public class DefaultPricelistImporterTest {
         pricelistImporter.importPricelist(inputStream);
 
         verify(pricelistExtractor).extract(inputStream);
-        verify(pricelistsDao).deleteAll();
-        verify(pricelistsDao).saveAll(Lists.newArrayList(createExpectedPricelist().values()));
+        verify(pricelistsService).deleteAll();
+        verify(pricelistsService).saveAll(Lists.newArrayList(createExpectedPricelist().values()));
 
-        verifyNoMoreInteractions(pricelistExtractor, pricelistsDao);
+        verifyNoMoreInteractions(pricelistExtractor, pricelistsService);
     }
 
-	@Test
-	public void thatImportedPricelistsContainNoClones() {
-		when(pricelistExtractor.extract(inputStream)).thenReturn(createExpectedPricelistWtihClones());
-		pricelistImporter.importPricelist(inputStream);
+    @Test
+    public void thatImportedPricelistsContainNoClones() {
+        when(pricelistExtractor.extract(inputStream)).thenReturn(createExpectedPricelistWtihClones());
+        pricelistImporter.importPricelist(inputStream);
 
-		verify(pricelistsDao).saveAll(Lists.newArrayList(createExpectedPricelist().values()));
-	}
+        verify(pricelistsService).saveAll(Lists.newArrayList(createExpectedPricelist().values()));
+    }
 
-	private Map<String, Pricelist> createExpectedPricelistWtihClones() {
+    private Map<String, Pricelist> createExpectedPricelistWtihClones() {
 
-		Map<String, Pricelist> pricelistMap = createExpectedPricelist();
+        Map<String, Pricelist> pricelistMap = createExpectedPricelist();
 
-		Map<String, Pricelist> clonedPricelistMap = Maps.newLinkedHashMap();
-		clonedPricelistMap.putAll(pricelistMap);
+        Map<String, Pricelist> clonedPricelistMap = Maps.newLinkedHashMap();
+        clonedPricelistMap.putAll(pricelistMap);
 
-		Pricelist firstPricelistClone = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
-				.setWpl(43.47).setGpl(69d).setDiscount(37).build();
+        Pricelist firstPricelistClone = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
+                .setWpl(43.47).setGpl(69d).setDiscount(37).build();
 
-		clonedPricelistMap.put(firstPricelistClone.getPartNumber(), firstPricelistClone);
+        clonedPricelistMap.put(firstPricelistClone.getPartNumber(), firstPricelistClone);
 
-		return clonedPricelistMap;
-	}
+        return clonedPricelistMap;
+    }
 
-	private Map<String, Pricelist> createExpectedPricelist() {
+    private Map<String, Pricelist> createExpectedPricelist() {
 
-		Pricelist firstPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
-				.setWpl(43.47).setGpl(69d).setDiscount(37).build();
+        Pricelist firstPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter")
+                .setWpl(43.47).setGpl(69d).setDiscount(37).build();
 
-		Pricelist secondPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SF100D-08-EU").setDescription("SF100D-08 8-Port 10/100 Desktop Switch")
-				.setWpl(35.91).setGpl(57d).setDiscount(37).build();
+        Pricelist secondPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SF100D-08-EU").setDescription("SF100D-08 8-Port 10/100 Desktop Switch")
+                .setWpl(35.91).setGpl(57d).setDiscount(37).build();
 
-		Pricelist thirdPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display PoE and PC Port")
-				.setWpl(119.07).setGpl(189d).setDiscount(37).build();
+        Pricelist thirdPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display PoE and PC Port")
+                .setWpl(119.07).setGpl(189d).setDiscount(37).build();
 
-		Pricelist fourthPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("CISCO881-K9").setDescription("Cisco 881 Ethernet Sec Router")
-				.setWpl(376.42).setGpl(649d).setDiscount(42).build();
+        Pricelist fourthPrice = PricelistBuilder.newPricelistBuilder().setPartNumber("CISCO881-K9").setDescription("Cisco 881 Ethernet Sec Router")
+                .setWpl(376.42).setGpl(649d).setDiscount(42).build();
 
-		return ImmutableMap.of(firstPrice.getPartNumber(), firstPrice,
-				secondPrice.getPartNumber(), secondPrice,
-				thirdPrice.getPartNumber(), thirdPrice,
-				fourthPrice.getPartNumber(), fourthPrice);
-	}
+        return ImmutableMap.of(firstPrice.getPartNumber(), firstPrice,
+                secondPrice.getPartNumber(), secondPrice,
+                thirdPrice.getPartNumber(), thirdPrice,
+                fourthPrice.getPartNumber(), fourthPrice);
+    }
 
 
 }

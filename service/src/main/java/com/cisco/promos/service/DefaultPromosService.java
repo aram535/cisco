@@ -70,4 +70,11 @@ public class DefaultPromosService implements PromosService {
     public void deleteAll() {
         promosDao.deleteAll();
     }
+
+    @CacheEvict(value = "ciscoCache", key = "'promos'")
+    @Transactional
+    @Override
+    public void saveAll(List<Promo> promos) {
+        promosDao.saveAll(promos);
+    }
 }

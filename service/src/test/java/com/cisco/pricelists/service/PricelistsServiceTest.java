@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.data.MapEntry.entry;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -42,7 +43,7 @@ public class PricelistsServiceTest {
             setDescription("description").setDiscount(30).setGpl(500d).setWpl(400).build();
 
     @Test
-    public void thetPricelistsMapReturnedAccordingToDao() {
+    public void thatPricelistsMapReturnedAccordingToDao() {
         when(pricelistsDao.getPricelists()).thenReturn(createExpectedPricelists());
 
         Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
@@ -59,6 +60,14 @@ public class PricelistsServiceTest {
 
         assertThat(pricelists).isNotNull().isNotEmpty();
         assertThat(pricelists).hasSize(2).contains(FIRST_PRICE, SECOND_PRICE);
+    }
+
+    @Test
+    public void thatPricelistsJustDelegatesSaveAllToDao() {
+        List<Pricelist> expectedPricelists = createExpectedPricelists();
+        pricelistsService.saveAll(expectedPricelists);
+
+        verify(pricelistsDao).saveAll(expectedPricelists);
     }
 
     private List<Pricelist> createExpectedPricelists() {

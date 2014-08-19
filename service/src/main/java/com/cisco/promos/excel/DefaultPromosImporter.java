@@ -1,9 +1,8 @@
 package com.cisco.promos.excel;
 
 import com.cisco.exception.CiscoException;
-import com.cisco.promos.dao.PromosDao;
 import com.cisco.promos.dto.Promo;
-import com.google.common.collect.Lists;
+import com.cisco.promos.service.PromosService;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +13,8 @@ import org.springframework.util.CollectionUtils;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * User: Rost
@@ -27,9 +28,9 @@ public class DefaultPromosImporter implements PromosImporter {
     private PromosExtractor promosExtractor;
 
     @Autowired
-    private PromosDao promosDao;
+    private PromosService promosService;
 
-	@Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void importPromos(InputStream inputStream) {
 
@@ -39,9 +40,9 @@ public class DefaultPromosImporter implements PromosImporter {
             throw new CiscoException("Exported from excel promos are null or empty. Please, check file.");
         }
 
-		Set<Promo> uniquePromos = Sets.newLinkedHashSet(promos);
+        Set<Promo> uniquePromos = Sets.newLinkedHashSet(promos);
 
-        promosDao.deleteAll();
-        promosDao.saveAll(Lists.newArrayList(uniquePromos));
+        promosService.deleteAll();
+        promosService.saveAll(newArrayList(uniquePromos));
     }
 }

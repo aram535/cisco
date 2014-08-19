@@ -1,9 +1,9 @@
 package com.cisco.promos.excel;
 
 import com.cisco.exception.CiscoException;
-import com.cisco.promos.dao.PromosDao;
 import com.cisco.promos.dto.Promo;
 import com.cisco.promos.dto.PromoBuilder;
+import com.cisco.promos.service.PromosService;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class DefaultPromosImporterTest {
     private InputStream inputStream;
 
     @Mock
-    private PromosDao promosDao;
+    private PromosService promosService;
 
 
     @Before
@@ -52,33 +52,32 @@ public class DefaultPromosImporterTest {
 
     @Test
     public void thatImportPromosJustReplacedAllData() {
-        when(promosDao.deleteAll()).thenReturn(2);
         promosImporter.importPromos(inputStream);
 
         verify(promosExtractor).extract(inputStream);
-        verify(promosDao).deleteAll();
-        verify(promosDao).saveAll(createExpectedPromos());
-        verifyNoMoreInteractions(promosExtractor, promosDao);
+        verify(promosService).deleteAll();
+        verify(promosService).saveAll(createExpectedPromos());
+        verifyNoMoreInteractions(promosExtractor, promosService);
     }
 
-	@Test
-	public void thatImportedPricelistsContainNoClones() {
-		when(promosExtractor.extract(inputStream)).thenReturn(createExpectedPromosWtihClones());
-		promosImporter.importPromos(inputStream);
+    @Test
+    public void thatImportedPricelistsContainNoClones() {
+        when(promosExtractor.extract(inputStream)).thenReturn(createExpectedPromosWtihClones());
+        promosImporter.importPromos(inputStream);
 
-		verify(promosDao).saveAll(createExpectedPromos());
-	}
+        verify(promosService).saveAll(createExpectedPromos());
+    }
 
-	private List<Promo> createExpectedPromosWtihClones() {
-		List<Promo> expectedPromos = createExpectedPromos();
-		List<Promo> clonedPromos = createExpectedPromos();
+    private List<Promo> createExpectedPromosWtihClones() {
+        List<Promo> expectedPromos = createExpectedPromos();
+        List<Promo> clonedPromos = createExpectedPromos();
 
-		expectedPromos.addAll(clonedPromos);
+        expectedPromos.addAll(clonedPromos);
 
-		return expectedPromos;
-	}
+        return expectedPromos;
+    }
 
-	private List<Promo> createExpectedPromos() {
+    private List<Promo> createExpectedPromos() {
         Promo firstPromo = PromoBuilder.newPromoBuilder().setPartNumber("SPA504G").setDescription("4 Line IP Phone With Display, PoE and PC Port").
                 setDiscount(0.42).setName("PP-SBFa81137-130126").setGpl(189).setCode("PP-SBFa81137-130126").setClaimPerUnit(9.45).setVersion(8).build();
         Promo secondPromo = PromoBuilder.newPromoBuilder().setPartNumber("SPA112").setDescription("2 Port Phone Adapter").

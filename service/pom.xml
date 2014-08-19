@@ -29,6 +29,10 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.cisco</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>

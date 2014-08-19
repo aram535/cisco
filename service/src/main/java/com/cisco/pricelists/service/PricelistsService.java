@@ -10,15 +10,17 @@ import java.util.Map;
  */
 public interface PricelistsService {
 
-	public List<Pricelist> getPricelists();
+    public List<Pricelist> getPricelists();
 
-	public void save(Pricelist pricelist);
+    public void save(Pricelist pricelist);
 
-	public void update(Pricelist pricelist);
+    public void update(Pricelist pricelist);
 
-	public void delete(Pricelist pricelist);
+    public void delete(Pricelist pricelist);
 
-    Map<String,Pricelist> getPricelistsMap();
+    Map<String, Pricelist> getPricelistsMap();
 
-	public void deleteAll();
+    public void deleteAll();
+
+    void saveAll(List<Pricelist> pricelists);
 }

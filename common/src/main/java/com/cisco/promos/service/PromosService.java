@@ -2,6 +2,7 @@ package com.cisco.promos.service;
 
 import com.cisco.promos.dto.Promo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,4 +22,6 @@ public interface PromosService {
 	Map<String,Promo> getPromosMap();
 
 	void deleteAll();
+
+    void saveAll(List<Promo> promos);
 }

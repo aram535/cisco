@@ -14,6 +14,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import java.sql.Timestamp;
 import java.util.List;
 
+import static com.cisco.prepos.dto.Prepos.Status.NOT_POS;
+import static com.cisco.prepos.dto.Prepos.Status.POS_OK;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -28,19 +30,30 @@ public class HibernatePreposesDaoTest extends BasicDb {
 
     @Test
     @DataSet("preposes.xml")
-    public void thatGetPrepossReturnsAllFromDb() throws Exception {
+    public void thatGetPreposReturnsAllFromDb() throws Exception {
         List<Prepos> preposes = preposesDao.getPreposes();
 
         assertThat(preposes).isNotEmpty();
         assertThat(preposes.size()).isEqualTo(2);
     }
 
-	@Test
-	@DataSet("preposes.xml")
-	@ExpectedDataSet("preposes-get-all-not-pos.xml")
-	public void thatGetsOnlyNotPosPreposesFromDbIfCorrespondingStatusIsSet() throws Exception {
-		preposesDao.getPreposes(Prepos.Status.NOT_POS);
-	}
+    @Test
+    @DataSet("preposes.xml")
+    public void thatGetsNotPosAndPosOkPreposesFromDb() throws Exception {
+        List<Prepos> preposes = preposesDao.getPreposes(NOT_POS, POS_OK);
+
+        assertThat(preposes).isNotEmpty();
+        assertThat(preposes.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DataSet("preposes.xml")
+    public void thatGetsOnlyNotPosPreposesFromDb() throws Exception {
+        List<Prepos> preposes = preposesDao.getPreposes(NOT_POS);
+
+        assertThat(preposes).isNotEmpty();
+        assertThat(preposes.size()).isEqualTo(1);
+    }
 
     @Test
     @DataSet("preposes.xml")
@@ -80,7 +93,7 @@ public class HibernatePreposesDaoTest extends BasicDb {
                 .buyDiscount(48).salePrice(383).buyPrice(337.48).firstPromo("PP-FAST70694-120128").secondPromo("")
                 .endUser("").clientNumber("158").shippedDate(someDate).shippedBillNumber("1/2606761")
                 .comment("КИЕВ 14/03 + DDP АКЦИЯ 8641").serials("SFCZ1805C4AV").zip(61052)
-		        .status(Prepos.Status.NOT_POS)
+                .status(NOT_POS)
                 .build();
 
         return newPrepos;
@@ -95,7 +108,7 @@ public class HibernatePreposesDaoTest extends BasicDb {
                 .buyDiscount(48).salePrice(383).buyPrice(337.48).firstPromo("PP-FAST70694-120128").secondPromo("")
                 .endUser("").clientNumber("158").shippedDate(someDate).shippedBillNumber("1/2606761")
                 .comment("КИЕВ 14/03 + DDP АКЦИЯ 8641").serials("SFCZ1805C4AV").zip(61052)
-		        .status(Prepos.Status.NOT_POS)
+                .status(NOT_POS)
                 .build();
 
         return newPrepos;

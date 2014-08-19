@@ -70,4 +70,11 @@ public class DefaultPricelistsService implements PricelistsService {
     public void deleteAll() {
         pricelistsDao.deleteAll();
     }
+
+    @CacheEvict(value = "ciscoCache", key = "'pricelist'")
+    @Transactional
+    @Override
+    public void saveAll(List<Pricelist> pricelists) {
+        pricelistsDao.saveAll(pricelists);
+    }
 }
