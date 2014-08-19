@@ -28,7 +28,7 @@ public class HibernatePreposesDao implements PreposesDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional(propagation = Propagation.REQUIRED)
+   /* @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public List<Prepos> getPreposes() {
         Session currentSession = sessionFactory.getCurrentSession();
@@ -36,7 +36,7 @@ public class HibernatePreposesDao implements PreposesDao {
 
 	    logger.info("{} preposes fetched from DB", preposesList.size());
         return preposesList;
-    }
+    }*/
 
 	@Transactional(propagation = Propagation.REQUIRED)
 	@Override

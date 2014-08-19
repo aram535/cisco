@@ -212,12 +212,11 @@ public class DefaultPreposServiceTest {
 	@Test
 	public void thatFilteredPreposesBeingReturnedWhenStatusPassedToGetAllPreposes() {
 
-		List<Prepos> allPreposesWithDifferentSatuses = getAllPreposesWithDifferentSatuses();
 		List<Prepos> allNotProcessedPreposes = getAllPreposes();
 		Table<String, String, Dart> dartsTable = HashBasedTable.create();
 		List<PreposModel> allPreposModels = getAllPreposModels();
 
-		when(preposesDao.getPreposes()).thenReturn(allPreposesWithDifferentSatuses);
+		when(preposesDao.getPreposes(Prepos.Status.NOT_POS)).thenReturn(allNotProcessedPreposes);
 		when(preposUpdater.update(allNotProcessedPreposes)).thenReturn(allNotProcessedPreposes);
 		when(dartsService.getDartsTable()).thenReturn(dartsTable);
 		when(preposModelConstructor.construct(allNotProcessedPreposes)).thenReturn(allPreposModels);
