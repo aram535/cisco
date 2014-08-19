@@ -1,8 +1,11 @@
 package com.cisco.prepos.dao;
 
 import com.cisco.prepos.dto.Prepos;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 
 /**
  * Created by Alf on 05.04.14.
@@ -32,6 +37,27 @@ public class HibernatePreposesDao implements PreposesDao {
 	    logger.info("{} preposes fetched from DB", preposesList.size());
         return preposesList;
     }
+
+	@Override
+	public List<Prepos> getPreposes(Prepos.Status... statuses) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		Criteria criteria = currentSession.createCriteria(Prepos.class);
+
+		if(!isEmpty(statuses)) {
+			Criterion[] statusesCriterions = new Criterion[statuses.length];
+
+			for (int i = 0; i < statuses.length; i++) {
+				statusesCriterions[i] = Restrictions.eq("status", statuses[i]);
+			}
+
+			criteria.add(Restrictions.or(statusesCriterions));
+		}
+
+		List<Prepos> preposesList = criteria.list();
+
+		logger.info("{} preposes fetched from DB", preposesList.size());
+		return preposesList;
+	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
     @Override

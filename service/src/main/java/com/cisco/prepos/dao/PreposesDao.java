@@ -13,6 +13,8 @@ public interface PreposesDao {
 
     List<Prepos> getPreposes();
 
+	List<Prepos> getPreposes(final Prepos.Status... statuses);
+
     void delete(Prepos prePos);
 
     void save(Prepos prePos);
