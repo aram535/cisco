@@ -38,6 +38,7 @@ public class HibernatePreposesDao implements PreposesDao {
         return preposesList;
     }
 
+	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public List<Prepos> getPreposes(Prepos.Status... statuses) {
 		Session currentSession = sessionFactory.getCurrentSession();

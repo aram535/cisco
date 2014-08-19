@@ -35,6 +35,13 @@ public class HibernatePreposesDaoTest extends BasicDb {
         assertThat(preposes.size()).isEqualTo(2);
     }
 
+	@Test
+	@DataSet("preposes.xml")
+	@ExpectedDataSet("preposes-get-all-not-pos.xml")
+	public void thatGetsOnlyNotPosPreposesFromDbIfCorrespondingStatusIsSet() throws Exception {
+		preposesDao.getPreposes(Prepos.Status.NOT_POS);
+	}
+
     @Test
     @DataSet("preposes.xml")
     @ExpectedDataSet("preposes-save-result.xml")
