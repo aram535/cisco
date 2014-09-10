@@ -9,6 +9,7 @@ import com.cisco.prepos.model.PreposRestrictions;
 import com.cisco.prepos.services.PreposService;
 import com.cisco.prepos.services.filter.PreposFilter;
 import com.cisco.prepos.services.totalsum.TotalSumCounter;
+import com.cisco.utils.MessageUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -60,6 +61,7 @@ public class PreposViewModel {
 	public static final String EXPORT_POSREADY_COMMAND = "exportPosready";
 	public static final String CHECK_ALL_COMMAND = "checkAll";
 	public static final String IMPORT_CLAIMS_COMMAND = "importClaims";
+	public static final String ACTION_MESSAGE = "actionMessage";
 
 	private final List<String> preposStatusesToChange =
 			newArrayList(CBN.getName(), CANCEL.getName());
@@ -69,7 +71,7 @@ public class PreposViewModel {
                     CBN.getName(), CANCEL.getName());
 
     private String selectedStatus = ALL_STATUS;
-    private String statusToChange = POS_OK.toString();
+    private String statusToChange = CBN.toString();
 	private boolean checkAll = false;
 
     private List<PreposModel> preposes;
@@ -92,7 +94,6 @@ public class PreposViewModel {
     @WireVariable
     private TotalSumCounter totalSumCounter;
     private List<PreposModel> freshPreposes;
-
 
 	public boolean getCheckAll() {
 		return checkAll;
@@ -142,26 +143,37 @@ public class PreposViewModel {
 
             return filteredPreposes;
         } catch (Exception e) {
-            Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+	        MessageUtils.showErrorMessage(e);
             return newArrayList();
         }
     }
 
-    @NotifyChange(ALL_PREPOS_NOTIFY)
+	@NotifyChange(ALL_PREPOS_NOTIFY)
     public void setSelectedStatus(String selectedStatus) {
         this.selectedStatus = selectedStatus;
-        refreshAndFilterPreposes();
+	    try {
+		    refreshAndFilterPreposes();
+	    } catch (Exception e) {
+		    MessageUtils.showErrorMessage(e);
+	    }
     }
 
     @Command(SET_STATUS_COMMAND)
-    @NotifyChange(ALL_PREPOS_NOTIFY)
+    @NotifyChange({ALL_PREPOS_NOTIFY, "actionMessage"})
     public void setStatus() {
 
-        for (PreposModel checkedPrepos : checkedPreposMap.values()) {
-	        if(!statusToChange.equals(CBN.getName()) && !statusToChange.equals(CANCEL.getName())) {
-		        checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
-	        }
-        }
+	    if(actionMessage == null) {
+		    actionMessage = "Are you sure?";
+		    currentCommand = SET_STATUS_COMMAND;
+	    } else {
+		    clearActionMessageAndCommand();
+		    for (PreposModel checkedPrepos : checkedPreposMap.values()) {
+			    Prepos.Status currentStatus = checkedPrepos.getPrepos().getStatus();
+			    if(!currentStatus.equals(CBN) && !currentStatus.equals(CANCEL)) {
+				    checkedPrepos.getPrepos().setStatus(Prepos.Status.valueOf(statusToChange));
+			    }
+		    }
+	    }
     }
 
     @Command(REFRESH_COMMAND)
@@ -171,9 +183,16 @@ public class PreposViewModel {
     }
 
     @Command(SAVE_COMMAND)
-    @NotifyChange(ALL_PREPOS_NOTIFY)
+    @NotifyChange({ALL_PREPOS_NOTIFY, ACTION_MESSAGE})
     public void save() {
-        preposService.updateFromModels(preposes);
+	    if(actionMessage == null) {
+		    actionMessage = "Are you sure?";
+		    currentCommand = SAVE_COMMAND;
+	    } else {
+		    clearActionMessageAndCommand();
+		    preposService.updateFromModels(preposes);
+	    }
+
     }
 
     @Command(PROMO_SELECTED_COMMAND)
@@ -236,27 +255,38 @@ public class PreposViewModel {
     }
 
 	@Command(EXPORT_POSREADY_COMMAND)
-	@NotifyChange(ALL_PREPOS_NOTIFY)
+	@NotifyChange({ALL_PREPOS_NOTIFY, ACTION_MESSAGE})
 	public void exportPosready() {
 
-		Collection<PreposModel> preposes = checkedPreposMap.values();
+		if(actionMessage == null) {
+			actionMessage = "Are you sure?";
+			currentCommand = EXPORT_POSREADY_COMMAND;
+		} else {
+			clearActionMessageAndCommand();
+			Collection<PreposModel> preposes = checkedPreposMap.values();
 
-		if(!preposes.isEmpty()) {
+			if (!preposes.isEmpty()) {
 
-			String filePath = preposService.exportPosready(preposes);
+				String filePath = preposService.exportPosready(preposes);
 
-			try {
-				InputStream is = new FileInputStream(filePath);
-				Filedownload.save(is, "xls", Paths.get(filePath).getFileName().toString());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				try {
+					InputStream is = new FileInputStream(filePath);
+					Filedownload.save(is, "xls", Paths.get(filePath).getFileName().toString());
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
+	private void clearActionMessageAndCommand() {
+		actionMessage = null;
+		currentCommand = null;
+	}
+
 	@Command(IMPORT_CLAIMS_COMMAND)
 	@NotifyChange(ALL_PREPOS_NOTIFY)
-	public void importClaims(@ContextParam(ContextType.TRIGGER_EVENT) UploadEvent event) {
+	public void importClaims(@ContextParam(ContextType.TRIGGER_EVENT) final UploadEvent event) {
 
 		Media media = event.getMedia();
 		if (media.isBinary()) {
@@ -325,4 +355,36 @@ public class PreposViewModel {
         }
         filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
     }
+
+	//Confirmation stuff
+	private String actionMessage;
+	private String currentCommand;
+
+	public String getCurrentCommand() {
+		return currentCommand;
+	}
+
+	public void setCurrentCommand(String currentCommand) {
+		this.currentCommand = currentCommand;
+	}
+
+	public String getActionMessage() {
+		return actionMessage;
+	}
+
+	public void setActionMessage(String actionMessage) {
+		this.actionMessage = actionMessage;
+	}
+
+	@Command @NotifyChange("actionMessage")
+	public void confirmAction(){
+		//set the message to show to user
+		actionMessage = "Are you sure?";
+	}
+
+	@Command @NotifyChange("actionMessage")
+	public void cancelAction(){
+		//clear the message
+		clearActionMessageAndCommand();
+	}
 }

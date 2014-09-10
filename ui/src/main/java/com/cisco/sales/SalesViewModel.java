@@ -2,13 +2,13 @@ package com.cisco.sales;
 
 import com.cisco.sales.dto.Sale;
 import com.cisco.sales.service.SalesService;
+import com.cisco.utils.MessageUtils;
 import com.google.common.collect.Lists;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
-import org.zkoss.zul.Messagebox;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class SalesViewModel {
 			notProcessedSales = salesService.getSales();
 			return notProcessedSales;
 		} catch (Exception e) {
-			Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+			MessageUtils.showErrorMessage(e);
 			return Lists.newArrayList();
 		}
 	}

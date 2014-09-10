@@ -23,7 +23,7 @@
             </listitem>
         </template>
     </listbox>
-    <!--<groupbox id="mygrp" vflex="15%"
+    <groupbox id="mygrp" vflex="15%"
               form="@id('pricelists') @load(vm.selectedPricelistModel) @save(vm.selectedPricelistModel, before='update') @save(vm.newPricelistModel, before='add')">
         <caption label="Pricelist`s info"/>
         Part number:
@@ -42,13 +42,13 @@
         <button id="delete" label="Delete" onClick="@command('delete')"
                 disabled="@load(empty vm.selectedPricelistModel)"/>
 
-       &lt;!&ndash; <hlayout>
+       <!-- <hlayout>
             <label style="color:red" value="@load(vmsgs['pricelistNumber'])"/>
             <label style="color:red" value="@load(vmsgs['name'])"/>
             <label style="color:red" value="@load(vmsgs['city'])"/>
             <label style="color:red" value="@load(vmsgs['address'])"/>
-        </hlayout>&ndash;&gt;
-    </groupbox>-->
+        </hlayout>-->
+    </groupbox>
     <button id="importPricelist" label="Import" upload="true"
             onUpload="@command('importPricelist',upload=event)"/>
     <button id="deleteAllPricelists" label="deleteAll" onClick="@command('deleteAll')"/>

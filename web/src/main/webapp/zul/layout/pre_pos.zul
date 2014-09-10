@@ -38,14 +38,20 @@
             <auxheader colspan="1">
                 <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
             </auxheader>
-            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                       value="@bind(vmPrePos.preposRestrictions.endUser)" onChange="@command('filterChanged')"/>
+            </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
                          value="@bind(vmPrePos.preposRestrictions.shippedBillNumber)"
                          onChange="@command('filterChanged')"/>
             </auxheader>
-            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                       value="@bind(vmPrePos.preposRestrictions.serial)" onChange="@command('filterChanged')"/>
+            </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
@@ -106,7 +112,7 @@
                 <checkbox width="auto" checked="@bind(each.checked)"
                           onCheck="@command('preposChecked', preposModel=each)"/>
                 <label width="auto" value="@bind(each.prepos.status)"/>
-                <label width="auto" value="@bind(each.prepos.clientNumber)"/>
+                <textbox width="auto" value="@bind(each.prepos.clientNumber)"/>
                 <label width="auto" value="@bind(each.prepos.partnerName)"/>
                 <label width="auto" value="@bind(each.prepos.partNumber)"/>
                 <label width="auto" value="@bind(each.prepos.quantity)"/>
@@ -157,5 +163,17 @@
         <button id="setStatus" label="Set status" onClick="@command('setStatus')"/>
         <button id="exportPosready" label="Export POS READY" onClick="@command('exportPosready')"/>
         <button id="loadClaims" label="Import Claims" upload="true" onUpload="@command('importClaims', upload=event)"/>
+
     </groupbox>
+    <window title="Confirm" mode="modal" border="normal" width="200px" visible="@load(not empty vmPrePos.actionMessage)">
+        <vbox hflex="true">
+            <hbox height="40px" pack="center" hflex="true">
+                <label value="@load(vmPrePos.actionMessage)" style="font-weight:bold" />
+            </hbox>
+            <hbox pack="center" hflex="true">
+                <button label="Ok" onClick="@command(vmPrePos.currentCommand)"/>
+                <button label="Cancel" onClick="@command('cancelAction')"/>
+            </hbox>
+        </vbox>
+    </window>
 </window>

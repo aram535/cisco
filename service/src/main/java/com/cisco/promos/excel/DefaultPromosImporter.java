@@ -5,6 +5,7 @@ import com.cisco.promos.dto.Promo;
 import com.cisco.promos.service.PromosService;
 import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class DefaultPromosImporter implements PromosImporter {
     @Autowired
     private PromosService promosService;
 
+	@CacheEvict(value = "ciscoCache", key = "'promos'")
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void importPromos(InputStream inputStream) {

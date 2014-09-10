@@ -8,6 +8,8 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 */
 package com.cisco.main.services.authentication;
 
+import com.cisco.authentication.UserCredential;
+
 public interface AuthenticationService {
 
 	/**login with account and password**/

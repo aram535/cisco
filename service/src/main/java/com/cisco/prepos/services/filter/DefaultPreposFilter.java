@@ -44,6 +44,8 @@ public class DefaultPreposFilter implements PreposFilter {
 		final String partNumber = preposRestrictions.getPartNumber();
 	    final String ok = preposRestrictions.getOk();
 	    final String accountManagerName = preposRestrictions.getAccountManagerName();
+	    final String endUser = preposRestrictions.getEndUser();
+	    final String serial = preposRestrictions.getSerial();
 
 
         Predicate<PreposModel> partnerNamePredicate = getPartnerNamePredicate(partnerName);
@@ -53,11 +55,14 @@ public class DefaultPreposFilter implements PreposFilter {
         Predicate<PreposModel> partNumberPredicate = getPartNumberPredicate(partNumber);
         Predicate<PreposModel> okPredicate = getOkPredicate(ok);
         Predicate<PreposModel> accountManagerNamePredicate = getAccMangerNamePredicate(accountManagerName);
+        Predicate<PreposModel> endUserPredicate = getEndUserPredicate(endUser);
+        Predicate<PreposModel> serialPredicate = getSerialPredicate(serial);
 
 
         Collection<PreposModel> filteredPreposes = Collections2.filter(preposes,
                 Predicates.and(partnerNamePredicate, shippedBillNumberPredicate, shippedDateFromPredicate,
-		                shippedDateToPredicate, partNumberPredicate, okPredicate, accountManagerNamePredicate));
+		                shippedDateToPredicate, partNumberPredicate, okPredicate, accountManagerNamePredicate,
+		                endUserPredicate, serialPredicate));
 
         List<PreposModel> result = Lists.newArrayList();
         result.addAll(filteredPreposes);
@@ -156,6 +161,37 @@ public class DefaultPreposFilter implements PreposFilter {
 				}
 				Prepos prepos = preposModel.getPrepos();
 				return StringUtils.containsIgnoreCase(prepos.getAccountManagerName(), accountManagerName);
+			}
+		};
+	}
+
+	private Predicate<PreposModel> getEndUserPredicate(final String endUser) {
+		return new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+				if (StringUtils.isBlank(endUser)) {
+					return true;
+				}
+				Prepos prepos = preposModel.getPrepos();
+				return StringUtils.containsIgnoreCase(prepos.getEndUser(), endUser);
+			}
+		};
+	}
+
+	private Predicate<PreposModel> getSerialPredicate(final String serial) {
+		return new Predicate<PreposModel>() {
+			@Override
+			public boolean apply(PreposModel preposModel) {
+				if (StringUtils.isEmpty(serial)) {
+					return true;
+				}
+
+				Prepos prepos = preposModel.getPrepos();
+				if (StringUtils.isBlank(serial)) {
+					return StringUtils.isBlank(prepos.getSerials());
+				}
+
+				return StringUtils.containsIgnoreCase(prepos.getSerials(), serial);
 			}
 		};
 	}

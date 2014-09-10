@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -25,7 +24,6 @@ import static com.google.common.collect.Maps.newHashMap;
  * Time: 22:44
  */
 @Service("accountManagerService")
-@PropertySource("classpath:prepos.properties")
 public class DefaultAccountManagerService implements AccountManagerService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());

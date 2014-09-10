@@ -21,8 +21,10 @@ import static org.apache.poi.ss.usermodel.Row.CREATE_NULL_AS_BLANK;
 
 public class DefaultFieldsExtractor implements FieldsExtractor {
 
-    private static final String DATE_PATTERN = "dd-MMM-yyyy";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_PATTERN).withLocale(Locale.US);
+    private static final String DATE_PATTERN_US = "dd-MMM-yyyy";
+    private static final String DATE_PATTERN_EU = "dd-MM-yyyy";
+    private static final DateTimeFormatter US_DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_PATTERN_US).withLocale(Locale.US);
+    private static final DateTimeFormatter EU_DATE_TIME_FORMATTER = DateTimeFormat.forPattern(DATE_PATTERN_EU);
 
     @Override
     public long extractNumericValue(Row row, int column) {
@@ -36,7 +38,7 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
     }
 
     @Override
-    public Timestamp extractTimestamp(Row row, int column) {
+    public Timestamp extractTimestampUS(Row row, int column) {
 	    try {
 		    Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
 		    return getTimestampValueFromCell(cell, column);
@@ -44,6 +46,16 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
 		    throw new CiscoException(String.format("Row number %d:%s", row.getRowNum(), e.getMessage()));
 	    }
     }
+
+	@Override
+	public Timestamp extractTimestampEU(Row row, int column) {
+		try {
+			Cell cell = row.getCell(column, CREATE_NULL_AS_BLANK);
+			return getTimestampValueFromCellEU(cell, column);
+		} catch (Exception e) {
+			throw new CiscoException(String.format("Row number %d:%s", row.getRowNum(), e.getMessage()));
+		}
+	}
 
     @Override
     public double extractDoubleValue(Row row, int column) {
@@ -121,9 +133,21 @@ public class DefaultFieldsExtractor implements FieldsExtractor {
             return null;
         }
 
-        DateTime dateTime = DateTime.parse(stringValueFromCell, DATE_TIME_FORMATTER);
+        DateTime dateTime = DateTime.parse(stringValueFromCell, US_DATE_TIME_FORMATTER);
         return new Timestamp(dateTime.getMillis());
     }
+
+	private Timestamp getTimestampValueFromCellEU(Cell cell, int column) {
+
+		String stringValueFromCell = getStringValueFromCell(cell, column);
+
+		if (isBlank(stringValueFromCell)) {
+			return null;
+		}
+
+		DateTime dateTime = DateTime.parse(stringValueFromCell, EU_DATE_TIME_FORMATTER);
+		return new Timestamp(dateTime.getMillis());
+	}
 
     private long getIntValueFromCell(Cell cell, int column) {
 

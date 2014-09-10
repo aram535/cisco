@@ -78,9 +78,9 @@ public class DefaultDartsExtractor implements DartsExtractor {
 
                 String distributorInfo = fieldsExtractor.extractStringValue(row, DISTRIBUTOR_INFO_COLUMN);
 
-                Timestamp startDate = fieldsExtractor.extractTimestamp(row, START_DATE_COLUMN);
+                Timestamp startDate = fieldsExtractor.extractTimestampUS(row, START_DATE_COLUMN);
 
-                Timestamp endDate = fieldsExtractor.extractTimestamp(row, END_DATE_COLUMN);
+                Timestamp endDate = fieldsExtractor.extractTimestampUS(row, END_DATE_COLUMN);
 
                 double distiDiscount = fieldsExtractor.extractDoubleValue(row, DISTI_DISCOUNT_COLUMN);
 

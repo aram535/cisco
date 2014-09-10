@@ -37,7 +37,7 @@ public class DefaultPreposFilterTest {
 
     @Test
     public void returnsEmptyListIfInputIsEmpty() {
-        PreposRestrictions preposRestrictions = new PreposRestrictions(PARTNER_NAME, SHIPPED_BILL_NUMBER, toDate, fromDate, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME);
+        PreposRestrictions preposRestrictions = new PreposRestrictions(PARTNER_NAME, SHIPPED_BILL_NUMBER, toDate, fromDate, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS);
         List<PreposModel> filteredPreposes = preposFilter.filter(Lists.<PreposModel>newArrayList(), preposRestrictions);
         assertThat(filteredPreposes).isNotNull().isEmpty();
     }
@@ -54,14 +54,16 @@ public class DefaultPreposFilterTest {
 
 
     private Object[] restrictions() {
-        return $(new PreposRestrictions(PARTNER_NAME, SHIPPED_BILL_NUMBER, toDate, fromDate, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(PARTNER_NAME, SHIPPED_BILL_NUMBER, toDate, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(null, SHIPPED_BILL_NUMBER, toDate, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(null, null, toDate, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(null, null, null, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(null, null, null, null, null, GOOD, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(null, null, null, null, null, null, ACCOUNT_MANAGER_NAME),
-                new PreposRestrictions(null, SHIPPED_BILL_NUMBER.substring(1), null, null, null, null, null));
+        return $(new PreposRestrictions(PARTNER_NAME, SHIPPED_BILL_NUMBER, toDate, fromDate, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(PARTNER_NAME, SHIPPED_BILL_NUMBER, toDate, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, SHIPPED_BILL_NUMBER, toDate, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, null, toDate, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, null, null, null, PART_NUMBER, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, null, null, null, null, GOOD, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, null, null, null, null, null, ACCOUNT_MANAGER_NAME, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, null, null, null, null, null, null, END_USER_NAME, SERIALS),
+                new PreposRestrictions(null, null, null, null, null, null, null, null, SERIALS),
+                new PreposRestrictions(null, SHIPPED_BILL_NUMBER.substring(1), null, null, null, null, null, null, null));
     }
 
     private Timestamp getFromDate() {

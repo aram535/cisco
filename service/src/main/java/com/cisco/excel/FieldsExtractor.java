@@ -15,7 +15,9 @@ public interface FieldsExtractor {
 
 	long extractNumericValue(Row row, int column);
 
-    Timestamp extractTimestamp(Row row, int column);
+    Timestamp extractTimestampUS(Row row, int column);
+
+	Timestamp extractTimestampEU(Row row, int column);
 
     double extractDoubleValue(Row row, int column);
 

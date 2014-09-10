@@ -22,6 +22,8 @@ public class PreposRestrictions {
 	private String partNumber;
 	private String ok;
 	private String accountManagerName;
+	private String endUser;
+	private String serial;
 
 	@Value("${years.interval}")
 	private int yearsInterval;
@@ -58,7 +60,7 @@ public class PreposRestrictions {
 		fromDate = new Timestamp(cal.getTime().getTime());
 	}
 
-	public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate, String partNumber, String ok, String accountManagerName) {
+	public PreposRestrictions(String partnerName, String shippedBillNumber, Timestamp toDate, Timestamp fromDate, String partNumber, String ok, String accountManagerName, String endUser, String serial) {
 		this.partnerName = partnerName;
 		this.shippedBillNumber = shippedBillNumber;
 		this.toDate = toDate;
@@ -66,6 +68,8 @@ public class PreposRestrictions {
 		this.partNumber = partNumber;
 		this.ok = ok;
 		this.accountManagerName = accountManagerName;
+		this.endUser = endUser;
+		this.serial = serial;
 	}
 
 	public String getPartnerName() {
@@ -96,6 +100,14 @@ public class PreposRestrictions {
 		return accountManagerName;
 	}
 
+	public String getEndUser() {
+		return endUser;
+	}
+
+	public String getSerial() {
+		return serial;
+	}
+
 	public void setPartnerName(String partnerName) {
         this.partnerName = partnerName;
     }
@@ -122,5 +134,13 @@ public class PreposRestrictions {
 
 	public void setAccountManagerName(String accountManagerName) {
 		this.accountManagerName = accountManagerName;
+	}
+
+	public void setEndUser(String endUser) {
+		this.endUser = endUser;
+	}
+
+	public void setSerial(String serial) {
+		this.serial = serial;
 	}
 }

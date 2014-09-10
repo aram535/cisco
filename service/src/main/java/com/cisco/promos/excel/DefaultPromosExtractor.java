@@ -69,7 +69,7 @@ public class DefaultPromosExtractor implements PromosExtractor {
                 String code = fieldsExtractor.extractStringValue(row, CODE_COLUMN);
                 double claimPerUnit = fieldsExtractor.extractDoubleValue(row, CLAIM_PER_UNIT_COLUMN);
                 int version = (int) fieldsExtractor.extractNumericValue(row, VERSION_COLUMN);
-	            Timestamp endDate = fieldsExtractor.extractTimestamp(row, END_DATE_COLUMN);
+	            Timestamp endDate = fieldsExtractor.extractTimestampEU(row, END_DATE_COLUMN);
 
                 Promo promo = newPromoBuilder().
                         setPartNumber(partNumber).

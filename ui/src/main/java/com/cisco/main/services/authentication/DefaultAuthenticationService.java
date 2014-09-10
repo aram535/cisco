@@ -8,14 +8,19 @@ Copyright (C) 2012 Potix Corporation. All Rights Reserved.
 */
 package com.cisco.main.services.authentication;
 
+import com.cisco.authentication.DefaultUserInfoService;
+import com.cisco.authentication.User;
+import com.cisco.authentication.UserCredential;
+import com.cisco.authentication.UserInfoService;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 
 import java.io.Serializable;
 
+
 public class DefaultAuthenticationService implements AuthenticationService,Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	UserInfoService userInfoService = new DefaultUserInfoService();
 
 	@Override

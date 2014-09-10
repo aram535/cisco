@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Restrictions.or;
 
 /**
  * Created by Alf on 05.04.14.
@@ -24,31 +23,51 @@ import static org.hibernate.criterion.Restrictions.or;
 @Repository
 public class HibernatePreposesDao implements PreposesDao {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Transactional(propagation = Propagation.REQUIRED)
+   /* @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public List<Prepos> getPreposes(Prepos.Status... statuses) {
+    public List<Prepos> getPreposes() {
         Session currentSession = sessionFactory.getCurrentSession();
-        Criteria criteria = createStatusesCriteria(currentSession, statuses);
+        List<Prepos> preposesList = currentSession.createCriteria(Prepos.class).list();
 
-        List<Prepos> preposesList = criteria.list();
-
-        logger.info("{} preposes fetched from DB", preposesList.size());
+	    logger.info("{} preposes fetched from DB", preposesList.size());
         return preposesList;
-    }
+    }*/
 
-    @Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED)
+	@Override
+	public List<Prepos> getPreposes(Prepos.Status... statuses) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		Criteria criteria = currentSession.createCriteria(Prepos.class);
+
+		if(!isEmpty(statuses)) {
+			Criterion[] statusesCriterions = new Criterion[statuses.length];
+
+			for (int i = 0; i < statuses.length; i++) {
+				statusesCriterions[i] = Restrictions.eq("status", statuses[i]);
+			}
+
+			criteria.add(Restrictions.or(statusesCriterions));
+		}
+
+		List<Prepos> preposesList = criteria.list();
+
+		logger.info("{} preposes fetched from DB", preposesList.size());
+		return preposesList;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(Prepos prepos) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.save(prepos);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void save(List<Prepos> preposList) {
         Session currentSession = sessionFactory.getCurrentSession();
@@ -73,24 +92,11 @@ public class HibernatePreposesDao implements PreposesDao {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+
+	@Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void delete(Prepos prepos) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.delete(prepos);
-    }
-
-
-    private Criteria createStatusesCriteria(Session currentSession, Prepos.Status[] statuses) {
-        Criteria criteria = currentSession.createCriteria(Prepos.class);
-
-        if (!isEmpty(statuses)) {
-            Criterion[] statusesCriterions = new Criterion[statuses.length];
-            for (int i = 0; i < statuses.length; i++) {
-                statusesCriterions[i] = eq("status", statuses[i]);
-            }
-            criteria.add(or(statusesCriterions));
-        }
-        return criteria;
     }
 }

@@ -6,6 +6,7 @@ import com.cisco.darts.service.DartsFilter;
 import com.cisco.darts.service.DartsRestrictions;
 import com.cisco.darts.service.DartsService;
 import com.cisco.exception.CiscoException;
+import com.cisco.utils.MessageUtils;
 import com.google.common.collect.Lists;
 import org.springframework.util.CollectionUtils;
 import org.zkoss.bind.annotation.Command;
@@ -17,7 +18,6 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.spring.DelegatingVariableResolver;
-import org.zkoss.zul.Messagebox;
 
 import java.io.InputStream;
 import java.util.List;
@@ -93,7 +93,7 @@ public class DartsViewModel {
 
 		    return filteredDarts;
 	    } catch (Exception e) {
-		    Messagebox.show(e.getMessage(), null, 0, Messagebox.ERROR);
+		    MessageUtils.showErrorMessage(e);
 		    return Lists.newArrayList();
 	    }
     }

@@ -119,7 +119,7 @@ public class DefaultFieldsExtractorTest {
         when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_STRING);
         when(cell.getStringCellValue()).thenReturn(expectedResult);
 
-        Timestamp result = fieldsExtractor.extractTimestamp(row, 1);
+        Timestamp result = fieldsExtractor.extractTimestampUS(row, 1);
         DateTime dateTime = new DateTime(2014, 3, 28, 0, 0, 0);
         assertThat(result).isEqualTo(new Timestamp(dateTime.getMillis()));
     }
@@ -129,7 +129,7 @@ public class DefaultFieldsExtractorTest {
         when(row.getCell(anyInt(), eq(Row.CREATE_NULL_AS_BLANK))).thenReturn(cell);
 	    when(cell.getCellType()).thenReturn(Cell.CELL_TYPE_BLANK);
 
-        Timestamp result = fieldsExtractor.extractTimestamp(row, 1);
+        Timestamp result = fieldsExtractor.extractTimestampUS(row, 1);
         assertThat(result).isNull();
     }
 

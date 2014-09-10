@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
  * Time: 21:25
  */
 @Configuration
-@PropertySource("classpath:prepos.properties")
+@PropertySource({"classpath:prepos.properties", "classpath:authentication.properties"})
 @ComponentScan(basePackages = {"com.cisco"})
 public class AppConfig {
 
