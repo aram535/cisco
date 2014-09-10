@@ -111,7 +111,7 @@ public class SheetHandler extends DefaultHandler {
         }
 
         if (column.equals(GPL_COLUMN)) {
-            double gpl = getGpl(column, value);
+            double gpl = getRoundedDouble(getGpl(column, value));
             pricelist.setGpl(gpl);
             return pricelist;
         }

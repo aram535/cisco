@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 
+
 @Component("totalSumCounter")
 public class DefaultTotalSumCounter implements TotalSumCounter {
 

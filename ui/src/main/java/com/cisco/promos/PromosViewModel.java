@@ -3,6 +3,8 @@ package com.cisco.promos;
 import com.cisco.exception.CiscoException;
 import com.cisco.promos.dto.Promo;
 import com.cisco.promos.excel.PromosImporter;
+import com.cisco.promos.service.PromosFilter;
+import com.cisco.promos.service.PromosRestrictions;
 import com.cisco.promos.service.PromosService;
 import com.cisco.utils.MessageUtils;
 import com.google.common.collect.Lists;
@@ -26,7 +28,8 @@ import java.util.List;
 @VariableResolver(DelegatingVariableResolver.class)
 public class PromosViewModel {
 
-    private static final String ALL_PROMOS_CHANGE = "allPromos";
+	private static final String FILTER_CHANGED_COMMAND = "filterChanged";
+    private static final String ALL_PROMOS_NOTIFY = "allPromos";
     private static final String SELECTED_EVENT_CHANGE = "selectedEvent";
 
     private Promo selectedPromoModel;
@@ -38,9 +41,23 @@ public class PromosViewModel {
     @WireVariable
     private PromosImporter promosImporter;
 
-    private List<Promo> promoList;
+	private PromosRestrictions promosRestrictions = new PromosRestrictions();
 
-    public Promo getSelectedPromoModel() {
+	@WireVariable
+	private PromosFilter promosFilter;
+
+    private List<Promo> promoList;
+	private List<Promo> filteredPromos;
+
+	public PromosRestrictions getPromosRestrictions() {
+		return promosRestrictions;
+	}
+
+	public void setPromosRestrictions(PromosRestrictions promosRestrictions) {
+		this.promosRestrictions = promosRestrictions;
+	}
+
+	public Promo getSelectedPromoModel() {
         return selectedPromoModel;
     }
 
@@ -62,7 +79,9 @@ public class PromosViewModel {
 
     public List<Promo> getAllPromos() {
 	    try {
-		    return promosService.getPromos();
+		    promoList = promosService.getPromos();
+		    filteredPromos = promosFilter.filter(promoList, promosRestrictions);
+		    return filteredPromos;
 	    } catch (Exception e) {
 		    MessageUtils.showErrorMessage(e);
 		    return Lists.newArrayList();
@@ -70,20 +89,20 @@ public class PromosViewModel {
     }
 
     @Command("add")
-    @NotifyChange(ALL_PROMOS_CHANGE)
+    @NotifyChange(ALL_PROMOS_NOTIFY)
     public void add() {
         promosService.save(newPromoModel);
         this.newPromoModel = new Promo();
     }
 
     @Command("update")
-    @NotifyChange(ALL_PROMOS_CHANGE)
+    @NotifyChange(ALL_PROMOS_NOTIFY)
     public void update() {
         promosService.update(selectedPromoModel);
     }
 
     @Command("delete")
-    @NotifyChange({ALL_PROMOS_CHANGE, SELECTED_EVENT_CHANGE})
+    @NotifyChange({ALL_PROMOS_NOTIFY, SELECTED_EVENT_CHANGE})
     public void delete() {
 
         if (selectedPromoModel != null) {
@@ -93,7 +112,7 @@ public class PromosViewModel {
     }
 
 	@Command("deleteAll")
-	@NotifyChange({ALL_PROMOS_CHANGE, SELECTED_EVENT_CHANGE})
+	@NotifyChange({ALL_PROMOS_NOTIFY, SELECTED_EVENT_CHANGE})
 	public void deleteAll() {
 
 		try {
@@ -105,7 +124,7 @@ public class PromosViewModel {
 	}
 
     @Command
-    @NotifyChange({ALL_PROMOS_CHANGE})
+    @NotifyChange({ALL_PROMOS_NOTIFY})
     public void importPromos(@ContextParam(ContextType.TRIGGER_EVENT) final UploadEvent event) {
 
 	    Media media = event.getMedia();
@@ -116,6 +135,12 @@ public class PromosViewModel {
 		    throw new CiscoException("media is not binary");
 	    }
     }
+
+	@Command(FILTER_CHANGED_COMMAND)
+	@NotifyChange(ALL_PROMOS_NOTIFY)
+	public void filterChanged() {
+
+	}
 
     void setPromosImporter(PromosImporter promosImporter) {
         this.promosImporter = promosImporter;

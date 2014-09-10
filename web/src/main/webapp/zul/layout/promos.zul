@@ -3,6 +3,21 @@
         viewModel="@id('vm') @init('com.cisco.promos.PromosViewModel')"
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
     <listbox id="box" multiple="true" mold="paging"  pageSize="100" model="@bind(vm.allPromos)" selectedItem="@bind(vm.selectedPromoModel)" sizedByContent="true" vflex="90%" span="true">
+        <auxhead sclass="category-center">
+            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vm.promosRestrictions.partNumber)" onChange="@command('filterChanged')"/>
+            </auxheader>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+        </auxhead>
         <listhead sizable="true">
             <listheader hflex="min" label="Id" sort="auto(id)"/>
             <listheader hflex="2" label="Part nubmer" sort="auto(partNumber)"/>

@@ -4,6 +4,17 @@
         validationMessages="@id('vmsgs')" vflex="1" hflex="1">
     <listbox id="box" multiple="true" model="@bind(vm.allPricelists)"
              selectedItem="@bind(vm.selectedPricelistModel)" vflex="95%" mold="paging" pageSize="100">
+        <auxhead sclass="category-center">
+            <auxheader colspan="1"/>
+            <auxheader colspan="1">
+                <textbox hflex="100%" instant="true"
+                         value="@bind(vm.pricelistRestrictions.partNumber)" onChange="@command('filterChanged')"/>
+            </auxheader>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+            <auxheader colspan="1"/>
+        </auxhead>
         <listhead sizable="true">
             <listheader hflex="min" label="Id" sort="auto(id)"/>
             <listheader hflex="1" label="Part number" sort="auto(partNumber)"/>

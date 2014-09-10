@@ -71,6 +71,7 @@ public class ClientsViewModel {
             allClients = clientsService.getClients();
             filteredClients = clientFilter.filter(allClients, clientRestrictions);
             return filteredClients;
+
         } catch (Exception e) {
 	        MessageUtils.showErrorMessage(e);
             return Lists.newArrayList();
@@ -115,6 +116,6 @@ public class ClientsViewModel {
     @Command(FILTER_CHANGED_COMMAND)
     @NotifyChange(ALL_CLIENTS_NOTIFY)
     public void filterChanged() {
-        filteredClients = clientFilter.filter(allClients, clientRestrictions);
+
     }
 }

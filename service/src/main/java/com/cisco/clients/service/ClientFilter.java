@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ClientFilter {
 
-	List<Client> filter(List<Client> preposes, ClientRestrictions preposRestrictions);
+	List<Client> filter(List<Client> clients, ClientRestrictions clientsRestrictions);
 }

@@ -31,7 +31,7 @@ public class DefaultDartApplier implements DartApplier {
     private double threshold;
 
     @Override
-    public Prepos getPrepos(Prepos inputPrepos, Dart selectedDart, Map<String, Pricelist> pricelistsMap, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap) {
+    public Prepos  getPrepos(Prepos inputPrepos, Dart selectedDart, Map<String, Pricelist> pricelistsMap, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap) {
 
         PreposBuilder preposBuilder = builder().prepos(inputPrepos);
 

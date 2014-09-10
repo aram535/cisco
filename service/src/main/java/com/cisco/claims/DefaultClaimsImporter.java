@@ -26,6 +26,7 @@ import static com.cisco.prepos.dto.Prepos.Status.WAIT;
 /**
  * Created by Alf on 05.07.2014.
  */
+
 @Component("claimsImporter")
 public class DefaultClaimsImporter implements ClaimsImporter {
 

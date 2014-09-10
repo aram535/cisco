@@ -19,10 +19,10 @@ import java.util.List;
 public class DefaultClientFilter implements ClientFilter {
 
 	@Override
-	public List<Client> filter(List<Client> clients, ClientRestrictions clientRestrictions) {
+	public List<Client> filter(List<Client> clients, ClientRestrictions clientsRestrictions) {
 
-		Predicate<Client> partnerNamePredicate = getPartnerNamePredicate(clientRestrictions.getPartnerName());
-		Predicate<Client> clientNumberPredicate = getClientNumberPredicate(clientRestrictions.getClientNumber());
+		Predicate<Client> partnerNamePredicate = getPartnerNamePredicate(clientsRestrictions.getPartnerName());
+		Predicate<Client> clientNumberPredicate = getClientNumberPredicate(clientsRestrictions.getClientNumber());
 
 		Collection<Client> filteredClients = Collections2.filter(clients, Predicates.and(partnerNamePredicate, clientNumberPredicate));
 

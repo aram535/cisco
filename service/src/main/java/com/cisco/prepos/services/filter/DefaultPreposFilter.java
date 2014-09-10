@@ -24,6 +24,7 @@ import java.util.List;
 /**
  * Any operations on output list elements affect elements of input list
  */
+
 @Component("preposFilter")
 public class DefaultPreposFilter implements PreposFilter {
 

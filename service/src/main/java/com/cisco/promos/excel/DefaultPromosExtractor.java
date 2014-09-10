@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.cisco.prepos.services.discount.utils.DiscountPartCounter.getRoundedDouble;
 import static com.cisco.promos.dto.PromoBuilder.newPromoBuilder;
 
 /**
@@ -65,9 +66,9 @@ public class DefaultPromosExtractor implements PromosExtractor {
                 double discount = calculateDiscount(row);
 
                 String name = fieldsExtractor.extractStringValue(row, NAME_COLUMN);
-                int gpl = (int) fieldsExtractor.extractNumericValue(row, GPL_COLUMN);
+	            double gpl = getRoundedDouble(fieldsExtractor.extractNumericValue(row, GPL_COLUMN));
                 String code = fieldsExtractor.extractStringValue(row, CODE_COLUMN);
-                double claimPerUnit = fieldsExtractor.extractDoubleValue(row, CLAIM_PER_UNIT_COLUMN);
+                double claimPerUnit = getRoundedDouble(fieldsExtractor.extractDoubleValue(row, CLAIM_PER_UNIT_COLUMN));
                 int version = (int) fieldsExtractor.extractNumericValue(row, VERSION_COLUMN);
 	            Timestamp endDate = fieldsExtractor.extractTimestampEU(row, END_DATE_COLUMN);
 

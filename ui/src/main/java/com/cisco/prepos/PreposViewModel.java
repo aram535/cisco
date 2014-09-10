@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.cisco.prepos.dto.Prepos.Status.*;
 import static com.google.common.collect.Lists.newArrayList;
@@ -70,7 +71,7 @@ public class PreposViewModel {
             newArrayList(ALL_STATUS, NOT_POS.getName(), WAIT.getName(), POS_OK.getName(),
                     CBN.getName(), CANCEL.getName());
 
-    private String selectedStatus = ALL_STATUS;
+    private String selectedStatus = NOT_POS.getName();
     private String statusToChange = CBN.toString();
 	private boolean checkAll = false;
 
@@ -346,15 +347,22 @@ public class PreposViewModel {
     }
 
     private void refreshAndFilterPreposes() {
+	    Set<Long> checkedPreposesIds = checkedPreposMap.keySet();
 
-        if (!selectedStatus.equals(ALL_STATUS)) {
+	    if (!selectedStatus.equals(ALL_STATUS)) {
             Prepos.Status status = Prepos.Status.valueOf(selectedStatus);
             preposes = preposService.getAllData(status);
         } else {
             preposes = preposService.getAllData();
         }
         filteredPreposes = preposFilter.filter(preposes, preposRestrictions);
+	    checkPreposes(checkedPreposesIds);
     }
+
+	@NotifyChange()
+	private void checkPreposes(Set<Long> checkedPreposesIds) {
+
+	}
 
 	//Confirmation stuff
 	private String actionMessage;
