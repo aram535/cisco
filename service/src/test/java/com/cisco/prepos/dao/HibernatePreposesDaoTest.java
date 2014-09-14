@@ -48,13 +48,6 @@ public class HibernatePreposesDaoTest extends BasicDb {
 
     @Test
     @DataSet("preposes.xml")
-    @ExpectedDataSet("prepos-test.xml")
-    public void thatGetsOnlyNotPosPreposesFromDb() throws Exception {
-        preposesDao.getPreposes(NOT_POS);
-    }
-
-    @Test
-    @DataSet("preposes.xml")
     @ExpectedDataSet("preposes-save-result.xml")
     public void thatSaveAddsDataToPrepossDb() throws Exception {
         Prepos prepos = createNewPrepos();
