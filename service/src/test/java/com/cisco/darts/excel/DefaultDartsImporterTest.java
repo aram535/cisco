@@ -2,169 +2,179 @@ package com.cisco.darts.excel;
 
 
 import com.cisco.darts.dto.Dart;
-import com.cisco.darts.dto.DartAssistant;
 import com.cisco.darts.service.DartsService;
 import com.cisco.exception.CiscoException;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.cisco.darts.dto.DartAssistant.dartsToTable;
 import static com.cisco.darts.dto.DartBuilder.builder;
 import static com.cisco.testtools.TestObjects.DartsFactory.newDart;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultDartsImporterTest {
 
-	@InjectMocks
-	private DefaultDartsImporter defaultDartsImporter;
+    public static final String SECOND_CISCO_SKU = "CiscoSku2";
+    @InjectMocks
+    private DefaultDartsImporter defaultDartsImporter;
 
-	@Mock
-	private DartsExtractor dartsExtractor;
+    @Mock
+    private DartsExtractor dartsExtractor;
 
-	@Mock
-	private DartsService dartsService;
+    @Mock
+    private DartsService dartsService;
 
-	@Mock
-	private InputStream inputStream;
+    @Mock
+    private InputStream inputStream;
 
-	@Test(expected = CiscoException.class)
-	public void thatImportDartsThrowsCiscoExceptionIfExportedDataIsEmptyOrNull() {
+    @Test(expected = CiscoException.class)
+    public void thatImportDartsThrowsCiscoExceptionIfExportedDataIsEmptyOrNull() {
 
-		when(dartsExtractor.extract(inputStream)).thenReturn(null);
+        when(dartsExtractor.extract(inputStream)).thenReturn(null);
 
-		defaultDartsImporter.importDarts(inputStream);
-	}
+        defaultDartsImporter.importDarts(inputStream);
+    }
 
-	@Test
-	public void thatImportedDartsContainNoClones() {
-		when(dartsExtractor.extract(inputStream)).thenReturn(createExpectedDartsWithClones());
-		defaultDartsImporter.importDarts(inputStream);
+    @Test
+    public void thatImportedDartsContainNoClones() {
+        when(dartsService.getDartsTable()).thenReturn(HashBasedTable.<String, String, Dart>create());
+        when(dartsExtractor.extract(inputStream)).thenReturn(createExpectedDartsWithClones());
+        defaultDartsImporter.importDarts(inputStream);
 
-		verify(dartsService).saveAll(createExpectedDarts());
-	}
+        verify(dartsService).saveAll(createExpectedDarts());
+    }
 
-	@Test
-	public void importedDartsWithNewVersionReplaceExistingDarts() {
-		when(dartsExtractor.extract(inputStream)).thenReturn(dartsWithNewVersionWithSameQuantity());
-		when(dartsService.getDartsTable()).thenReturn(DartAssistant.dartsToTable(existingDarts()));
-		defaultDartsImporter.importDarts(inputStream);
+    @Test
+    public void importedSameDartsWithSameVersionMakeNoChanges() {
+        when(dartsExtractor.extract(inputStream)).thenReturn(dartsWithSameVersionWithSameQuantity());
+        when(dartsService.getDartsTable()).thenReturn(dartsToTable(existingDarts()));
+        defaultDartsImporter.importDarts(inputStream);
 
-		ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-		verify(dartsService).delete(argument.capture());
+        verify(dartsService).update(getEmptyDarts());
+        verify(dartsService).saveAll(getEmptyDarts());
+    }
 
-		List<Dart> acctualDarts = argument.getValue();
-		assertTrue(acctualDarts.containsAll(existingDarts()));
+    private ArrayList<Dart> getEmptyDarts() {
+        return Lists.newArrayList();
+    }
 
-		verify(dartsService).saveAll(dartsWithNewVersionWithSameQuantity());
-	}
+    @Test
+    public void ifCompletelyNewDartsIsImportedNoExistingWereDeleted() {
+        List<Dart> completelyNewDarts = completelyNewDarts();
+        when(dartsExtractor.extract(inputStream)).thenReturn(completelyNewDarts);
+        when(dartsService.getDartsTable()).thenReturn(dartsToTable(createExpectedDarts()));
 
-	@Test
-	public void ifCompletlyNewDartsIsImportedNoExisitingIsDeleted() {
-		when(dartsExtractor.extract(inputStream)).thenReturn(dartsWithNewVersionWithDifferentQuantity());
-		when(dartsService.getDartsTable()).thenReturn(DartAssistant.dartsToTable(createExpectedDarts()));
+        defaultDartsImporter.importDarts(inputStream);
 
-		defaultDartsImporter.importDarts(inputStream);
+        verify(dartsService).saveAll(completelyNewDarts);
+        verify(dartsService).update(getEmptyDarts());
+    }
 
-		verify(dartsService, never()).delete(Matchers.<List<Dart>>any());
-		verify(dartsService).saveAll(dartsWithNewVersionWithDifferentQuantity());
-	}
+    @Test
+    public void quantityIsRecountedCorrectlyWhenDartsWithNewVersionImported() {
+        when(dartsExtractor.extract(inputStream)).thenReturn(dartsWithNewVersionWithDifferentQuantity());
+        when(dartsService.getDartsTable()).thenReturn(dartsToTable(existingDarts()));
+        defaultDartsImporter.importDarts(inputStream);
 
-	@Test
-	public void quantityIsRecountedCorrectlyWhenDartsWithNewVersionImported() {
-		when(dartsExtractor.extract(inputStream)).thenReturn(dartsWithNewVersionWithDifferentQuantity());
-		when(dartsService.getDartsTable()).thenReturn(DartAssistant.dartsToTable(existingDarts()));
-		defaultDartsImporter.importDarts(inputStream);
+        List<Dart> existingDarts = existingDarts();
+        List<Dart> importedDarts = dartsWithNewVersionWithDifferentQuantity();
 
-		List<Dart> existingDarts = existingDarts();
-		List<Dart> importedDarts = dartsWithNewVersionWithDifferentQuantity();
+        Dart firstDart = importedDarts.get(0);
+        Dart existingFirstDart = existingDarts.get(0);
+        int recountedQuantity = existingFirstDart.getQuantity() + (firstDart.getQuantityInitial() - existingFirstDart.getQuantityInitial());
+        firstDart.setQuantity(recountedQuantity);
 
-		Dart firstDart = importedDarts.get(0);
-		firstDart.setQuantity(existingDarts.get(0).getQuantity() + (firstDart.getQuantityInitial() - existingDarts.get(0).getQuantityInitial()));
+        verify(dartsService).update(importedDarts);
+        verify(dartsService).saveAll(getEmptyDarts());
+    }
 
-		ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
-		verify(dartsService).delete(argument.capture());
+    private List<Dart> createExpectedDartsWithClones() {
 
-		List<Dart> acctualDarts = argument.getValue();
-		assertTrue(acctualDarts.containsAll(existingDarts));
+        List<Dart> darts = createExpectedDarts();
+        List<Dart> dartsClone = createExpectedDarts();
 
-		verify(dartsService).saveAll(importedDarts);
-	}
+        darts.addAll(dartsClone);
 
-	private List<Dart> createExpectedDartsWithClones() {
+        return darts;
+    }
 
-		List<Dart> darts = createExpectedDarts();
-		List<Dart> dartsClone = createExpectedDarts();
+    private List<Dart> createExpectedDarts() {
 
-		darts.addAll(dartsClone);
+        long startDateMillis = new DateTime(2014, 3, 28, 0, 0, 0, 0).getMillis();
+        long endDateMillis = new DateTime(2014, 7, 26, 0, 0, 0, 0).getMillis();
 
-		return darts;
-	}
+        Timestamp startDate = new Timestamp(startDateMillis);
+        Timestamp endDate = new Timestamp(endDateMillis);
 
-	private List<Dart> createExpectedDarts() {
+        Dart firstDart = builder().setAuthorizationNumber("MDMF-4526117-1403").setVersion(1)
+                .setDistributorInfo("ERC").setStartDate(startDate).setEndDate(endDate).setDistiDiscount(0.57)
+                .setResellerName("JSC NVISION-UKRAINE").setResellerCountry("UKRAINE").setResellerAcct(0)
+                .setEndUserName("BRISTOL HOTEL").setEndUserCountry("UKRAINE").setQuantity(1).setCiscoSku("ACS-1900-RM-19=")
+                .setListPrice(100).setClaimUnit(15).setExtCreditAmt(15).setDistiSku("")
+                .setFastTrackPie(0).setIpNgnPartnerPricingEm(0).setMdmFulfillment(15.00).build();
 
-		long startDateMillis = new DateTime(2014, 3, 28, 0, 0, 0, 0).getMillis();
-		long endDateMillis = new DateTime(2014, 7, 26, 0, 0, 0, 0).getMillis();
+        Dart secondDart = builder(firstDart).setQuantity(4).setCiscoSku("EHWIC-1GE-SFP-CU=").setListPrice(799).
+                setClaimUnit(119.85).setExtCreditAmt(479.4).setFastTrackPie(0).setIpNgnPartnerPricingEm(0).
+                setMdmFulfillment(119.85).build();
 
-		Timestamp startDate = new Timestamp(startDateMillis);
-		Timestamp endDate = new Timestamp(endDateMillis);
+        return newArrayList(firstDart, secondDart);
+    }
 
-		Dart firstDart = builder().setAuthorizationNumber("MDMF-4526117-1403").setVersion(1)
-				.setDistributorInfo("ERC").setStartDate(startDate).setEndDate(endDate).setDistiDiscount(0.57)
-				.setResellerName("JSC NVISION-UKRAINE").setResellerCountry("UKRAINE").setResellerAcct(0)
-				.setEndUserName("BRISTOL HOTEL").setEndUserCountry("UKRAINE").setQuantity(1).setCiscoSku("ACS-1900-RM-19=")
-				.setListPrice(100).setClaimUnit(15).setExtCreditAmt(15).setDistiSku("")
-				.setFastTrackPie(0).setIpNgnPartnerPricingEm(0).setMdmFulfillment(15.00).build();
+    private List<Dart> existingDarts() {
 
-		Dart secondDart = builder(firstDart).setQuantity(4).setCiscoSku("EHWIC-1GE-SFP-CU=").setListPrice(799).
-				setClaimUnit(119.85).setExtCreditAmt(479.4).setFastTrackPie(0).setIpNgnPartnerPricingEm(0).
-				setMdmFulfillment(119.85).build();
+        Dart firstDart = newDart();
+        firstDart.setQuantity(1);
 
-		return Lists.newArrayList(firstDart, secondDart);
-	}
+        Dart secondDart = newDart();
+        secondDart.setCiscoSku(SECOND_CISCO_SKU);
 
-	private List<Dart> existingDarts() {
+        return newArrayList(firstDart, secondDart);
+    }
 
-		Dart firstDart = newDart();
-		firstDart.setQuantity(1);
+    private List<Dart> dartsWithSameVersionWithSameQuantity() {
 
-		Dart secondDart = newDart();
-		secondDart.setCiscoSku("CiscoSku2");
+        Dart firstDart = newDart();
 
-		return Lists.newArrayList(firstDart, secondDart);
-	}
+        Dart secondDart = newDart();
+        secondDart.setCiscoSku(SECOND_CISCO_SKU);
 
-	private List<Dart> dartsWithNewVersionWithSameQuantity() {
+        return newArrayList(firstDart, secondDart);
+    }
 
-		Dart firstDart = newDart();
+    private List<Dart> dartsWithNewVersionWithDifferentQuantity() {
 
-		Dart secondDart = newDart();
-		secondDart.setCiscoSku("CiscoSku2");
+        Dart firstDart = newDart();
+        firstDart.setVersion(firstDart.getVersion() + 1);
+        firstDart.setQuantityInitial(10);
 
-		return Lists.newArrayList(firstDart, secondDart);
-	}
+        Dart secondDart = newDart();
+        secondDart.setVersion(secondDart.getVersion() + 1);
+        secondDart.setCiscoSku(SECOND_CISCO_SKU);
 
-	private List<Dart> dartsWithNewVersionWithDifferentQuantity() {
+        return newArrayList(firstDart, secondDart);
+    }
 
-		Dart firstDart = newDart();
-		firstDart.setVersion(firstDart.getVersion() + 1);
-		firstDart.setQuantityInitial(10);
+    private List<Dart> completelyNewDarts() {
+        Dart firstDart = newDart();
+        firstDart.setCiscoSku("Other sku 1");
 
-		Dart secondDart = newDart();
-		secondDart.setVersion(secondDart.getVersion() + 1);
-		secondDart.setCiscoSku("CiscoSku2");
+        Dart secondDart = newDart();
+        secondDart.setCiscoSku("Other sku 2");
 
-		return Lists.newArrayList(firstDart, secondDart);
-	}
+        return newArrayList(firstDart, secondDart);
+    }
 }

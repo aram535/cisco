@@ -10,18 +10,19 @@ import java.util.List;
  */
 public interface DartsDao {
 
-	List<Dart> getDarts();
-	void save(Dart dart);
+    List<Dart> getDarts();
 
-	void update(Dart dart);
+    void save(Dart dart);
 
-	void update(Collection<Dart> darts);
+    void update(Dart dart);
 
-	void delete(Dart dart);
+    void update(Collection<Dart> darts);
 
-	void delete(List<Dart> dart);
+    void delete(Dart dart);
 
-	int deleteAll();
+    void delete(List<Dart> dart);
 
-	void saveAll(List<Dart> darts);
+    int deleteAll();
+
+    void saveAll(List<Dart> darts);
 }

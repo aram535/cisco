@@ -1,22 +1,27 @@
 package com.cisco.darts.excel;
 
 import com.cisco.darts.dto.Dart;
-import com.cisco.darts.dto.DartAssistant;
+import com.cisco.darts.dto.DartBuilder;
 import com.cisco.darts.service.DartsService;
 import com.cisco.exception.CiscoException;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import static com.cisco.darts.dto.DartAssistant.dartsToTable;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.apache.commons.lang3.tuple.Pair.of;
+import static org.springframework.util.CollectionUtils.isEmpty;
+
+;
 
 /**
  * Created by Alf on 20.05.2014.
@@ -27,8 +32,8 @@ public class DefaultDartsImporter implements DartsImporter {
     @Autowired
     private DartsExtractor dartsExtractor;
 
-	@Autowired
-	private DartsService dartsService;
+    @Autowired
+    private DartsService dartsService;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -36,47 +41,44 @@ public class DefaultDartsImporter implements DartsImporter {
 
         List<Dart> darts = dartsExtractor.extract(inputStream);
 
-        if (CollectionUtils.isEmpty(darts)) {
+        if (isEmpty(darts)) {
             throw new CiscoException("Exported from excel dart are null or empty. Please, check file.");
         }
 
-	    Set<Dart> uniqueDarts = Sets.newLinkedHashSet(darts);
+        Set<Dart> uniqueDarts = newHashSet(darts);
 
-	    Table<String, String, Dart> existingDartsTable = dartsService.getDartsTable();
-	    Table<String, String, Dart> newDartsTable = DartAssistant.dartsToTable(uniqueDarts);
+        Table<String, String, Dart> existingDartsTable = dartsService.getDartsTable();
+        Table<String, String, Dart> newDartsTable = dartsToTable(uniqueDarts);
 
-	    if (existingDartsTable != null) {
-
-		    List<Dart> dartsToDelete = findUnrelevantDartsAndRecountNewOnes(existingDartsTable, newDartsTable);
-		    if(!dartsToDelete.isEmpty()) {
-			    dartsService.delete(dartsToDelete);
-		    }
-	    }
-
-	    dartsService.saveAll(Lists.newArrayList(uniqueDarts));
+        Pair<List<Dart>, List<Dart>> recountedAndNewDarts = recountedAndNewDarts(existingDartsTable, newDartsTable);
+        dartsService.update(recountedAndNewDarts.getLeft());
+        dartsService.saveAll(recountedAndNewDarts.getRight());
     }
 
-	private List<Dart> findUnrelevantDartsAndRecountNewOnes(Table<String, String, Dart> existingDartsTable, Table<String, String, Dart> newDartsTable) {
-		List<Dart> dartsToDelete = Lists.newLinkedList();
+    private Pair<List<Dart>, List<Dart>> recountedAndNewDarts(Table<String, String, Dart> existingDartsTable, Table<String, String, Dart> newDartsTable) {
+        List<Dart> recountedDarts = Lists.newArrayList();
+        List<Dart> newDarts = Lists.newArrayList();
+        for (Dart newDart : newDartsTable.values()) {
+            Dart existingDart = existingDartsTable.get(newDart.getCiscoSku(), newDart.getAuthorizationNumber());
+            if (existingDart == null) {
+                newDarts.add(newDart);
+            } else if (shouldBeRecounted(existingDart, newDart)) {
+                Dart recountedDart = recountDart(existingDart, newDart);
+                recountedDarts.add(recountedDart);
+            }
+        }
+        return of(recountedDarts, newDarts);
+    }
 
-		for (String authNumber : newDartsTable.columnKeySet()) {
-			Map<String, Dart> newDartsMap = newDartsTable.column(authNumber);
-			Map<String, Dart> existingDartsMap = existingDartsTable.column(authNumber);
+    private Dart recountDart(Dart existingDart, Dart newDart) {
+        int initialQuantityDelta = newDart.getQuantityInitial() - existingDart.getQuantityInitial();
+        int quantity = existingDart.getQuantity() + initialQuantityDelta;
+        Dart recountedDart = DartBuilder.builder(newDart).setQuantity(quantity).build();
+        return recountedDart;
+    }
 
-			if(existingDartsMap != null) {
-				for (Dart newDart : newDartsMap.values()) {
-					Dart exisitingDart = existingDartsMap.get(newDart.getCiscoSku());
-					if(exisitingDart != null && newDart.getVersion() > exisitingDart.getVersion()) {
-						//recount new dart quantity respecting quantity of corresponding dart with older version
-						int quantity = exisitingDart.getQuantity() + (newDart.getQuantityInitial() - exisitingDart.getQuantityInitial());
-						newDart.setQuantity(quantity);
-					}
-				}
-			}
-			dartsToDelete.addAll(existingDartsMap.values());
-		}
-
-		return dartsToDelete;
-	}
+    private boolean shouldBeRecounted(Dart existingDart, Dart newDart) {
+        return newDart.getVersion() > existingDart.getVersion();
+    }
 
 }

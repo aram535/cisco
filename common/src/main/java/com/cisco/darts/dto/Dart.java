@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -16,7 +17,7 @@ import java.sql.Timestamp;
 @IdClass(Dart.DartId.class)
 public class Dart {
 
-	private long id;
+    private long id;
     private String authorizationNumber;
     private int version;
     private String distributorInfo;
@@ -29,7 +30,7 @@ public class Dart {
     private String endUserName;
     private String endUserCountry;
     private int quantity;
-	private int quantityInitial;
+    private int quantityInitial;
     private String ciscoSku;
     private String distiSku;
     private double listPrice;
@@ -39,7 +40,7 @@ public class Dart {
     private double ipNgnPartnerPricingEm;
     private double mdmFulfillment;
 
-	public Dart(long id, String authorizationNumber, int version, String distributorInfo, Timestamp startDate, Timestamp endDate,
+    public Dart(long id, String authorizationNumber, int version, String distributorInfo, Timestamp startDate, Timestamp endDate,
                 double distiDiscount, String resellerName, String resellerCountry, int resellerAcct, String endUserName,
                 String endUserCountry, int quantity, int quantityInitial, String ciscoSku, String distiSku, double listPrice,
                 double claimUnit, double extCreditAmt, double fastTrackPie, double ipNgnPartnerPricingEm,
@@ -57,7 +58,7 @@ public class Dart {
         this.endUserName = endUserName;
         this.endUserCountry = endUserCountry;
         this.quantity = quantity;
-	    this.quantityInitial = quantityInitial;
+        this.quantityInitial = quantityInitial;
         this.ciscoSku = ciscoSku;
         this.distiSku = distiSku;
         this.listPrice = listPrice;
@@ -68,25 +69,25 @@ public class Dart {
         this.mdmFulfillment = mdmFulfillment;
     }
 
-	public Dart(String authorizationNumber, String endUserName) {
-		this.authorizationNumber = authorizationNumber;
-		this.endUserName = endUserName;
-	}
+    public Dart(String authorizationNumber, String endUserName) {
+        this.authorizationNumber = authorizationNumber;
+        this.endUserName = endUserName;
+    }
 
     public Dart() {
 
     }
 
-	@Id
-	@AttributeOverrides({
-			@AttributeOverride(name = "ciscoSku",
-					column = @Column(name="reseller_name")),
-			@AttributeOverride(name = "authorizationNumber",
-					column = @Column(name="cisko_sku"))
-	})
+    @Id
+    @AttributeOverrides({
+            @AttributeOverride(name = "ciscoSku",
+                    column = @Column(name = "reseller_name")),
+            @AttributeOverride(name = "authorizationNumber",
+                    column = @Column(name = "cisko_sku"))
+    })
 
-	//@Id
-	@Column(name = "id")
+    //@Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public long getId() {
         return id;
@@ -122,7 +123,7 @@ public class Dart {
         return distiDiscount;
     }
 
-	@NaturalId
+    @NaturalId
     @Column(name = "reseller_name")
     public String getResellerName() {
         return resellerName;
@@ -153,13 +154,13 @@ public class Dart {
         return quantity;
     }
 
-	@Column(name = "quantity_initial")
-	public int getQuantityInitial() {
-		return quantityInitial;
-	}
+    @Column(name = "quantity_initial")
+    public int getQuantityInitial() {
+        return quantityInitial;
+    }
 
-	@NaturalId
-	@Column(name = "cisco_sku")
+    @NaturalId
+    @Column(name = "cisco_sku")
     public String getCiscoSku() {
         return ciscoSku;
     }
@@ -251,11 +252,11 @@ public class Dart {
         this.quantity = quantity;
     }
 
-	public void setQuantityInitial(int quantityInitial) {
-		this.quantityInitial = quantityInitial;
-	}
+    public void setQuantityInitial(int quantityInitial) {
+        this.quantityInitial = quantityInitial;
+    }
 
-	public void setCiscoSku(String ciscoSku) {
+    public void setCiscoSku(String ciscoSku) {
         this.ciscoSku = ciscoSku;
     }
 
@@ -288,142 +289,152 @@ public class Dart {
     }
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (obj == this) {
-			return true;
-		}
-		if (obj.getClass() != getClass()) {
-			return false;
-		}
-		Dart rhs = (Dart) obj;
-		return new EqualsBuilder()
-				.append(this.id, rhs.id)
-				.append(this.authorizationNumber, rhs.authorizationNumber)
-				.append(this.version, rhs.version)
-				.append(this.distributorInfo, rhs.distributorInfo)
-				.append(this.startDate, rhs.startDate)
-				.append(this.endDate, rhs.endDate)
-				.append(this.distiDiscount, rhs.distiDiscount)
-				.append(this.resellerName, rhs.resellerName)
-				.append(this.resellerCountry, rhs.resellerCountry)
-				.append(this.resellerAcct, rhs.resellerAcct)
-				.append(this.endUserName, rhs.endUserName)
-				.append(this.endUserCountry, rhs.endUserCountry)
-				.append(this.quantity, rhs.quantity)
-				.append(this.quantityInitial, rhs.quantityInitial)
-				.append(this.ciscoSku, rhs.ciscoSku)
-				.append(this.distiSku, rhs.distiSku)
-				.append(this.listPrice, rhs.listPrice)
-				.append(this.claimUnit, rhs.claimUnit)
-				.append(this.extCreditAmt, rhs.extCreditAmt)
-				.append(this.fastTrackPie, rhs.fastTrackPie)
-				.append(this.ipNgnPartnerPricingEm, rhs.ipNgnPartnerPricingEm)
-				.append(this.mdmFulfillment, rhs.mdmFulfillment)
-				.isEquals();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Dart rhs = (Dart) obj;
+        return new EqualsBuilder()
+                .append(this.id, rhs.id)
+                .append(this.authorizationNumber, rhs.authorizationNumber)
+                .append(this.version, rhs.version)
+                .append(this.distributorInfo, rhs.distributorInfo)
+                .append(this.startDate, rhs.startDate)
+                .append(this.endDate, rhs.endDate)
+                .append(this.distiDiscount, rhs.distiDiscount)
+                .append(this.resellerName, rhs.resellerName)
+                .append(this.resellerCountry, rhs.resellerCountry)
+                .append(this.resellerAcct, rhs.resellerAcct)
+                .append(this.endUserName, rhs.endUserName)
+                .append(this.endUserCountry, rhs.endUserCountry)
+                .append(this.quantity, rhs.quantity)
+                .append(this.quantityInitial, rhs.quantityInitial)
+                .append(this.ciscoSku, rhs.ciscoSku)
+                .append(this.distiSku, rhs.distiSku)
+                .append(this.listPrice, rhs.listPrice)
+                .append(this.claimUnit, rhs.claimUnit)
+                .append(this.extCreditAmt, rhs.extCreditAmt)
+                .append(this.fastTrackPie, rhs.fastTrackPie)
+                .append(this.ipNgnPartnerPricingEm, rhs.ipNgnPartnerPricingEm)
+                .append(this.mdmFulfillment, rhs.mdmFulfillment)
+                .isEquals();
+    }
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder()
-				.append(id)
-				.append(authorizationNumber)
-				.append(version)
-				.append(distributorInfo)
-				.append(startDate)
-				.append(endDate)
-				.append(distiDiscount)
-				.append(resellerName)
-				.append(resellerCountry)
-				.append(resellerAcct)
-				.append(endUserName)
-				.append(endUserCountry)
-				.append(quantity)
-				.append(quantityInitial)
-				.append(ciscoSku)
-				.append(distiSku)
-				.append(listPrice)
-				.append(claimUnit)
-				.append(extCreditAmt)
-				.append(fastTrackPie)
-				.append(ipNgnPartnerPricingEm)
-				.append(mdmFulfillment)
-				.toHashCode();
-	}
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(authorizationNumber)
+                .append(version)
+                .append(distributorInfo)
+                .append(startDate)
+                .append(endDate)
+                .append(distiDiscount)
+                .append(resellerName)
+                .append(resellerCountry)
+                .append(resellerAcct)
+                .append(endUserName)
+                .append(endUserCountry)
+                .append(quantity)
+                .append(quantityInitial)
+                .append(ciscoSku)
+                .append(distiSku)
+                .append(listPrice)
+                .append(claimUnit)
+                .append(extCreditAmt)
+                .append(fastTrackPie)
+                .append(ipNgnPartnerPricingEm)
+                .append(mdmFulfillment)
+                .toHashCode();
+    }
 
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this)
-				.append("id", id)
-				.append("authorizationNumber", authorizationNumber)
-				.append("version", version)
-				.append("distributorInfo", distributorInfo)
-				.append("startDate", startDate)
-				.append("endDate", endDate)
-				.append("distiDiscount", distiDiscount)
-				.append("resellerName", resellerName)
-				.append("resellerCountry", resellerCountry)
-				.append("resellerAcct", resellerAcct)
-				.append("endUserName", endUserName)
-				.append("endUserCountry", endUserCountry)
-				.append("quantity", quantity)
-				.append("quantityInitial", quantityInitial)
-				.append("ciscoSku", ciscoSku)
-				.append("distiSku", distiSku)
-				.append("listPrice", listPrice)
-				.append("claimUnit", claimUnit)
-				.append("extCreditAmt", extCreditAmt)
-				.append("fastTrackPie", fastTrackPie)
-				.append("ipNgnPartnerPricingEm", ipNgnPartnerPricingEm)
-				.append("mdmFulfillment", mdmFulfillment)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("authorizationNumber", authorizationNumber)
+                .append("version", version)
+                .append("distributorInfo", distributorInfo)
+                .append("startDate", startDate)
+                .append("endDate", endDate)
+                .append("distiDiscount", distiDiscount)
+                .append("resellerName", resellerName)
+                .append("resellerCountry", resellerCountry)
+                .append("resellerAcct", resellerAcct)
+                .append("endUserName", endUserName)
+                .append("endUserCountry", endUserCountry)
+                .append("quantity", quantity)
+                .append("quantityInitial", quantityInitial)
+                .append("ciscoSku", ciscoSku)
+                .append("distiSku", distiSku)
+                .append("listPrice", listPrice)
+                .append("claimUnit", claimUnit)
+                .append("extCreditAmt", extCreditAmt)
+                .append("fastTrackPie", fastTrackPie)
+                .append("ipNgnPartnerPricingEm", ipNgnPartnerPricingEm)
+                .append("mdmFulfillment", mdmFulfillment)
+                .toString();
+    }
 
-	//@Embeddable
-	public static class DartId implements java.io.Serializable {
-		//@Column(name = "cisco_sku")
-		private String ciscoSku;
-		//@Column(name = "reseller_name")
-		private String resellerName;
+    public static class DartId implements Serializable {
 
-		public DartId() {
+        private String ciscoSku;
 
-		}
+        private String resellerName;
 
-		public String getCiscoSku() {
-			return ciscoSku;
-		}
+        public DartId() {
 
-		public String getResellerName() {
-			return resellerName;
-		}
+        }
 
-		public void setCiscoSku(String ciscoSku) {
-			this.ciscoSku = ciscoSku;
-		}
+        public String getCiscoSku() {
+            return ciscoSku;
+        }
 
-		public void setResellerName(String resellerName) {
-			this.resellerName = resellerName;
-		}
+        public String getResellerName() {
+            return resellerName;
+        }
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
+        public void setCiscoSku(String ciscoSku) {
+            this.ciscoSku = ciscoSku;
+        }
 
-			DartId that = (DartId) o;
+        public void setResellerName(String resellerName) {
+            this.resellerName = resellerName;
+        }
 
-			return Objects.equal(this.ciscoSku, that.ciscoSku) &&
-					Objects.equal(this.resellerName, that.resellerName);
-		}
 
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(ciscoSku, resellerName);
-		}
-	}
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (obj == this) {
+                return true;
+            }
+            if (obj.getClass() != getClass()) {
+                return false;
+            }
+            DartId rhs = (DartId) obj;
+            return new EqualsBuilder()
+                    .append(this.ciscoSku, rhs.ciscoSku)
+                    .append(this.resellerName, rhs.resellerName)
+                    .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(ciscoSku)
+                    .append(resellerName)
+                    .toHashCode();
+        }
+    }
 }
