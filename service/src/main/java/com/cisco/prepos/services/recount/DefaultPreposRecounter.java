@@ -60,6 +60,9 @@ public class DefaultPreposRecounter implements PreposRecounter {
         final Table<String, String, Dart> dartsTable = dartsService.getDartsTable();
         final Map<String, Pricelist> pricelistsMap = pricelistsService.getPricelistsMap();
         final Map<String, Promo> promosMap = promosService.getPromosMap();
+
+	    dartApplier.validateIfPricelistsExistsForPreposes(preposes, pricelistsMap);
+
         List<Quartet<Prepos, Map<String, Dart>, Dart, Boolean>> recountedPreposes = Lists.newArrayList(Lists.transform(preposes, new Function<Prepos, Quartet<Prepos, Map<String, Dart>, Dart, Boolean>>() {
             @Override
             public Quartet<Prepos, Map<String, Dart>, Dart, Boolean> apply(Prepos inputPrepos) {

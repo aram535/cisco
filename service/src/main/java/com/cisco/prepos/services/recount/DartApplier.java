@@ -18,4 +18,6 @@ public interface DartApplier {
     Prepos getPrepos(Prepos inputPrepos, Dart selectedDart, Map<String, Pricelist> pricelistsMap, Table<String, String, Dart> dartsTable, Map<String, Promo> promosMap);
 
 	List<Dart> updateDartQuantity(List<Prepos> preposes,  Table<String, String, Dart> dartsTable);
+
+	void validateIfPricelistsExistsForPreposes(List<Prepos> preposes, Map<String, Pricelist> pricelistsMap);
 }

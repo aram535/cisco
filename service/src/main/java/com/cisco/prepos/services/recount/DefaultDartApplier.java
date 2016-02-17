@@ -96,6 +96,21 @@ public class DefaultDartApplier implements DartApplier {
 		return dartsToUpdate;
 	}
 
+	@Override
+	public void validateIfPricelistsExistsForPreposes(List<Prepos> preposes, Map<String, Pricelist> pricelistsMap) {
+
+		StringBuilder errorMsg = new StringBuilder();
+
+		for(Prepos prepos : preposes) {
+			if(pricelistsMap.get(prepos.getPartNumber()) == null) {
+				errorMsg.append("NO price found for part number:").append(prepos.getPartNumber()).append("\n");
+			}
+		}
+		if(!errorMsg.toString().isEmpty()) {
+			throw new CiscoException(errorMsg.toString());
+		}
+	}
+
 	private void updateQuantity(Dart selectedDart, Prepos prepos) {
 
 		int currentQuantity = selectedDart.getQuantity();

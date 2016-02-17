@@ -55,7 +55,7 @@ public class DefaultDartApplierTest {
     private final Pricelist newPricelist = newPricelist(OTHER_GPL);
     private final Promo promo = newPromo("other promo code");
     private final Table<String, String, Dart> dartsTable = getDartsTable();
-    private final Map<String, Pricelist> pricelistMap = of(prepos.getPartNumber(), newPricelist);
+    private Map<String, Pricelist> pricelistMap = of(prepos.getPartNumber(), newPricelist);
     private final Map<String, Promo> promosMap = of(PART_NUMBER, promo);
 
 
@@ -111,6 +111,27 @@ public class DefaultDartApplierTest {
 
 		defaultDartApplier.updateDartQuantity(Lists.newArrayList(expectedPrepos), dartsTable);
 
+	}
+
+	@Test
+	public void thatExceptionIsThrownWhenNoPricelistFoundForPartNumber() throws Exception {
+
+		pricelistMap = of();
+		Prepos expectedPrepos = newPrepos();
+
+		expectedException.expect(CiscoException.class);
+		expectedException.expectMessage(String.format("NO price found for part number:%s", expectedPrepos.getPartNumber()));
+
+		defaultDartApplier.validateIfPricelistsExistsForPreposes(Lists.newArrayList(expectedPrepos), pricelistMap);
+
+	}
+
+	@Test
+	public void thatNoExceptionIsThrownWhenPricelistIsFoundForPartNumber() throws Exception {
+
+		Prepos expectedPrepos = newPrepos();
+
+		defaultDartApplier.validateIfPricelistsExistsForPreposes(Lists.newArrayList(expectedPrepos), pricelistMap);
 	}
 
 	private Prepos createExpectedPrepos() {
