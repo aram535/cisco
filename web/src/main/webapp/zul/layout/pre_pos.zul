@@ -1,5 +1,5 @@
 <window apply="org.zkoss.bind.BindComposer"
-        viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel')" vflex="true" hflex="true" > <!--ctrlKeys="#bak" onCtrlKey="@command('filterChanged')"-->
+        viewModel="@id('vmPrePos') @init('com.cisco.prepos.PreposViewModel', queueScope='session')" vflex="true" hflex="true" > <!--ctrlKeys="#bak" onCtrlKey="@command('filterChanged')"-->
     <style>
         .z-textbox-disd { color: #2B3856 !important;}
         .z-intbox-disd { color: #2B3856 !important;}
@@ -38,10 +38,12 @@
             <auxheader colspan="1">
                 <label hflex="100%" value="@bind(vmPrePos.totalPosSum)"/>
             </auxheader>
+            <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
                        value="@bind(vmPrePos.preposRestrictions.endUser)" onChange="@command('filterChanged')"/>
             </auxheader>
+            <auxheader colspan="1"/>
             <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
@@ -52,7 +54,6 @@
                 <textbox hflex="100%" instant="true"
                        value="@bind(vmPrePos.preposRestrictions.serial)" onChange="@command('filterChanged')"/>
             </auxheader>
-            <auxheader colspan="1"/>
             <auxheader colspan="1">
                 <textbox hflex="100%" instant="true"
                          value="@bind(vmPrePos.preposRestrictions.ok)"
@@ -60,8 +61,6 @@
             </auxheader>
             <auxheader colspan="1"/>
             <auxheader colspan="1"/>
-            <auxheader colspan="1"/>
-
             <auxheader colspan="1"/>
 
             <auxheader colspan="1"/>
@@ -87,19 +86,19 @@
             <column label="Part №"/>
             <column label="Quantity"/>
             <column label="Pos sum"/>
+            <column label="Promo2"/>
             <column label="End user" sort="auto(prepos.endUser)"/>
+            <column label="Good" sort="auto(prepos.ok)"/>
             <column label="Inv Date"/>
             <column label="Inv №"/>
             <column label="Serials"/>
             <column label="Comment"/>
-            <column label="Good" sort="auto(prepos.ok)"/>
             <column label="Delta"/>
             <column label="S dis(%)"/>
             <column label="B dis(%)"/>
             <column label="S pr"/>
             <column label="B pr"/>
             <column label="Promo1"/>
-            <column label="Promo2"/>
             <column label="Manager"/>
             <column label="Type"/>
             <column label="Zip"/>
@@ -117,18 +116,6 @@
                 <label width="auto" value="@bind(each.prepos.partNumber)"/>
                 <label width="auto" value="@bind(each.prepos.quantity)"/>
                 <label width="auto" value="@bind(each.prepos.posSum)"/>
-                <textbox width="auto" value="@bind(each.prepos.endUser)"/>
-                <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
-                <label width="auto" value="@bind(each.prepos.shippedBillNumber)"/>
-                <textbox width="auto" value="@bind(each.prepos.serials)"/>
-                <label width="auto" value="@bind(each.prepos.comment)"/>
-                <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
-                <label width="auto" value="@bind(each.prepos.delta)"/>
-                <label width="auto" value="@bind(each.saleDiscount)"/>
-                <label width="auto" value="@bind(each.buyDiscount)"/>
-                <label width="auto" value="@bind(each.prepos.salePrice)"/>
-                <label width="auto" value="@bind(each.prepos.buyPrice)"/>
-                <label width="auto" value="@bind(each.prepos.firstPromo)"/>
                 <combobox readonly="true"
                           model="@load(each.suitableDartsList)" selectedItem="@bind(each.selectedDart)"
                           onChange="@command('promoSelected', preposModel=each, comboItem=self)">
@@ -136,6 +123,18 @@
                         <comboitem label="@load(each.authorizationNumber)" description="@load(each.endUserName)"/>
                     </template>
                 </combobox>
+                <textbox width="auto" value="@bind(each.prepos.endUser)"/>
+                <checkbox checked="@bind(each.prepos.ok)" disabled="true"/>
+                <datebox inplace="true" width="auto" value="@bind(each.prepos.shippedDate)" buttonVisible="true"/>
+                <label width="auto" value="@bind(each.prepos.shippedBillNumber)"/>
+                <textbox width="auto" value="@bind(each.prepos.serials)"/>
+                <label width="auto" value="@bind(each.prepos.comment)"/>
+                <label width="auto" value="@bind(each.prepos.delta)"/>
+                <label width="auto" value="@bind(each.saleDiscount)"/>
+                <label width="auto" value="@bind(each.buyDiscount)"/>
+                <label width="auto" value="@bind(each.prepos.salePrice)"/>
+                <label width="auto" value="@bind(each.prepos.buyPrice)"/>
+                <label width="auto" value="@bind(each.prepos.firstPromo)"/>
                 <label width="auto" value="@bind(each.prepos.accountManagerName)"/>
                 <label width="auto" value="@bind(each.prepos.type)"/>
                 <label width="auto" value="@bind(each.prepos.zip)"/>

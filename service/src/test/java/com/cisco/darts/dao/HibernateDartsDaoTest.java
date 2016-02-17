@@ -47,7 +47,7 @@ public class HibernateDartsDaoTest extends BasicDb {
     @ExpectedDataSet("darts-update-result.xml")
     public void thatUpdateAmendsDataToDartsDb() throws Exception {
         Dart dart = createExpectedDart();
-        dart.setAuthorizationNumber("NEW AUTH NUMBER");
+        dart.setResellerName("NEW RES NAME");
         dartsDao.update(dart);
     }
 

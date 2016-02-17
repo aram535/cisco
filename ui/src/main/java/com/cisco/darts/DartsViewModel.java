@@ -8,7 +8,6 @@ import com.cisco.darts.service.DartsService;
 import com.cisco.exception.CiscoException;
 import com.cisco.utils.MessageUtils;
 import com.google.common.collect.Lists;
-import org.springframework.util.CollectionUtils;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
@@ -85,17 +84,14 @@ public class DartsViewModel {
 
 	public List<Dart> getAllDarts() {
 
-	    try {
-		    if(CollectionUtils.isEmpty(allDarts)) {
-			    allDarts = dartsService.getDarts();
-			    filteredDarts = dartsFilter.filter(allDarts, dartsRestrictions);
-		    }
-
-		    return filteredDarts;
-	    } catch (Exception e) {
-		    MessageUtils.showErrorMessage(e);
-		    return Lists.newArrayList();
-	    }
+		try {
+			allDarts = dartsService.getDarts();
+			filteredDarts = dartsFilter.filter(allDarts, dartsRestrictions);
+			return filteredDarts;
+		} catch (Exception e) {
+			MessageUtils.showErrorMessage(e);
+			return Lists.newArrayList();
+		}
     }
 
     @Command(ADD_COMMAND)

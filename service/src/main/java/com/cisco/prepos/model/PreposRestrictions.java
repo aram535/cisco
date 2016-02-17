@@ -1,7 +1,6 @@
 package com.cisco.prepos.model;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
@@ -12,7 +11,6 @@ import java.util.GregorianCalendar;
  * Created by Alf on 01.05.2014.
  */
 
-@Component
 public class PreposRestrictions {
 
     private String partnerName;

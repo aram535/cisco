@@ -2,4 +2,10 @@
     <system-config>
         <max-upload-size>-1</max-upload-size>
     </system-config>
+    <preference>
+    <name>ThreadLocal</name>
+    <value>
+        org.springframework.web.context.request.RequestContextHolder=requestAttributesHolder,inheritableRequestAttributesHolder;
+    </value>
+    </preference>
 </zk>

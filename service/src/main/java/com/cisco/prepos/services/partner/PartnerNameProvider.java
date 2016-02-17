@@ -3,6 +3,7 @@ package com.cisco.prepos.services.partner;
 import com.cisco.clients.dto.Client;
 import com.cisco.sales.dto.Sale;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,4 +13,6 @@ import java.util.Map;
  */
 public interface PartnerNameProvider {
     String getPartnerName(Sale sale, Map<String, Client> clientsMap);
+
+    String getPartnerName(Sale sale, Map<String, Client> clientsMap, List<String> missingClients);
 }

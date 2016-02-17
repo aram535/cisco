@@ -1,6 +1,5 @@
 package com.cisco.darts.dto;
 
-import com.google.common.base.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -81,9 +80,9 @@ public class Dart {
     @Id
     @AttributeOverrides({
             @AttributeOverride(name = "ciscoSku",
-                    column = @Column(name = "reseller_name")),
+                    column = @Column(name = "cisko_sku")),
             @AttributeOverride(name = "authorizationNumber",
-                    column = @Column(name = "cisko_sku"))
+                    column = @Column(name = "authorization_number"))
     })
 
     //@Id
@@ -93,6 +92,7 @@ public class Dart {
         return id;
     }
 
+	@NaturalId
     @Column(name = "authorization_number")
     public String getAuthorizationNumber() {
         return authorizationNumber;
@@ -123,7 +123,6 @@ public class Dart {
         return distiDiscount;
     }
 
-    @NaturalId
     @Column(name = "reseller_name")
     public String getResellerName() {
         return resellerName;
@@ -384,11 +383,36 @@ public class Dart {
                 .toString();
     }
 
-    public static class DartId implements Serializable {
+	public void copyFrom(Dart dart) {
+
+		this.version = dart.getVersion();
+		this.authorizationNumber = dart.getAuthorizationNumber();
+		this.ciscoSku = dart.getCiscoSku();
+		this.claimUnit = dart.getClaimUnit();
+		this.distiDiscount = dart.getDistiDiscount();
+		this.distiSku = dart.getDistiSku();
+		this.distributorInfo = dart.getDistributorInfo();
+		this.endDate = dart.getEndDate();
+		this.startDate = dart.getStartDate();
+		this.endUserCountry = dart.getEndUserCountry();
+		this.endUserName = dart.getEndUserName();
+		this.extCreditAmt = dart.getExtCreditAmt();
+		this.fastTrackPie = dart.getFastTrackPie();
+		this.ipNgnPartnerPricingEm = dart.getIpNgnPartnerPricingEm();
+		this.mdmFulfillment = dart.getMdmFulfillment();
+		this.listPrice = dart.getListPrice();
+		this.quantity = dart.getQuantity();
+		this.quantityInitial = dart.getQuantityInitial();
+		this.resellerAcct = dart.getResellerAcct();
+		this.resellerCountry = dart.getResellerCountry();
+		this.resellerName = dart.getResellerName();
+	}
+
+	public static class DartId implements Serializable {
 
         private String ciscoSku;
 
-        private String resellerName;
+        private String authorizationNumber;
 
         public DartId() {
 
@@ -398,16 +422,16 @@ public class Dart {
             return ciscoSku;
         }
 
-        public String getResellerName() {
-            return resellerName;
+        public String getAuthorizationNumber() {
+            return authorizationNumber;
         }
 
         public void setCiscoSku(String ciscoSku) {
             this.ciscoSku = ciscoSku;
         }
 
-        public void setResellerName(String resellerName) {
-            this.resellerName = resellerName;
+        public void setAuthorizationNumber(String authorizationNumber) {
+            this.authorizationNumber = authorizationNumber;
         }
 
 
@@ -425,7 +449,7 @@ public class Dart {
             DartId rhs = (DartId) obj;
             return new EqualsBuilder()
                     .append(this.ciscoSku, rhs.ciscoSku)
-                    .append(this.resellerName, rhs.resellerName)
+                    .append(this.authorizationNumber, rhs.authorizationNumber)
                     .isEquals();
         }
 
@@ -433,7 +457,7 @@ public class Dart {
         public int hashCode() {
             return new HashCodeBuilder()
                     .append(ciscoSku)
-                    .append(resellerName)
+                    .append(authorizationNumber)
                     .toHashCode();
         }
     }

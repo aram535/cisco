@@ -83,7 +83,7 @@ public class HibernateDartsDao implements DartsDao {
     public void saveAll(List<Dart> darts) {
         Session currentSession = sessionFactory.getCurrentSession();
         for (Dart dart : darts) {
-            currentSession.save(dart);
+            currentSession.saveOrUpdate(dart);
         }
     }
 }

@@ -42,7 +42,7 @@
         Description:
         <textbox value="@bind(pricelists.description)"/>
         Gpl:
-        <intbox value="@bind(pricelists.gpl)"/>
+        <doublebox value="@bind(pricelists.gpl)"/>
         Wpl:
         <doublebox value="@bind(pricelists.wpl)"/>
         Discount:

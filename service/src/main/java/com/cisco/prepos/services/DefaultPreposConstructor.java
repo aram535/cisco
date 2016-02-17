@@ -2,6 +2,7 @@ package com.cisco.prepos.services;
 
 import com.cisco.clients.dto.Client;
 import com.cisco.clients.service.ClientsService;
+import com.cisco.exception.CiscoException;
 import com.cisco.prepos.dto.Prepos;
 import com.cisco.prepos.services.partner.PartnerNameProvider;
 import com.cisco.sales.dto.Sale;
@@ -37,13 +38,14 @@ public class DefaultPreposConstructor implements PreposConstructor {
 
         List<Prepos> preposes = Lists.newArrayList();
 
+	    List<String> missingClients = Lists.newArrayList();
         for (Sale sale : sales) {
 
             Prepos prepos = new Prepos();
 
             prepos.setSalePrice(sale.getPrice());
             prepos.setPartNumber(sale.getPartNumber());
-            prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap));
+            prepos.setPartnerName(partnerNameProvider.getPartnerName(sale, clientsMap, missingClients));
             prepos.setStatus(NOT_POS);
             prepos.setClientNumber(sale.getClientNumber());
             prepos.setShippedDate(sale.getShippedDate());
@@ -56,6 +58,17 @@ public class DefaultPreposConstructor implements PreposConstructor {
 
             preposes.add(prepos);
         }
+
+	    if(!missingClients.isEmpty()) {
+
+		    StringBuilder errorMsg = new StringBuilder();
+		    for(String clientNumber : missingClients) {
+			    errorMsg.append("Client with number:").append(clientNumber).append(" was not found\n");
+		    }
+
+		    logger.warn(errorMsg.toString());
+		    throw new CiscoException(errorMsg.toString());
+	    }
 
         logger.debug(String.format("%d new sales processed", sales.size()));
 

@@ -43,7 +43,6 @@ import static com.google.common.collect.Lists.newArrayList;
 /**
  * Created by Alf on 05.04.14.
  */
-
 @VariableResolver(DelegatingVariableResolver.class)
 public class PreposViewModel {
 
@@ -80,8 +79,7 @@ public class PreposViewModel {
     private Map<Long, PreposModel> checkedPreposMap = Maps.newHashMap();
     private Iterable<PreposModel> filteredCheckedPreposes;
 
-	@WireVariable
-    private PreposRestrictions preposRestrictions;
+    private PreposRestrictions preposRestrictions = new PreposRestrictions();
 
     @WireVariable
     private PreposService preposService;
